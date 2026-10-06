@@ -1,4 +1,5 @@
-import { mkdtemp, rm } from 'node:fs/promises';
+import { mkdir, mkdtemp, rm } from 'node:fs/promises';
+import os from 'node:os';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import sharp from 'sharp';
@@ -24,7 +25,9 @@ import {
 let dir = '';
 
 beforeEach(async () => {
-  dir = await mkdtemp('/tmp/opencode/brainx-up-');
+  const parent = path.join(os.tmpdir(), 'opencode');
+  await mkdir(parent, { recursive: true });
+  dir = await mkdtemp(path.join(parent, 'brainx-up-'));
 });
 
 afterEach(async () => {
@@ -122,13 +125,13 @@ describe('upload staging', () => {
     await expect(loadStagedForSession(dir, ['f'.repeat(32)], 'owner', 1)).rejects.toBeInstanceOf(UploadError);
   });
 
-  it('prunes expired uploads', async () => {
+  it('automatically prunes expired uploads and supports explicit cleanup', async () => {
     const old = await createUpload({ dir, sessionId: 's', originalName: 'a.png', buffer: await png(), now: 0 });
     const fresh = await createUpload({ dir, sessionId: 's', originalName: 'b.png', buffer: await png(), now: UPLOAD_TTL_MS });
-    const pruned = await pruneExpiredUploads(dir, UPLOAD_TTL_MS + 1);
-    expect(pruned).toBe(1);
     const remaining = (await listUploads(dir)).map((r) => r.token);
     expect(remaining).toContain(fresh.token);
     expect(remaining).not.toContain(old.token);
+    expect(await pruneExpiredUploads(dir, UPLOAD_TTL_MS * 2 + 1)).toBe(1);
+    expect(await listUploads(dir)).toEqual([]);
   });
 });

@@ -3,11 +3,6 @@ import type { Project } from '@/lib/types';
 import TagList from './TagList';
 
 export default function ProjectCard({ project }: { project: Project }) {
-  const Wrapper = project.link ? 'a' : 'div';
-  const wrapperProps = project.link
-    ? { href: project.link, target: '_blank', rel: 'noopener noreferrer' }
-    : {};
-
   return (
     <article className="card group flex flex-col overflow-hidden transition-colors hover:border-navy-200">
       <div className="relative aspect-[16/10] overflow-hidden bg-navy-50">
@@ -33,6 +28,12 @@ export default function ProjectCard({ project }: { project: Project }) {
         </div>
         <p className="mt-3 flex-1 text-sm leading-relaxed text-muted">{project.description}</p>
         <TagList tags={project.tags} className="mt-5" />
+        {project.link ? (
+          <a href={project.link} target="_blank" rel="noopener noreferrer" className="link-arrow mt-5 text-sm">
+            View project <span className="sr-only">{project.title}</span>
+            <ArrowUpRight className="h-4 w-4" aria-hidden />
+          </a>
+        ) : null}
       </div>
     </article>
   );

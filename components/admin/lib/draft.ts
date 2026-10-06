@@ -1,4 +1,5 @@
 import type { Content } from '@/lib/types';
+import { validateContent } from '@/lib/validation';
 
 /**
  * Drafts live in sessionStorage, so they are scoped to the browser tab and
@@ -33,16 +34,17 @@ function isStoredDraft(value: unknown): value is StoredDraft {
     typeof record.baseSha === 'string' &&
     typeof record.savedAt === 'number' &&
     !!record.content &&
-    typeof record.content === 'object'
+    typeof record.content === 'object' &&
+    validateContent(record.content).ok
   );
 }
 
 export function readDraft(): StoredDraft | null {
   const store = storage();
   if (!store) return null;
-  const raw = store.getItem(DRAFT_STORAGE_KEY);
-  if (!raw) return null;
   try {
+    const raw = store.getItem(DRAFT_STORAGE_KEY);
+    if (!raw) return null;
     const parsed: unknown = JSON.parse(raw);
     return isStoredDraft(parsed) ? parsed : null;
   } catch {
@@ -50,15 +52,15 @@ export function readDraft(): StoredDraft | null {
   }
 }
 
-export function writeDraft(draft: Omit<StoredDraft, 'version'>): void {
+export function writeDraft(draft: Omit<StoredDraft, 'version'>): boolean {
   const store = storage();
-  if (!store) return;
+  if (!store) return false;
   const payload: StoredDraft = { version: 1, ...draft };
   try {
     store.setItem(DRAFT_STORAGE_KEY, JSON.stringify(payload));
+    return true;
   } catch {
-    // Quota or serialization failures must not break editing; the draft simply
-    // is not persisted.
+    return false;
   }
 }
 

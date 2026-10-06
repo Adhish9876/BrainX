@@ -40,7 +40,7 @@ export default function SiteHeader({ site }: { site: Site }) {
           </span>
         </Link>
 
-        <nav aria-label="Primary" className="hidden items-center gap-0.5 md:flex">
+        <nav aria-label="Primary" className="hidden items-center gap-0.5 lg:flex">
           {NAV_ITEMS.map((item) => {
             const active = isActive(pathname, item.href);
             return (
@@ -67,7 +67,7 @@ export default function SiteHeader({ site }: { site: Site }) {
 
         <button
           type="button"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-rule text-ink md:hidden"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-rule text-ink lg:hidden"
           aria-expanded={open}
           aria-controls="mobile-nav"
           aria-label={open ? 'Close menu' : 'Open menu'}
@@ -80,7 +80,7 @@ export default function SiteHeader({ site }: { site: Site }) {
       <div
         id="mobile-nav"
         hidden={!open}
-        className="border-t border-rule bg-paper md:hidden"
+        className="border-t border-rule bg-paper lg:hidden"
       >
         <nav aria-label="Mobile" className="shell flex flex-col py-2">
           {NAV_ITEMS.map((item) => {

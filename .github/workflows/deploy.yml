@@ -36,7 +36,10 @@ permissions:
   contents: read
 
 jobs:
+  validate:
+    uses: ./.github/workflows/check.yml
   deploy:
+    needs: validate
     name: Trigger VPS deploy
     runs-on: ubuntu-latest
     env:

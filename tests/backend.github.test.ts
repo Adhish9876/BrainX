@@ -141,6 +141,15 @@ describe('planCommit', () => {
     expect(plan.content.pictures[0]!.thumbnail).toBe('/media/pictures/demo-gallery/demo-02.webp');
   });
 
+  it('chooses the first image when no thumbnail was selected', () => {
+    const content = galleryContent();
+    content.pictures[0].thumbnail = '';
+    const plan = planCommit(content, oldEntries, staged);
+    expect(plan.content.pictures[0].thumbnail).toBe(plan.content.pictures[0].images[0]);
+    const meta = plan.json.find(f => f.path.endsWith('/meta.json'))!;
+    expect(JSON.parse(meta.buf.toString()).thumbnail).toBe('demo-01');
+  });
+
   it('deletes removed groups and unreferenced uploads but preserves kept sources and unknown files', () => {
     const plan = planCommit(galleryContent(), oldEntries, staged);
     const deletions = new Set(plan.deletions);

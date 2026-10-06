@@ -6,12 +6,15 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
+import { getContent } from '../lib/content';
 
 const SCRIPT = fileURLToPath(new URL('../scripts/prepare-media.mjs', import.meta.url));
 const tempRoots: string[] = [];
 
 async function makeRoot(): Promise<string> {
-  const root = await mkdtemp(path.join(os.tmpdir(), 'brainx-media-'));
+  const parent = path.join(os.tmpdir(), 'opencode');
+  await mkdir(parent, { recursive: true });
+  const root = await mkdtemp(path.join(parent, 'brainx-media-'));
   tempRoots.push(root);
   return root;
 }
@@ -88,11 +91,9 @@ describe('media pipeline', () => {
     await expect(stat(path.join(root, 'public', 'media', 'pictures', 'group-x'))).rejects.toThrow();
   });
 
-  it('keeps the committed demo gallery compiled in the real tree', async () => {
+  it('compiles whichever gallery groups are currently present in the real tree', async () => {
     const root = path.resolve(fileURLToPath(new URL('..', import.meta.url)));
     runPipeline(root);
-    for (const stem of ['demo-01', 'demo-02']) {
-      expect(existsSync(path.join(root, 'public', 'media', 'pictures', 'demo-gallery', `${stem}.webp`))).toBe(true);
-    }
+    for (const group of getContent().pictures) for (const image of group.images) expect(existsSync(path.join(root, 'public', image))).toBe(true);
   });
 });

@@ -24,6 +24,10 @@ test('authenticated editing persists a multi-item draft and resets without commi
   await page.getByLabel('Tags', { exact: true }).fill('Custom / 任意');
   await page.getByLabel('Tags', { exact: true }).press('Enter');
   await expect(page.getByRole('button', { name: 'Remove tag Custom / 任意' })).toBeVisible();
+  const longTag = 'Any free-form category, including long labels / 任意 '.repeat(4).trim();
+  await page.getByLabel('Tags', { exact: true }).fill(longTag);
+  await page.getByLabel('Tags', { exact: true }).press('Enter');
+  await expect(page.getByRole('button', { name: `Remove tag ${longTag}`, exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Add', exact: true }).click();
   await expect(page.getByRole('button', { name: /You’ve made 2 changes/ })).toBeVisible();
   await page.getByRole('button', { name: 'Move QA research draft up', exact: true }).click();
@@ -33,6 +37,7 @@ test('authenticated editing persists a multi-item draft and resets without commi
   await expect(page.getByText('QA research draft', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Edit QA research draft', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Remove tag Custom / 任意' })).toBeVisible();
+  await expect(page.getByRole('button', { name: `Remove tag ${longTag}`, exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Cancel', exact: true }).click();
   await page.getByRole('button', { name: 'Delete QA research draft', exact: true }).click();
   await page.getByRole('dialog').getByRole('button', { name: 'Delete', exact: true }).click();
@@ -61,4 +66,54 @@ test('authentication and mutation boundaries reject unauthenticated and cross-or
   expect(body.content.publications).toHaveLength(17);
   expect((await request.post('/api/admin/commit', { headers: { Origin: baseURL!, Cookie }, data: { content: body.content, baseSha: '0000000000000000000000000000000000000000' } })).status()).toBe(409);
   expect((await request.post('/api/admin/upload', { headers: { Origin: baseURL!, Cookie }, multipart: { file: { name: 'not-an-image.png', mimeType: 'image/png', buffer: Buffer.from('not an image') } } })).status()).toBe(415);
+  const uploaded = await request.post('/api/admin/upload', { headers: { Origin: baseURL!, Cookie }, multipart: { file: { name: 'placeholder.png', mimeType: 'image/png', buffer: readFileSync('data/pictures/demo-gallery/demo-01.png') } } });
+  expect(uploaded.status()).toBe(200);
+  const photo = await uploaded.json();
+  expect(photo.url).toMatch(/^\/api\/admin\/uploads\/[a-f0-9]{32}$/);
+  const preview = await request.get(photo.url, { headers: { Cookie } });
+  expect(preview.status()).toBe(200);
+  expect(preview.headers()['content-type']).toBe('image/webp');
+  expect((await preview.body()).subarray(0, 4).toString()).toBe('RIFF');
+  expect((await request.get(photo.url, { headers: { Cookie: '' } })).status()).toBe(401);
+});
+
+test('all seven collections support add, edit, reorder and confirmed deletion', async ({ page }) => {
+  test.setTimeout(120_000);
+  await page.goto('/admin');
+  await page.getByLabel('Username', { exact: true }).fill(env.ADMIN_USERNAME);
+  await page.getByLabel('Password', { exact: true }).fill(env.ADMIN_PASSWORD);
+  await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Sign out', exact: true })).toBeVisible();
+  for (const [section, singular, field] of [
+    ['Publications', 'publication', 'Title'], ['Team', 'team member', 'Name'],
+    ['Research', 'research area', 'Title'], ['Projects', 'project', 'Title'],
+    ['Events', 'event', 'Title'], ['News', 'news item', 'Title'], ['Pictures', 'picture group', 'Name'],
+  ]) {
+    await page.getByRole('button', { name: section, exact: true }).click();
+    for (const suffix of ['A', 'B']) {
+      await page.getByRole('button', { name: `New ${singular}`, exact: true }).click();
+      await page.getByLabel(field, { exact: true }).fill(`QA ${section} ${suffix}`);
+      const date = page.getByLabel('Date', { exact: true });
+      if (await date.count()) { await expect(date).toHaveAttribute('type', 'date'); await date.fill('2026-10-07'); }
+      const tags = page.getByLabel('Tags', { exact: true });
+      if (await tags.count()) {
+        await tags.fill('Anything');
+        await tags.press(',');
+        await tags.pressSequentially(' even / 任意');
+        await tags.press('Enter');
+        await expect(page.getByRole('button', { name: 'Remove tag Anything, even / 任意', exact: true })).toBeVisible();
+      }
+      await page.getByRole('button', { name: 'Add', exact: true }).click();
+    }
+    await page.getByRole('button', { name: `Edit QA ${section} A`, exact: true }).click();
+    const detail = page.getByLabel(section === 'Publications' ? 'Venue' : 'Description', { exact: true });
+    await detail.fill('Local browser draft only — not published.');
+    await page.getByRole('button', { name: 'Save changes', exact: true }).click();
+    await page.getByRole('button', { name: `Move QA ${section} B up`, exact: true }).click();
+    for (const suffix of ['A', 'B']) {
+      await page.getByRole('button', { name: `Delete QA ${section} ${suffix}`, exact: true }).click();
+      await page.getByRole('dialog').getByRole('button', { name: 'Delete', exact: true }).click();
+    }
+  }
+  await expect(page.getByRole('button', { name: 'Redeploy', exact: true })).toHaveCount(0);
 });

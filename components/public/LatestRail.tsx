@@ -74,7 +74,7 @@ export default function LatestRail({
             {recentPublications.map((publication) => (
               <li key={publication.id} className="px-5 py-4">
                 <div className="flex items-baseline gap-3">
-                  <span className="font-display text-sm font-semibold text-navy-500">
+                  <span className="shrink-0 whitespace-nowrap font-display text-sm font-semibold tabular-nums text-navy-500">
                     {publication.year}
                   </span>
                   <h3 className="text-sm leading-snug text-ink">

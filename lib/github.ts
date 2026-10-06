@@ -295,7 +295,7 @@ export function planCommit(
       finalImages.push(thumbUrl);
       finalStems.push(toStem(basename(thumbUrl)));
     }
-    if (!thumbUrl) thumbUrl = '';
+    if (!thumbUrl) thumbUrl = finalImages[0] ?? '';
 
     group.images = finalImages;
     group.thumbnail = thumbUrl;

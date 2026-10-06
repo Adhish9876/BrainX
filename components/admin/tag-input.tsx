@@ -16,10 +16,6 @@ interface TagInputProps {
   'aria-describedby'?: string;
 }
 
-/** Backend limits: 30 tags per record, 48 characters per tag. */
-const MAX_TAGS = 30;
-const MAX_TAG_LENGTH = 48;
-
 /**
  * Free-form tag entry. Press Enter to add the typed string as a
  * tag; each tag can be removed individually. Duplicate tags are ignored.
@@ -39,14 +35,7 @@ export function TagInput({
     (raw: string) => {
       const tag = raw.trim();
       if (!tag) return;
-      if (value.length >= MAX_TAGS) {
-        setDraft('');
-        return;
-      }
-      const exists = value.some(
-        (item) => item.toLowerCase() === tag.toLowerCase(),
-      );
-      if (!exists) onChange([...value, tag.slice(0, MAX_TAG_LENGTH)]);
+      if (!value.includes(tag)) onChange([...value, tag]);
       setDraft('');
     },
     [onChange, value],
@@ -66,8 +55,8 @@ export function TagInput({
         onClick={() => inputRef.current?.focus()}
       >
         {value.map((tag, index) => (
-          <Badge key={`${tag}-${index}`} variant="secondary" className="gap-1 pr-1">
-            {tag}
+          <Badge key={`${tag}-${index}`} variant="secondary" className="max-w-full gap-1 pr-1">
+            <span className="min-w-0 break-words">{tag}</span>
             <button
               type="button"
               onClick={(event) => {
@@ -76,7 +65,7 @@ export function TagInput({
               }}
               disabled={disabled}
               aria-label={`Remove tag ${tag}`}
-              className="rounded-full p-0.5 text-slate-600 hover:bg-slate-300 hover:text-slate-800 focus:outline-none focus-visible:ring-1 focus-visible:ring-navy-700 disabled:pointer-events-none"
+              className="shrink-0 rounded-full p-0.5 text-slate-600 hover:bg-slate-300 hover:text-slate-800 focus:outline-none focus-visible:ring-1 focus-visible:ring-navy-700 disabled:pointer-events-none"
             >
               <X className="size-3" />
             </button>
@@ -87,7 +76,6 @@ export function TagInput({
           ref={inputRef}
           value={draft}
           disabled={disabled}
-          maxLength={MAX_TAG_LENGTH}
           placeholder={value.length === 0 ? placeholder : ''}
           aria-describedby={ariaDescribedBy}
           className="h-7 min-w-32 flex-1 border-0 px-1 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -108,11 +96,6 @@ export function TagInput({
           onBlur={() => commit(draft)}
         />
       </div>
-      {value.length >= MAX_TAGS ? (
-        <p className="text-xs text-amber-700">
-          Maximum of {MAX_TAGS} tags reached.
-        </p>
-      ) : null}
     </div>
   );
 }

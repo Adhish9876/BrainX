@@ -8,8 +8,10 @@ test('all public sections render and remain responsive', async ({ page }) => {
     await expect(page.locator('h1')).toBeVisible();
     await expect(page.locator('body')).toContainText('BrainX');
     expect(await page.locator('a[href="/admin"]').count()).toBe(0);
-    await page.setViewportSize({ width: 390, height: 844 });
-    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+    for (const width of [390, 768, 820, 1024]) {
+      await page.setViewportSize({ width, height: 844 });
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), `${route} at ${width}px`).toBe(true);
+    }
     await page.setViewportSize({ width: 1440, height: 1000 });
   }
 });
@@ -61,4 +63,14 @@ test('gallery uses thumbnail cards and preserves image ratio with keyboard navig
   await page.keyboard.press('Escape');
   await expect(dialog).toHaveCount(0);
   await expect(card).toBeFocused();
+});
+
+test('tablet navigation opens, navigates and closes correctly', async ({ page }) => {
+  await page.setViewportSize({ width: 820, height: 1180 });
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Open menu', exact: true }).click();
+  await page.getByRole('navigation', { name: 'Mobile', exact: true }).getByRole('link', { name: 'Research', exact: true }).click();
+  await expect(page).toHaveURL(/\/research$/);
+  await expect(page.getByRole('button', { name: 'Open menu', exact: true })).toBeVisible();
+  await expect(page.getByRole('navigation', { name: 'Mobile', exact: true })).toHaveCount(0);
 });

@@ -116,6 +116,7 @@ function ContentManager({ initial, onLogout }: ContentManagerProps) {
   const [confirmReset, setConfirmReset] = React.useState(false);
   const [confirmLogout, setConfirmLogout] = React.useState(false);
   const [conflictOpen, setConflictOpen] = React.useState(false);
+  const [draftStorageUnavailable, setDraftStorageUnavailable] = React.useState(false);
 
   const changes = React.useMemo(
     () => diffContent(remote.content, draft),
@@ -129,9 +130,10 @@ function ContentManager({ initial, onLogout }: ContentManagerProps) {
   React.useEffect(() => {
     const handle = window.setTimeout(() => {
       if (dirty) {
-        writeDraft({ baseSha, content: draft, savedAt: Date.now() });
+        setDraftStorageUnavailable(!writeDraft({ baseSha, content: draft, savedAt: Date.now() }));
       } else {
         clearDraft();
+        setDraftStorageUnavailable(false);
       }
     }, 400);
     return () => window.clearTimeout(handle);
@@ -232,7 +234,8 @@ function ContentManager({ initial, onLogout }: ContentManagerProps) {
     try {
       await logout();
     } catch {
-      // Even if the request fails, drop the local draft and return to sign-in.
+      setPublishState({ kind: 'error', message: 'Could not sign out. Your session is still active; please try again.' });
+      return;
     }
     clearDraft();
     onLogout();
@@ -323,6 +326,7 @@ function ContentManager({ initial, onLogout }: ContentManagerProps) {
         </aside>
 
         <main className="min-w-0 flex-1 pb-32">
+          {draftStorageUnavailable ? <Alert variant="destructive" className="mb-4"><AlertTitle>Draft persistence unavailable</AlertTitle><AlertDescription>This browser could not save your draft. Keep this tab open until you publish, or enable browser storage before refreshing.</AlertDescription></Alert> : null}
           {/* Mobile section navigation */}
           <div className="-mx-1 mb-4 overflow-x-auto pb-1 lg:hidden">
             <nav className="flex w-max gap-1 px-1" aria-label="Admin sections">

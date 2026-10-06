@@ -60,6 +60,7 @@ export function GalleryField({
       }
     }
     if (uploaded.length) onChangeImages([...images, ...uploaded]);
+    if (uploaded.length && !thumbnail) onChangeThumbnail(images[0] ?? uploaded[0]);
     if (failedCount) {
       setError(
         failedCount === 1

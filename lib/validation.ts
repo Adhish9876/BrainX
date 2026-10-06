@@ -5,8 +5,8 @@ import type { Content } from './types';
  * Schema validation for the whole CMS content document.
  *
  * Design goals:
- *  - Every string is length bounded so a malicious/broken client cannot store
- *    unbounded payloads in git.
+ *  - Content fields are length bounded (except free-form tags), and the whole
+ *    request has a byte limit so broken clients cannot store unbounded payloads.
  *  - IDs are restricted to a filesystem-safe alphabet because picture group ids
  *    become directory names under data/pictures/<id>/.
  *  - URLs/paths are restricted to empty, same-site /media paths, locally staged
@@ -22,8 +22,6 @@ import type { Content } from './types';
 
 export const LIMITS = {
   id: 64,
-  tagCount: 30,
-  tagLength: 48,
   shortText: 300,
   mediumText: 2_000,
   longText: 20_000,
@@ -145,7 +143,9 @@ export function isGalleryImageUrl(value: unknown, groupId: string): value is str
 const bounded = (max: number, min = 0) => z.string().trim().min(min).max(max);
 
 const id = bounded(LIMITS.id, 1).refine(isSafeId, { message: 'unsafe identifier' });
-const tags = z.array(bounded(LIMITS.tagLength, 1)).max(LIMITS.tagCount);
+// Tags have no vocabulary, length or category validation. The complete request
+// still has a byte limit; only the string/array types are required for rendering.
+const tags = z.array(z.string());
 const dateField = bounded(10).refine(isValidCalendarDate, { message: 'invalid calendar date' });
 const url = bounded(LIMITS.urlLength).refine(isSafeUrl, { message: 'unsafe url' });
 const imageField = bounded(LIMITS.urlLength).refine(isSafeUrl, { message: 'unsafe image url' });

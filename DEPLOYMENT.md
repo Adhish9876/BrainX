@@ -3,8 +3,9 @@
 Production deployment for **brainx.zapdos.me** on the shared Oracle VPS.
 
 The site is a Next.js App Router app, served with `next start` from a complete release. It is built on the
-VPS and served by PM2 behind Caddy. GitHub Actions does not build the app; it only
-pings a small webhook on the VPS which performs the release.
+VPS and served by PM2 behind Caddy. GitHub Actions runs unit tests, a production
+build and type checking before pinging the VPS webhook, which builds the release
+again with the production environment.
 
 > No secrets live in tracked files. All credentials are read at runtime from
 > `/home/ubuntu/brainx-lab/shared/.env.local` (mode `600`).
@@ -41,7 +42,7 @@ tests/deploy-hook.test.ts    # unit tests for the hook's pure helpers
 ### Flow
 
 1. A push to `main` runs `.github/workflows/deploy.yml`.
-2. CI `POST`s `{"sha": <github.sha>, "repository": "zapds/brainx-lab", "branch": "main"}`
+2. After the reusable validation job passes, CI `POST`s `{"sha": <github.sha>, "repository": "zapds/brainx-lab", "branch": "main"}`
    to `https://brainx.zapdos.me/__deploy` with `Authorization: Bearer <DEPLOY_SECRET>`.
 3. Caddy routes `/__deploy*` to the hook on `127.0.0.1:3102`.
 4. The hook validates the bearer token (timing-safe) and the SHA, coalesces concurrent
@@ -200,7 +201,7 @@ The value must equal `DEPLOY_SECRET` in the VPS `shared/.env.local`.
 
 ## 4. Routine deploys
 
-Just push to `main`. The workflow triggers the hook and waits (up to 5 minutes,
+Just push to `main`. After validation passes, the workflow triggers the hook and waits (up to 5 minutes,
 matching a typical <2-minute VPS build) until the pushed SHA is live.
 
 To narrow CI to build-affecting paths later, add a `paths:` filter to the `push`

@@ -91,7 +91,7 @@ describe('validateContent', () => {
     expect(validateContent(badDate).ok).toBe(false);
   });
 
-  it('accepts arbitrary tags but bounds their count and length', () => {
+  it('accepts arbitrary tags without count or length restrictions', () => {
     const content = makeContent();
     content.research = [{ id: 'r1', title: 't', description: '', tags: ['Weird Tag #1', 'Ω-notation'] }];
     expect(validateContent(content).ok).toBe(true);
@@ -100,11 +100,11 @@ describe('validateContent', () => {
     tooMany.research = [
       { id: 'r1', title: 't', description: '', tags: Array.from({ length: 31 }, (_, i) => `t${i}`) },
     ];
-    expect(validateContent(tooMany).ok).toBe(false);
+    expect(validateContent(tooMany).ok).toBe(true);
 
     const tooLong = makeContent();
     tooLong.research = [{ id: 'r1', title: 't', description: '', tags: ['x'.repeat(49)] }];
-    expect(validateContent(tooLong).ok).toBe(false);
+    expect(validateContent(tooLong).ok).toBe(true);
   });
 
   it('enforces the exact shared types (News has no image)', () => {

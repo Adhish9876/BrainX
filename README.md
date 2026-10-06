@@ -33,3 +33,23 @@ Picture groups use `data/pictures/<group-id>/meta.json` and raster image files i
 5. A commit is not yet a live deployment: the production rebuild must finish. Keep the previous release for rollback.
 
 Do not expose `.env.local`, server uploads, or GitHub credentials to the browser. Credentials are not stored in the repository.
+
+## Browser verification
+
+Run against a running local production server or the public site:
+
+```sh
+TEST_BASE_URL=https://brainx.zapdos.me npx playwright test
+```
+
+The routine suite does not commit. Fixture and publishing tests are opt-in. To check populated events/news/projects without publishing invented lab activity:
+
+```sh
+FIXTURE=$(node scripts/prepare-test-fixtures.mjs)
+npm --prefix "$FIXTURE" run build
+npm --prefix "$FIXTURE" run start -- --port 3004
+# In another terminal:
+RUN_FIXTURE_TESTS=1 TEST_BASE_URL=http://127.0.0.1:3004 npx playwright test tests/e2e/fixtures.spec.ts
+```
+
+`RUN_CMS_PUBLISH=1` enables the deliberately destructive, one-time publishing test in `tests/e2e/publish.spec.ts`: it creates a clearly labeled demo group and uploads a placeholder logo in one real commit. Do not enable it for routine testing. Browser credentials are read from the ignored `.env.local`; authenticated tests disable tracing.

@@ -198,6 +198,7 @@ export async function createUpload(input: CreateUploadInput): Promise<UploadReco
   const maxPerSession = input.maxPerSession ?? MAX_UPLOADS_PER_SESSION;
 
   await ensureUploadDir(input.dir);
+  await pruneExpiredUploads(input.dir, now);
   const existing = await countSessionUploads(input.dir, input.sessionId, now);
   if (existing >= maxPerSession) throw new UploadError('too many staged uploads for this session', 429);
 
