@@ -1,0 +1,155 @@
+[
+  {
+    "id": "pub-2026-01",
+    "title": "Neurological insights into personality and emotional intelligence: Analysing EEG spectral bands through machine learning models",
+    "authors": "Kalidasan Kannadasan, Shameedha Begum, N Ramasubramanian",
+    "year": 2026,
+    "venue": "Biomedical Signal Processing and Control",
+    "tags": ["Journal", "EEG"],
+    "link": "https://www.sciencedirect.com/science/article/pii/S174680942501701X?via%3Dihub"
+  },
+  {
+    "id": "pub-2025-01",
+    "title": "An EEG-based imagined speech recognition using CSP-TP feature fusion for enhanced BCI communication",
+    "authors": "MV Haresh, K. Kannadasan, B. Shameedha Begum",
+    "year": 2025,
+    "venue": "Behavioural Brain Research",
+    "tags": ["Journal", "BCI"],
+    "link": "https://www.sciencedirect.com/science/article/abs/pii/S0166432825002384"
+  },
+  {
+    "id": "pub-2025-02",
+    "title": "Towards Context-aware EEG-based Emotion Recognition Models: Personality and Emotional Intelligence as Context",
+    "authors": "K Kannadasan, Nikita Rajesh Verma, Jainendra Shukla",
+    "year": 2025,
+    "venue": "ICASSP 2025 - 2025 IEEE International Conference on Acoustics, Speech, and Signal Processing (ICASSP)",
+    "tags": ["Conference", "Emotion Recognition"],
+    "link": "https://ieeexplore.ieee.org/document/10890528"
+  },
+  {
+    "id": "pub-2025-03",
+    "title": "EEG-based Windowed Multi-Domain Framework for EI and Personality Recognition",
+    "authors": "A Shekinah, S Keerthana, K Kannadasan",
+    "year": 2025,
+    "venue": "2025 IEEE 9th International Conference on Information and Communication Technology (CICT)",
+    "tags": ["Conference", "EEG"],
+    "link": "https://ieeexplore.ieee.org/document/11398899"
+  },
+  {
+    "id": "pub-2024-01",
+    "title": "StressDetect: a deep learning approach for mental stress detection using time-frequency representation of EEG signals",
+    "authors": "K Kannadasan, Lilly Pushparani MP, MV Haresh, Ambati Rami Reddy, B Shameedha Begum",
+    "year": 2024,
+    "venue": "2024 IEEE International Conference on Signal Processing, Informatics, Communication and Energy Systems (SPICES)",
+    "tags": ["Conference", "Machine Learning"],
+    "link": "https://ieeexplore.ieee.org/document/10779753"
+  },
+  {
+    "id": "pub-2024-02",
+    "title": "EmoClass: Subject-Independent Emotion Classification for BCI Systems Using EEG Signals",
+    "authors": "Ambati Rami Reddy, K Kannadasan, MV Haresh, V Sridevi, B Shameedha Begum",
+    "year": 2024,
+    "venue": "2024 IEEE International Conference on Signal Processing, Informatics, Communication and Energy Systems (SPICES)",
+    "tags": ["Conference", "BCI"],
+    "link": "https://ieeexplore.ieee.org/document/10779770"
+  },
+  {
+    "id": "pub-2023-01",
+    "title": "An EEG-based subject-independent emotion recognition model using a differential-evolution-based feature selection algorithm",
+    "authors": "Kalidasan Kannadasan, Sridevi Veerasingam, B Shameedha Begum, Natarajan Ramasubramanian",
+    "year": 2023,
+    "venue": "Knowledge and Information Systems",
+    "tags": ["Journal", "Emotion Recognition"],
+    "link": "https://link.springer.com/article/10.1007/s10115-022-01762-w"
+  },
+  {
+    "id": "pub-2023-02",
+    "title": "An EEG-based computational model for decoding emotional intelligence, personality, and emotions",
+    "authors": "Kalidasan Kannadasan, Jainendra Shukla, Sridevi Veerasingam, B Shameedha Begum, Natarajan Ramasubramanian",
+    "year": 2023,
+    "venue": "IEEE Transactions on Instrumentation and Measurement",
+    "tags": ["Journal", "Emotion Recognition"],
+    "link": "https://ieeexplore.ieee.org/document/10375569"
+  },
+  {
+    "id": "pub-2023-03",
+    "title": "EEG-Based Emotion Recognition Model Using Windowing Techniques",
+    "authors": "B. Shameedha Begum, Kannadasan K, Daaris Ameen Z, Haresh M V",
+    "year": 2023,
+    "venue": "IECON 2023 - 49th Annual Conference of the IEEE Industrial Electronics Society",
+    "tags": ["Conference", "EEG"],
+    "link": "https://ieeexplore.ieee.org/document/10312330"
+  },
+  {
+    "id": "pub-2023-04",
+    "title": "BCIRecog: An Optimized BCI System for Imagined Speech Recognition",
+    "authors": "B. Shameedha Begum, Kannadasan K, Haresh M V, Ambati Rami Reddy",
+    "year": 2023,
+    "venue": "2023 14th International Conference on Computing Communication and Networking Technologies (ICCCNT)",
+    "tags": ["Conference", "BCI"],
+    "link": "https://ieeexplore.ieee.org/document/10308091"
+  },
+  {
+    "id": "pub-2022-01",
+    "title": "Analysis of Feature Extraction Models for Emotion Recognition using EEG Signals",
+    "authors": "B. Shameedha Begum, K Kannadasan, Md Tanjirul Islam Miraj, Kritant Sao Bheekharry",
+    "year": 2022,
+    "venue": "2022 IEEE 3rd Global Conference for Advancement in Technology (GCAT)",
+    "tags": ["Conference", "Emotion Recognition"],
+    "link": "https://ieeexplore.ieee.org/document/9972159"
+  },
+  {
+    "id": "pub-2020-01",
+    "title": "M-curves path planning model for mobile anchor node and localization of sensor nodes using dolphin swarm algorithm",
+    "authors": "Kalidasan Kannadasan, Damodar Reddy Edla, Mahesh Chowdary Kongara, Venkatanareshbabu Kuppili",
+    "year": 2020,
+    "venue": "Wireless Networks",
+    "tags": ["Journal", "Optimization"],
+    "link": "https://link.springer.com/article/10.1007/s11276-019-02032-4"
+  },
+  {
+    "id": "pub-2020-02",
+    "title": "Intelligent-ANFIS model for predicting measurement of surface roughness and geometric tolerances in three-axis CNC milling",
+    "authors": "Kalidasan Kannadasan, Damodar Reddy Edla, Manisha H Yadav, Annushree Bablani",
+    "year": 2020,
+    "venue": "IEEE Transactions on Instrumentation and Measurement",
+    "tags": ["Journal", "Machine Learning"],
+    "link": "https://ieeexplore.ieee.org/document/9035449"
+  },
+  {
+    "id": "pub-2020-03",
+    "title": "Wireless sensor networks: evolutionary algorithms for optimizing performance",
+    "authors": "Damodar Reddy Edla, Mahesh Chowdary Kongara, Amruta Lipare, Venkatanareshbabu Kuppili",
+    "year": 2020,
+    "venue": "CRC Press",
+    "tags": ["Book", "Optimization"],
+    "link": "https://www.routledge.com/Wireless-Sensor-Networks-Evolutionary-Algorithms-for-Optimizing-Performance/Edla-Kongara-Lipare-Kuppili-K/p/book/9780367613150"
+  },
+  {
+    "id": "pub-2019-01",
+    "title": "Type 2 diabetes data classification using stacked autoencoders in deep neural networks",
+    "authors": "K. Kannadasan, DR Edla, V Kuppili",
+    "year": 2019,
+    "venue": "Clinical Epidemiology and Global Health",
+    "tags": ["Journal", "Machine Learning"],
+    "link": "https://www.sciencedirect.com/science/article/pii/S221339841830277X"
+  },
+  {
+    "id": "pub-2019-02",
+    "title": "Prediction of performance indexes in CNC milling using regression trees",
+    "authors": "Kannadasan Kalidasan, Damodar Reddy Edla, Annushree Bablani",
+    "year": 2019,
+    "venue": "International Conference on Pattern Recognition and Machine Intelligence",
+    "tags": ["Conference", "Machine Learning"],
+    "link": "https://dl.acm.org/doi/10.1007/978-3-030-34869-4_12"
+  },
+  {
+    "id": "pub-2018-01",
+    "title": "Type 2 diabetes data classification using stacked autoencoders in deep neural networks",
+    "authors": "K Kannadasan, Damodar Reddy Edla, Venkatanareshbabu Kuppili",
+    "year": 2018,
+    "venue": "Clinical Epidemiology and Global Health",
+    "tags": ["Journal", "Machine Learning"],
+    "link": "https://www.sciencedirect.com/science/article/pii/S221339841830277X"
+  }
+]

@@ -1,0 +1,7 @@
+{
+  "name": "Demo gallery — placeholder",
+  "date": "",
+  "description": "Locally generated placeholder images used to demonstrate the gallery layout. Replace with real lab photographs.",
+  "thumbnail": "demo-02",
+  "imageOrder": ["demo-01", "demo-02"]
+}

@@ -1,0 +1,112 @@
+[
+  {
+    "id": "kannadasan-k",
+    "name": "Dr. KANNADASAN K",
+    "role": "Principal Investigator",
+    "position": "Assistant Professor — Dept. of CSE, IIITDM Kancheepuram",
+    "description": "Dr. Kannadasan K is an Assistant Professor in the Department of Computer Science and Engineering at the Indian Institute of Information Technology, Design and Manufacturing (IIITDM) Kancheepuram, Chennai. He received his B.Tech. in Information Technology from SASTRA University, M.Tech. in Computer Science and Engineering from NIT Goa, and Ph.D. in Computer Science and Engineering from NIT Tiruchirappalli. He was a Prime Minister's Research Fellow during his doctoral studies. His research interests include Brain-Computer Interfaces, EEG Signal Processing, Affective Computing, and Machine Learning. His research focuses on developing intelligent systems using brain and physiological signals, with applications in human cognition, emotion, and healthcare. He is also involved in interdisciplinary research on immersive VR and biofeedback-based systems for mental health applications.",
+    "image": "",
+    "link": "",
+    "tags": ["Brain-Computer Interfaces", "EEG Signal Processing", "Affective Computing", "Machine Learning"]
+  },
+  {
+    "id": "yogeshwari-r-project-staff",
+    "name": "Yogeshwari R",
+    "role": "Project Staff",
+    "position": "Junior Research Fellow (JRF)",
+    "description": "Project Title: Design and Development of an Immersive Bio-feedback system for Anxiety and Affective Disorders (Funding agency: ANRF PMECRG), August 2025–present. M.E Software Engineering (2023–2025), Anna University (CEG Campus).",
+    "image": "",
+    "link": "https://www.linkedin.com/in/yogeshwari-rajmohan-46a954204",
+    "tags": ["Biofeedback", "Affective Disorders"]
+  },
+  {
+    "id": "yogeshwari-r-research-scholar",
+    "name": "Yogeshwari R",
+    "role": "Research Scholar",
+    "position": "Ph.D. — Affective Computing, EEG Signal Processing",
+    "description": "Ph.D. research scholar (January 2026–present) working on affective computing and EEG signal processing. M.E Software Engineering (2023–2025), Anna University (CEG Campus).",
+    "image": "",
+    "link": "https://www.linkedin.com/in/yogeshwari-rajmohan-46a954204",
+    "tags": ["Affective Computing", "EEG Signal Processing"]
+  },
+  {
+    "id": "nidhish-kumar-m",
+    "name": "Nidhish Kumar M",
+    "role": "Masters Student",
+    "position": "M.Tech (CSE) — July 2025–present",
+    "description": "M.Tech in Computer Science and Engineering (July 2025–present). B.E Mechatronics Engineering (June 2017–2021).",
+    "image": "",
+    "link": "https://www.linkedin.com/in/nidhish-kumar-m",
+    "tags": ["Mechatronics"]
+  },
+  {
+    "id": "k-b-sakthi-uma-maheswari",
+    "name": "K B Sakthi Uma Maheswari",
+    "role": "Bachelors Students",
+    "position": "B.Tech (CS-AI) 2023–2027",
+    "description": "B.Tech student in Computer Science with Artificial Intelligence (2023–2027).",
+    "image": "",
+    "link": "https://www.linkedin.com/in/sakthiumamaheswarikb/",
+    "tags": []
+  },
+  {
+    "id": "adhishwar-g",
+    "name": "Adhishwar G",
+    "role": "Bachelors Students",
+    "position": "B.Tech (CSE) 2023–2027",
+    "description": "B.Tech student in Computer Science and Engineering (2023–2027).",
+    "image": "",
+    "link": "https://www.linkedin.com/in/adhishwar-gengadurai-89b691266/",
+    "tags": []
+  },
+  {
+    "id": "shashank-g",
+    "name": "Shashank G",
+    "role": "Bachelors Students",
+    "position": "B.Tech (CSE) 2023–2027",
+    "description": "B.Tech student in Computer Science and Engineering (2023–2027).",
+    "image": "",
+    "link": "https://www.linkedin.com/in/shashank-s-godavari-25b14a202",
+    "tags": []
+  },
+  {
+    "id": "ananthapadmanabhan-s",
+    "name": "Ananthapadmanabhan S",
+    "role": "Bachelors Students",
+    "position": "B.Tech (CSE) 2023–2027",
+    "description": "B.Tech student in Computer Science and Engineering (2023–2027).",
+    "image": "",
+    "link": "https://www.linkedin.com/in/ananthapadmanabhan-sajeev-kumar-b4565a36b/",
+    "tags": []
+  },
+  {
+    "id": "athidathan-k",
+    "name": "Athidathan K",
+    "role": "Bachelors Students",
+    "position": "B.Tech (CSE) 2023–2027",
+    "description": "B.Tech student in Computer Science and Engineering (2023–2027).",
+    "image": "",
+    "link": "https://www.linkedin.com/in/athidathank",
+    "tags": []
+  },
+  {
+    "id": "ap-hamesh",
+    "name": "AP Hamesh",
+    "role": "Bachelors Students",
+    "position": "B.Tech (ECE) 2024–2028",
+    "description": "B.Tech student in Electronics and Communication Engineering (2024–2028).",
+    "image": "",
+    "link": "https://www.linkedin.com/in/ap-hamesh",
+    "tags": []
+  },
+  {
+    "id": "suvanesh-b",
+    "name": "Suvanesh B",
+    "role": "Bachelors Students",
+    "position": "B.Tech (Smart Manufacturing) 2024–2028",
+    "description": "B.Tech student in Smart Manufacturing (2024–2028).",
+    "image": "",
+    "link": "https://www.linkedin.com/in/suvanesh-baskaran-237b5935a/",
+    "tags": []
+  }
+]
