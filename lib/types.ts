@@ -1,0 +1,10 @@
+export type Publication = { id: string; title: string; authors: string; year: number; venue: string; tags: string[]; link: string };
+export type Member = { id: string; name: string; role: string; position: string; description: string; image: string; link: string; tags: string[] };
+export type Research = { id: string; title: string; description: string; tags: string[] };
+export type Project = Research & { image: string; link: string };
+export type News = { id: string; title: string; date: string; description: string; tags: string[]; link: string };
+export type Event = News & { image: string; time: string; venue: string };
+export type PictureGroup = { id: string; name: string; date: string; description: string; thumbnail: string; images: string[] };
+export type Site = { name: string; institution: string; tagline: string; about: string; focus: string; email: string; phone: string; address: string; logo: string };
+export type Content = { site: Site; publications: Publication[]; team: Member[]; research: Research[]; projects: Project[]; news: News[]; events: Event[]; pictures: PictureGroup[] };
+export type Collection = Exclude<keyof Content, 'site'>;

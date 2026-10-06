@@ -1,0 +1,100 @@
+name: Deploy
+
+# Trigger a production rebuild/redeploy on the VPS whenever main changes.
+#
+# NOTE: this initial workflow runs on *every* push to main so the very first
+# deployment is easy to verify. Once that is confirmed, narrow it to the paths
+# that actually affect the build, e.g.:
+#
+#   on:
+#     push:
+#       branches: [main]
+#       paths:
+#         - 'app/**'
+#         - 'components/**'
+#         - 'lib/**'
+#         - 'data/**'
+#         - 'public/**'
+#         - 'scripts/**'
+#         - 'next.config.ts'
+#         - 'package.json'
+#         - 'package-lock.json'
+#         - 'ecosystem.config.cjs'
+#         - '.github/workflows/deploy.yml'
+#
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Never run two deploy triggers at once; let the current one finish.
+concurrency:
+  group: brainx-lab-deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Trigger VPS deploy
+    runs-on: ubuntu-latest
+    env:
+      DEPLOY_URL: https://brainx.zapdos.me/__deploy
+    steps:
+      - name: Trigger deployment on the VPS
+        env:
+          DEPLOY_SECRET: ${{ secrets.DEPLOY_SECRET }}
+          SHA: ${{ github.sha }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          if [ -z "${DEPLOY_SECRET:-}" ]; then
+            echo "::error::DEPLOY_SECRET repository secret is not set"
+            exit 1
+          fi
+          payload=$(printf '{"sha":"%s","repository":"%s","branch":"main"}' "$SHA" "$REPO")
+          code=$(curl -sS -o /tmp/deploy-trigger.json -w '%{http_code}' --max-time 30 \
+            -X POST "$DEPLOY_URL" \
+            -H "Authorization: Bearer $DEPLOY_SECRET" \
+            -H "Accept: application/json" \
+            -H "Content-Type: application/json" \
+            --data "$payload")
+          echo "hook responded with HTTP $code"
+          cat /tmp/deploy-trigger.json || true
+          echo
+          case "$code" in
+            200|202) ;;
+            *) echo "::error::deploy trigger rejected (HTTP $code)"; exit 1 ;;
+          esac
+
+      - name: Wait for the new revision to go live (bounded to 5 minutes)
+        env:
+          DEPLOY_SECRET: ${{ secrets.DEPLOY_SECRET }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          # Local VPS builds typically finish within ~2 minutes; poll for up to
+          # 5 minutes so CI reflects the real live revision rather than merely
+          # accepting the trigger.
+          for i in $(seq 1 60); do
+            body=$(curl -sS --max-time 15 \
+              -H "Authorization: Bearer $DEPLOY_SECRET" \
+              -H "Accept: application/json" \
+              "$DEPLOY_URL" || true)
+            live=$(printf '%s' "$body" | python3 -c 'import sys,json;print(json.load(sys.stdin).get("liveSha") or "")' 2>/dev/null || true)
+            err=$(printf '%s' "$body" | python3 -c 'import sys,json;print(json.load(sys.stdin).get("error") or "")' 2>/dev/null || true)
+            deploying=$(printf '%s' "$body" | python3 -c 'import sys,json;print(json.load(sys.stdin).get("deploying", True))' 2>/dev/null || true)
+            if [ -n "$err" ]; then
+              echo "::error::deploy reported an error: $err"
+              exit 1
+            fi
+            if [ "$live" = "$SHA" ] && [ "$deploying" = "False" ]; then
+              echo "Revision $SHA is live."
+              exit 0
+            fi
+            echo "attempt $i/60: live=${live:-<none>} waiting for $SHA"
+            sleep 5
+          done
+          echo "::error::timed out waiting for $SHA to become live"
+          exit 1

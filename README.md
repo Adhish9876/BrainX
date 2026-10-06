@@ -1,0 +1,35 @@
+# BrainX Lab, IIITDM Kancheepuram
+
+An academic lab website and single-admin GitHub-backed CMS. Public pages are compiled from `data/`; authenticated administration lives at `/admin` and is not linked publicly.
+
+## Local development
+
+```sh
+npm ci
+cp .env.example .env.local # populate credentials; never commit this file
+npm run dev
+```
+
+Set a strong `ADMIN_PASSWORD`, a random `SESSION_SECRET` (at least 32 characters), and a fine-grained `GITHUB_PAT` with repository Contents read/write access. The admin reads the current remote repository, not uncommitted local data. Public data requires `npm run build` to refresh in production. See `DEPLOYMENT.md` for automatic rebuild setup.
+
+```sh
+npm run typecheck
+npm test
+npm run build
+```
+
+## Content and media
+
+Editable content is JSON under `data/`. Free-form tags have no fixed vocabulary. Research placeholder content and demonstration gallery images are explicitly identified; replace them through the admin. Missing contact details are intentionally not invented. `initial_data.md` preserves the supplied source, including its duplicate publication across two years.
+
+Picture groups use `data/pictures/<group-id>/meta.json` and raster image files in the same directory. Metadata names the group, date, description, and thumbnail. The build scans images and copies media to public assets. Uploaded images are staged privately on the server before a single atomic GitHub commit publishes all pending changes.
+
+## Admin workflow
+
+1. Sign in at `/admin` with the credentials in the server environment.
+2. Edit existing records, add items, move them up/down, and manage photos. Dates use calendar inputs; press Enter to create any text tag.
+3. Changes remain browser drafts until **Redeploy**. Uploaded files are temporarily staged on the server.
+4. Redeploy creates one commit for the entire draft. A concurrent edit causes a conflict rather than overwriting newer remote content.
+5. A commit is not yet a live deployment: the production rebuild must finish. Keep the previous release for rollback.
+
+Do not expose `.env.local`, server uploads, or GitHub credentials to the browser. Credentials are not stored in the repository.
