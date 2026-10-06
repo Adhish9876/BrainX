@@ -11,7 +11,7 @@ import { NAV_ITEMS } from './navigation';
 export default function SiteFooter({ site }: { site: Site }) {
   return (
     <footer className="mt-24 border-t border-rule bg-surface">
-      <div className="shell grid gap-10 py-14 md:grid-cols-[1.4fr_1fr] md:gap-16">
+      <div className="shell grid gap-10 py-14 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
         <div>
           <div className="flex items-center gap-3">
             <Monogram logo={site.logo} name={site.name} size={40} />
@@ -32,8 +32,8 @@ export default function SiteFooter({ site }: { site: Site }) {
           ) : null}
         </div>
 
-        <div className="flex flex-col gap-8 sm:flex-row sm:justify-between md:justify-end md:gap-16">
-          <nav aria-label="Footer" className="text-sm">
+        <div className="flex flex-col gap-8 sm:flex-row sm:justify-between lg:justify-end lg:gap-16">
+          <nav aria-label="Footer" className="shrink-0 text-sm">
             <p className="eyebrow">Explore</p>
             <ul className="mt-4 space-y-2">
               {NAV_ITEMS.map((item) => (
@@ -46,7 +46,7 @@ export default function SiteFooter({ site }: { site: Site }) {
             </ul>
           </nav>
 
-          <div className="text-sm">
+          <div className="min-w-0 text-sm">
             <p className="eyebrow">Contact</p>
             <ul className="mt-4 space-y-3 text-muted">
               <li className="flex gap-2">

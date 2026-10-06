@@ -11,6 +11,8 @@ test('all public sections render and remain responsive', async ({ page }) => {
     for (const width of [390, 768, 820, 1024]) {
       await page.setViewportSize({ width, height: 844 });
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), `${route} at ${width}px`).toBe(true);
+      const footerLink = page.getByRole('navigation', { name: 'Footer', exact: true }).getByRole('link', { name: 'Publications', exact: true });
+      expect(await footerLink.evaluate(el => el.getClientRects().length), `footer label at ${width}px`).toBe(1);
     }
     await page.setViewportSize({ width: 1440, height: 1000 });
   }
