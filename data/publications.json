@@ -5,7 +5,10 @@
     "authors": "Kalidasan Kannadasan, Shameedha Begum, N Ramasubramanian",
     "year": 2026,
     "venue": "Biomedical Signal Processing and Control",
-    "tags": ["Journal", "EEG"],
+    "tags": [
+      "Journal",
+      "EEG"
+    ],
     "link": "https://www.sciencedirect.com/science/article/pii/S174680942501701X?via%3Dihub"
   },
   {
@@ -14,7 +17,10 @@
     "authors": "MV Haresh, K. Kannadasan, B. Shameedha Begum",
     "year": 2025,
     "venue": "Behavioural Brain Research",
-    "tags": ["Journal", "BCI"],
+    "tags": [
+      "Journal",
+      "BCI"
+    ],
     "link": "https://www.sciencedirect.com/science/article/abs/pii/S0166432825002384"
   },
   {
@@ -23,7 +29,10 @@
     "authors": "K Kannadasan, Nikita Rajesh Verma, Jainendra Shukla",
     "year": 2025,
     "venue": "ICASSP 2025 - 2025 IEEE International Conference on Acoustics, Speech, and Signal Processing (ICASSP)",
-    "tags": ["Conference", "Emotion Recognition"],
+    "tags": [
+      "Conference",
+      "Emotion Recognition"
+    ],
     "link": "https://ieeexplore.ieee.org/document/10890528"
   },
   {
@@ -32,7 +41,10 @@
     "authors": "A Shekinah, S Keerthana, K Kannadasan",
     "year": 2025,
     "venue": "2025 IEEE 9th International Conference on Information and Communication Technology (CICT)",
-    "tags": ["Conference", "EEG"],
+    "tags": [
+      "Conference",
+      "EEG"
+    ],
     "link": "https://ieeexplore.ieee.org/document/11398899"
   },
   {
@@ -41,7 +53,10 @@
     "authors": "K Kannadasan, Lilly Pushparani MP, MV Haresh, Ambati Rami Reddy, B Shameedha Begum",
     "year": 2024,
     "venue": "2024 IEEE International Conference on Signal Processing, Informatics, Communication and Energy Systems (SPICES)",
-    "tags": ["Conference", "Machine Learning"],
+    "tags": [
+      "Conference",
+      "Machine Learning"
+    ],
     "link": "https://ieeexplore.ieee.org/document/10779753"
   },
   {
@@ -50,7 +65,10 @@
     "authors": "Ambati Rami Reddy, K Kannadasan, MV Haresh, V Sridevi, B Shameedha Begum",
     "year": 2024,
     "venue": "2024 IEEE International Conference on Signal Processing, Informatics, Communication and Energy Systems (SPICES)",
-    "tags": ["Conference", "BCI"],
+    "tags": [
+      "Conference",
+      "BCI"
+    ],
     "link": "https://ieeexplore.ieee.org/document/10779770"
   },
   {
@@ -59,7 +77,10 @@
     "authors": "Kalidasan Kannadasan, Sridevi Veerasingam, B Shameedha Begum, Natarajan Ramasubramanian",
     "year": 2023,
     "venue": "Knowledge and Information Systems",
-    "tags": ["Journal", "Emotion Recognition"],
+    "tags": [
+      "Journal",
+      "Emotion Recognition"
+    ],
     "link": "https://link.springer.com/article/10.1007/s10115-022-01762-w"
   },
   {
@@ -68,7 +89,10 @@
     "authors": "Kalidasan Kannadasan, Jainendra Shukla, Sridevi Veerasingam, B Shameedha Begum, Natarajan Ramasubramanian",
     "year": 2023,
     "venue": "IEEE Transactions on Instrumentation and Measurement",
-    "tags": ["Journal", "Emotion Recognition"],
+    "tags": [
+      "Journal",
+      "Emotion Recognition"
+    ],
     "link": "https://ieeexplore.ieee.org/document/10375569"
   },
   {
@@ -77,7 +101,10 @@
     "authors": "B. Shameedha Begum, Kannadasan K, Daaris Ameen Z, Haresh M V",
     "year": 2023,
     "venue": "IECON 2023 - 49th Annual Conference of the IEEE Industrial Electronics Society",
-    "tags": ["Conference", "EEG"],
+    "tags": [
+      "Conference",
+      "EEG"
+    ],
     "link": "https://ieeexplore.ieee.org/document/10312330"
   },
   {
@@ -86,7 +113,10 @@
     "authors": "B. Shameedha Begum, Kannadasan K, Haresh M V, Ambati Rami Reddy",
     "year": 2023,
     "venue": "2023 14th International Conference on Computing Communication and Networking Technologies (ICCCNT)",
-    "tags": ["Conference", "BCI"],
+    "tags": [
+      "Conference",
+      "BCI"
+    ],
     "link": "https://ieeexplore.ieee.org/document/10308091"
   },
   {
@@ -95,7 +125,10 @@
     "authors": "B. Shameedha Begum, K Kannadasan, Md Tanjirul Islam Miraj, Kritant Sao Bheekharry",
     "year": 2022,
     "venue": "2022 IEEE 3rd Global Conference for Advancement in Technology (GCAT)",
-    "tags": ["Conference", "Emotion Recognition"],
+    "tags": [
+      "Conference",
+      "Emotion Recognition"
+    ],
     "link": "https://ieeexplore.ieee.org/document/9972159"
   },
   {
@@ -104,7 +137,10 @@
     "authors": "Kalidasan Kannadasan, Damodar Reddy Edla, Mahesh Chowdary Kongara, Venkatanareshbabu Kuppili",
     "year": 2020,
     "venue": "Wireless Networks",
-    "tags": ["Journal", "Optimization"],
+    "tags": [
+      "Journal",
+      "Optimization"
+    ],
     "link": "https://link.springer.com/article/10.1007/s11276-019-02032-4"
   },
   {
@@ -113,7 +149,10 @@
     "authors": "Kalidasan Kannadasan, Damodar Reddy Edla, Manisha H Yadav, Annushree Bablani",
     "year": 2020,
     "venue": "IEEE Transactions on Instrumentation and Measurement",
-    "tags": ["Journal", "Machine Learning"],
+    "tags": [
+      "Journal",
+      "Machine Learning"
+    ],
     "link": "https://ieeexplore.ieee.org/document/9035449"
   },
   {
@@ -122,7 +161,10 @@
     "authors": "Damodar Reddy Edla, Mahesh Chowdary Kongara, Amruta Lipare, Venkatanareshbabu Kuppili",
     "year": 2020,
     "venue": "CRC Press",
-    "tags": ["Book", "Optimization"],
+    "tags": [
+      "Book",
+      "Optimization"
+    ],
     "link": "https://www.routledge.com/Wireless-Sensor-Networks-Evolutionary-Algorithms-for-Optimizing-Performance/Edla-Kongara-Lipare-Kuppili-K/p/book/9780367613150"
   },
   {
@@ -131,7 +173,10 @@
     "authors": "K. Kannadasan, DR Edla, V Kuppili",
     "year": 2019,
     "venue": "Clinical Epidemiology and Global Health",
-    "tags": ["Journal", "Machine Learning"],
+    "tags": [
+      "Journal",
+      "Machine Learning"
+    ],
     "link": "https://www.sciencedirect.com/science/article/pii/S221339841830277X"
   },
   {
@@ -140,7 +185,10 @@
     "authors": "Kannadasan Kalidasan, Damodar Reddy Edla, Annushree Bablani",
     "year": 2019,
     "venue": "International Conference on Pattern Recognition and Machine Intelligence",
-    "tags": ["Conference", "Machine Learning"],
+    "tags": [
+      "Conference",
+      "Machine Learning"
+    ],
     "link": "https://dl.acm.org/doi/10.1007/978-3-030-34869-4_12"
   },
   {
@@ -149,7 +197,10 @@
     "authors": "K Kannadasan, Damodar Reddy Edla, Venkatanareshbabu Kuppili",
     "year": 2018,
     "venue": "Clinical Epidemiology and Global Health",
-    "tags": ["Journal", "Machine Learning"],
+    "tags": [
+      "Journal",
+      "Machine Learning"
+    ],
     "link": "https://www.sciencedirect.com/science/article/pii/S221339841830277X"
   }
 ]

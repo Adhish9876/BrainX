@@ -1,0 +1,11 @@
+{
+  "id": "41565485-7774-4569-bf3a-c775e24436b8",
+  "name": "Admin upload demonstration — placeholder",
+  "date": "",
+  "description": "Generated placeholder photos uploaded through the admin dashboard to verify staging, thumbnail selection, reordering and rebuild-on-commit. Replace or remove this demonstration group when real lab photos are available.",
+  "thumbnail": "c36960ca359bfc8e6dbc99be478b1b3b",
+  "imageOrder": [
+    "c36960ca359bfc8e6dbc99be478b1b3b",
+    "501d1b1eb2223d78836993ac5275d20d"
+  ]
+}

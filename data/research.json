@@ -3,18 +3,30 @@
     "id": "placeholder-bci",
     "title": "Brain–Computer Interfaces",
     "description": "[Placeholder research theme] Decoding imagined speech and motor intent from non-invasive brain signals to build practical, subject-independent communication interfaces.",
-    "tags": ["Placeholder", "BCI", "EEG"]
+    "tags": [
+      "Placeholder",
+      "BCI",
+      "EEG"
+    ]
   },
   {
     "id": "placeholder-affective",
     "title": "EEG Signal Processing & Affective Computing",
     "description": "[Placeholder research theme] Emotion, personality and emotional-intelligence modelling from EEG spectral and time-frequency representations using machine-learning models.",
-    "tags": ["Placeholder", "Affective Computing", "Machine Learning"]
+    "tags": [
+      "Placeholder",
+      "Affective Computing",
+      "Machine Learning"
+    ]
   },
   {
     "id": "placeholder-biofeedback",
     "title": "Immersive Biofeedback & Mental Health",
     "description": "[Placeholder research theme] Immersive VR and biofeedback-based systems for anxiety and affective disorders, connecting physiological sensing with human-centred intervention.",
-    "tags": ["Placeholder", "Biofeedback", "VR"]
+    "tags": [
+      "Placeholder",
+      "Biofeedback",
+      "VR"
+    ]
   }
 ]
