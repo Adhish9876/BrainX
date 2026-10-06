@@ -297,5 +297,6 @@ verifies shell syntax.
   from NVM on the VPS. All were used successfully in local hook smoke tests; confirm on
   the VPS during bootstrap.
 - **First run.** `brainx-lab` cannot start until the first release exists (section 3).
-- **No remote execution was performed** while building these files; the orchestrator
-  performs the actual VPS setup and initial deploy.
+- **Bootstrap completed.** The VPS app, authenticated hook, Caddy route and GitHub
+  Actions deployment have been installed and verified. See `VERIFICATION.md` for
+  the acceptance-test record.
