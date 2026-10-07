@@ -1,1 +1,13 @@
-[]
+[
+  {
+    "id": "e218bddf-d624-422f-b441-d9de66ec4993",
+    "title": "test",
+    "date": "2026-10-07",
+    "description": "this is a test news",
+    "tags": [
+      "eeg",
+      "emg"
+    ],
+    "link": "https://iiitdm.ac.in/"
+  }
+]
