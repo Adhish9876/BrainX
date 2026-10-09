@@ -28,6 +28,11 @@ Picture groups use `data/pictures/<group-id>/meta.json` and raster image files i
 
 1. Sign in at `/admin` with the credentials in the server environment.
 2. Edit existing records, add items, move them up/down, and manage photos. Dates use calendar inputs; press Enter to create any text tag.
+   In the publication editor, **Paste BibTeX** and choose **Fill from BibTeX** to
+   extract a single citation's title, authors, year, venue, URL/DOI and keywords.
+   Review/edit the filled fields, then **Add** or **Save changes**. Importing does
+   not publish; missing fields stay unchanged, and invalid or multiple citations
+   are rejected without changing the form.
 3. Changes remain browser drafts until **Redeploy**. Uploaded files are temporarily staged on the server.
 4. Redeploy creates one commit for the entire draft. A concurrent edit causes a conflict rather than overwriting newer remote content.
 5. A commit is not yet a live deployment: the production rebuild must finish. Keep the previous release for rollback.

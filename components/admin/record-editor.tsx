@@ -18,6 +18,7 @@ import { COLLECTION_SINGULAR, type Collection, type RecordValue } from './lib/co
 import { PRIMARY_FIELD, RECORD_FIELDS } from './lib/content';
 import { FieldControl } from './field-control';
 import { GalleryField } from './gallery-field';
+import { BibtexImport } from './bibtex-import';
 
 interface RecordEditorProps {
   open: boolean;
@@ -82,6 +83,12 @@ export function RecordEditor({
         </DialogHeader>
 
         <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-4 py-5 sm:px-6">
+          {collection === 'publications' ? (
+            <BibtexImport
+              disabled={disabled}
+              onImport={(extracted) => setValue((prev) => ({ ...prev, ...extracted }))}
+            />
+          ) : null}
           {fields.map((field) => (
             <FieldControl
               key={field.key}

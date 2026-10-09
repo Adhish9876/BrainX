@@ -7,6 +7,76 @@ const env = Object.fromEntries(readFileSync('.env.local', 'utf8').split(/\r?\n/)
   return [l.slice(0, i), l.slice(i + 1).replace(/^['"]|['"]$/g, '')];
 }));
 
+test('BibTeX fills an editable publication draft without publishing', async ({ page }) => {
+  let commits = 0;
+  page.on('request', request => {
+    if (request.method() === 'POST' && new URL(request.url()).pathname === '/api/admin/commit') commits++;
+  });
+  await page.goto('/admin');
+  await page.getByLabel('Username', { exact: true }).fill(env.ADMIN_USERNAME);
+  await page.getByLabel('Password', { exact: true }).fill(env.ADMIN_PASSWORD);
+  await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Sign out', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Publications', exact: true }).click();
+  await page.getByRole('button', { name: 'New publication', exact: true }).click();
+  const dialog = page.getByRole('dialog');
+  const id = await dialog.getByText('Record ID', { exact: true }).locator('..').locator('p').nth(1).textContent();
+  await page.getByLabel('Paste BibTeX', { exact: true }).fill(`@article{qa,
+    title = {A {BCI} study for publication import},
+    author = {Doe, Jane and Smith, John},
+    year = {2024},
+    journal = {Journal of Test Research},
+    url = {https://example.com/qa-paper},
+    keywords = {EEG, Brain-computer interfaces}
+  }`);
+  await page.getByRole('button', { name: 'Fill from BibTeX', exact: true }).click();
+  await expect(dialog.getByRole('status')).toContainText('Publication fields filled');
+  await expect(page.getByLabel('Title', { exact: true })).toHaveValue('A BCI study for publication import');
+  await expect(page.getByLabel('Authors', { exact: true })).toHaveValue('Jane Doe, John Smith');
+  await expect(page.getByLabel('Year', { exact: true })).toHaveValue('2024');
+  await expect(page.getByLabel('Venue', { exact: true })).toHaveValue('Journal of Test Research');
+  await expect(page.getByLabel('Link', { exact: true })).toHaveValue('https://example.com/qa-paper');
+  await expect(page.getByRole('button', { name: 'Remove tag EEG', exact: true })).toBeVisible();
+  expect(await dialog.getByText('Record ID', { exact: true }).locator('..').locator('p').nth(1).textContent()).toBe(id);
+  await page.screenshot({ path: '/tmp/opencode/brainx-bibtex-desktop.png' });
+  await page.setViewportSize({ width: 390, height: 844 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await page.screenshot({ path: '/tmp/opencode/brainx-bibtex-mobile.png' });
+  await page.setViewportSize({ width: 1280, height: 720 });
+
+  await page.getByLabel('Paste BibTeX', { exact: true }).fill('@article{broken, title = {Unclosed');
+  await page.getByRole('button', { name: 'Fill from BibTeX', exact: true }).click();
+  await expect(dialog.getByRole('alert')).toBeVisible();
+  await expect(page.getByLabel('Title', { exact: true })).toHaveValue('A BCI study for publication import');
+  await page.getByLabel('Paste BibTeX', { exact: true }).fill('@article{one, title={One}}\n@article{two, title={Two}}');
+  await page.getByRole('button', { name: 'Fill from BibTeX', exact: true }).click();
+  await expect(dialog.getByRole('alert')).toBeVisible();
+  await expect(page.getByLabel('Title', { exact: true })).toHaveValue('A BCI study for publication import');
+
+  await page.getByLabel('Paste BibTeX', { exact: true }).fill('@inproceedings{partial, title={QA BibTeX draft}, booktitle={Test Conference}, doi={10.1234/test}}');
+  await page.getByRole('button', { name: 'Fill from BibTeX', exact: true }).click();
+  await expect(page.getByLabel('Venue', { exact: true })).toHaveValue('Test Conference');
+  await expect(page.getByLabel('Link', { exact: true })).toHaveValue('https://doi.org/10.1234/test');
+  await expect(page.getByLabel('Authors', { exact: true })).toHaveValue('Jane Doe, John Smith');
+  await expect(page.getByLabel('Year', { exact: true })).toHaveValue('2024');
+  await page.getByLabel('Title', { exact: true }).fill('QA BibTeX draft — reviewed');
+  await page.getByRole('button', { name: 'Add', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Edit QA BibTeX draft — reviewed', exact: true })).toBeVisible();
+  await page.reload();
+  await page.getByRole('button', { name: 'Publications', exact: true }).click();
+  await page.getByRole('button', { name: 'Edit QA BibTeX draft — reviewed', exact: true }).click();
+  await expect(page.getByLabel('Venue', { exact: true })).toHaveValue('Test Conference');
+  await expect(page.getByLabel('Paste BibTeX', { exact: true })).toHaveValue('');
+  await page.getByRole('button', { name: 'Cancel', exact: true }).click();
+  await page.getByRole('button', { name: 'Reset', exact: true }).click();
+  await page.getByRole('button', { name: 'Reset changes', exact: true }).click();
+  await page.getByRole('button', { name: 'Research', exact: true }).click();
+  await page.getByRole('button', { name: 'New research area', exact: true }).click();
+  await expect(page.getByLabel('Paste BibTeX', { exact: true })).toHaveCount(0);
+  await page.getByRole('button', { name: 'Cancel', exact: true }).click();
+  expect(commits).toBe(0);
+});
+
 test('authenticated editing persists a multi-item draft and resets without committing', async ({ page }) => {
   page.on('dialog', dialog => dialog.accept());
   await page.goto('/admin');
