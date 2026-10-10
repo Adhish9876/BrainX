@@ -1,90 +1,102 @@
-import Link from 'next/link';
-import { ArrowRight, MapPin } from 'lucide-react';
-import LatestRail from '@/components/public/LatestRail';
+import Image from 'next/image';
+import type { CSSProperties } from 'react';
+import HeroLogo from '@/components/home/HeroLogo';
+import LabLife from '@/components/home/LabLife';
+import Latest, { type FeedItem } from '@/components/home/Latest';
+import MotionProvider from '@/components/home/MotionProvider';
+import People from '@/components/home/People';
+import WhatWeDo from '@/components/home/WhatWeDo';
+import WhoWeAre from '@/components/home/WhoWeAre';
+import { formatDate } from '@/components/public/format';
+import { HERO_IMAGE } from '@/components/public/hero.config';
 import { getContent } from '@/lib/content';
 
 export const dynamic = 'force-static';
 
+const photoStyle = {
+  '--hero-pos-sm': HERO_IMAGE.positionMobile,
+  '--hero-pos-lg': HERO_IMAGE.positionDesktop,
+} as CSSProperties;
+
+function clip(text: string, max: number): string {
+  if (text.length <= max) return text;
+  return `${text.slice(0, max).replace(/\s+\S*$/, '')}…`;
+}
+
 export default function HomePage() {
-  const { site, news, publications } = getContent();
-  const focusAreas = site.focus
+  const { site, news, publications, team } = getContent();
+
+  const areas = site.focus
     .split(',')
     .map((area) => area.trim())
     .filter(Boolean);
+  const principal = team.find((member) => member.role === 'Principal Investigator');
+
+  const publicationItems: FeedItem[] = [...publications]
+    .sort((a, b) => b.year - a.year)
+    .slice(0, 3)
+    .map((item) => ({
+      id: item.id,
+      meta: String(item.year),
+      title: item.title,
+      detail: item.venue,
+      href: item.link || '/publications',
+      external: Boolean(item.link),
+    }));
+
+  const newsItems: FeedItem[] = [...news]
+    .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+    .slice(0, 3)
+    .map((item) => ({
+      id: item.id,
+      meta: formatDate(item.date),
+      title: item.title,
+      detail: item.description ? clip(item.description, 140) : undefined,
+      href: item.link || '/events?tab=news',
+      external: Boolean(item.link),
+    }));
 
   return (
-    <div className="shell grid items-start gap-12 py-12 lg:grid-cols-3 lg:gap-16 lg:py-16">
-      {/* Lab information — left, 2fr */}
-      <div className="lg:col-span-2">
-        <p className="eyebrow">
-          {site.institution} · Department of Computer Science &amp; Engineering
-        </p>
-        <h1 className="mt-5 max-w-3xl font-display text-4xl leading-[1.02] tracking-tight text-ink md:text-[3.5rem]">
-          {site.name}
-        </h1>
-        {site.tagline ? (
-          <p className="mt-5 max-w-2xl text-xl leading-relaxed text-navy-700 md:text-2xl">
-            {site.tagline}
-          </p>
-        ) : null}
-        <p className="prose-editorial mt-6 max-w-prose text-base">{site.about}</p>
+    <MotionProvider>
+      {/* -mb-24 cancels the footer's top margin; the last section carries its own spacing. */}
+      <div className="-mb-24">
+        <section
+          id="hero"
+          aria-labelledby="hero-heading"
+          className="relative isolate -mt-[var(--header-h)] min-h-[100svh] overflow-hidden bg-paper"
+        >
+          <span id="hero-top" aria-hidden className="absolute left-0 top-6 h-px w-px" />
+          {HERO_IMAGE.isPlaceholder ? (
+            <div
+              aria-hidden
+              className="absolute inset-0 -z-10 bg-[radial-gradient(55%_50%_at_70%_15%,rgba(74,124,247,0.13),transparent_70%),radial-gradient(50%_45%_at_15%_95%,rgba(207,67,48,0.12),transparent_70%),linear-gradient(180deg,#ffffff,#f6f3ee)]"
+            />
+          ) : (
+            <>
+              <Image
+                src={HERO_IMAGE.src}
+                alt=""
+                fill
+                priority
+                sizes="100vw"
+                className="hero-photo -z-10 object-cover"
+                style={photoStyle}
+              />
+              <div aria-hidden className="absolute inset-0 -z-10 bg-white/55" />
+            </>
+          )}
+          <h1 id="hero-heading" className="sr-only">
+            {site.name}, {site.institution}
+          </h1>
+        </section>
+        {site.logo ? <HeroLogo src={site.logo} alt={`${site.name} logo`} /> : null}
 
-        <div className="mt-10 grid gap-8 sm:grid-cols-2">
-          <div>
-            <h2 className="eyebrow">Focus areas</h2>
-            <ul className="mt-4 space-y-3">
-              {focusAreas.map((area, index) => (
-                <li key={area} className="flex items-baseline gap-3 text-sm text-ink">
-                  <span className="font-display text-sm font-semibold text-navy-600">
-                    {String(index + 1).padStart(2, '0')}
-                  </span>
-                  <span>{area}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h2 className="eyebrow">Where we are</h2>
-            <p className="mt-4 flex gap-2 text-sm leading-relaxed text-muted">
-              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-navy-600" aria-hidden />
-              <span>{site.address || site.institution}</span>
-            </p>
-            <p className="mt-4 text-sm leading-relaxed text-muted">
-              Explore our{' '}
-              <Link href="/team" className="link-arrow text-sm">
-                team
-              </Link>{' '}
-              and{' '}
-              <Link href="/projects" className="link-arrow text-sm">
-                projects
-              </Link>
-              .
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-10 flex flex-wrap gap-3">
-          <Link
-            href="/research"
-            className="inline-flex items-center gap-2 rounded-full bg-navy-700 px-5 py-2.5 text-sm font-semibold text-paper transition-colors hover:bg-navy-800"
-          >
-            Research themes
-            <ArrowRight className="h-4 w-4" aria-hidden />
-          </Link>
-          <Link
-            href="/publications"
-            className="inline-flex items-center gap-2 rounded-full border border-rule-strong px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-navy-300 hover:text-navy-700"
-          >
-            Publications
-          </Link>
-        </div>
+        <WhoWeAre site={site} principal={principal} areas={areas} />
+        <WhatWeDo areas={areas} />
+        <People team={team} />
+        <Latest publications={publicationItems} news={newsItems} />
+        <LabLife />
       </div>
-
-      {/* Latest news / publications — right, 1fr, top-aligned */}
-      <div className="lg:col-span-1">
-        <LatestRail news={news} publications={publications} />
-      </div>
-    </div>
+    </MotionProvider>
   );
 }
