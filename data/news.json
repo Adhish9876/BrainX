@@ -1,13 +1,50 @@
 [
   {
-    "id": "e218bddf-d624-422f-b441-d9de66ec4993",
-    "title": "test",
-    "date": "2026-10-07",
-    "description": "this is a test news",
+    "id": "news-bspc-publication-2026",
+    "title": "Journal Article Published in Biomedical Signal Processing and Control",
+    "date": "2026-01-12",
+    "description": "New study on 'Neurological insights into personality and emotional intelligence: Analysing EEG spectral bands through machine learning models' published in Elsevier Biomedical Signal Processing and Control.",
     "tags": [
-      "eeg",
-      "emg"
+      "Journal",
+      "EEG",
+      "Machine Learning"
     ],
-    "link": "https://iiitdm.ac.in/"
+    "link": "https://www.sciencedirect.com/science/article/pii/S174680942501701X?via%3Dihub"
+  },
+  {
+    "id": "news-anrf-grant-2025",
+    "title": "ANRF PMECRG Grant Awarded for Immersive Biofeedback Research",
+    "date": "2025-08-15",
+    "description": "BrainX Lab has been awarded the ANRF PMECRG research grant for the project 'Design and Development of an Immersive Bio-feedback system for Anxiety and Affective Disorders'.",
+    "tags": [
+      "Grant",
+      "ANRF",
+      "Biofeedback"
+    ],
+    "link": ""
+  },
+  {
+    "id": "news-bbr-publication-2025",
+    "title": "Imagined Speech BCI Study Published in Behavioural Brain Research",
+    "date": "2025-05-20",
+    "description": "Research article 'An EEG-based imagined speech recognition using CSP-TP feature fusion for enhanced BCI communication' published in Behavioural Brain Research.",
+    "tags": [
+      "Journal",
+      "BCI",
+      "Imagined Speech"
+    ],
+    "link": "https://www.sciencedirect.com/science/article/abs/pii/S0166432825002384"
+  },
+  {
+    "id": "news-icassp-publication-2025",
+    "title": "Paper Accepted at IEEE ICASSP 2025",
+    "date": "2025-02-10",
+    "description": "Research paper on 'Towards Context-aware EEG-based Emotion Recognition Models' accepted for presentation at IEEE ICASSP 2025.",
+    "tags": [
+      "Publication",
+      "ICASSP",
+      "Emotion Recognition"
+    ],
+    "link": "https://ieeexplore.ieee.org/document/10890528"
   }
 ]

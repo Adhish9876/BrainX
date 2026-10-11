@@ -2,12 +2,10 @@ import Image from 'next/image';
 import type { CSSProperties } from 'react';
 import HeroLogo from '@/components/home/HeroLogo';
 import LabLife from '@/components/home/LabLife';
-import Latest, { type FeedItem } from '@/components/home/Latest';
 import MotionProvider from '@/components/home/MotionProvider';
 import People from '@/components/home/People';
 import WhatWeDo from '@/components/home/WhatWeDo';
 import WhoWeAre from '@/components/home/WhoWeAre';
-import { formatDate } from '@/components/public/format';
 import { HERO_IMAGE } from '@/components/public/hero.config';
 import { getContent } from '@/lib/content';
 
@@ -18,13 +16,8 @@ const photoStyle = {
   '--hero-pos-lg': HERO_IMAGE.positionDesktop,
 } as CSSProperties;
 
-function clip(text: string, max: number): string {
-  if (text.length <= max) return text;
-  return `${text.slice(0, max).replace(/\s+\S*$/, '')}…`;
-}
-
 export default function HomePage() {
-  const { site, news, publications, team } = getContent();
+  const { site, news, events, publications, team, pictures } = getContent();
 
   const areas = site.focus
     .split(',')
@@ -32,44 +25,20 @@ export default function HomePage() {
     .filter(Boolean);
   const principal = team.find((member) => member.role === 'Principal Investigator');
 
-  const publicationItems: FeedItem[] = [...publications]
-    .sort((a, b) => b.year - a.year)
-    .slice(0, 3)
-    .map((item) => ({
-      id: item.id,
-      meta: String(item.year),
-      title: item.title,
-      detail: item.venue,
-      href: item.link || '/publications',
-      external: Boolean(item.link),
-    }));
-
-  const newsItems: FeedItem[] = [...news]
-    .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
-    .slice(0, 3)
-    .map((item) => ({
-      id: item.id,
-      meta: formatDate(item.date),
-      title: item.title,
-      detail: item.description ? clip(item.description, 140) : undefined,
-      href: item.link || '/events?tab=news',
-      external: Boolean(item.link),
-    }));
-
   return (
     <MotionProvider>
       {/* -mb-24 cancels the footer's top margin; the last section carries its own spacing. */}
-      <div className="-mb-24">
+      <div className="relative -mb-24">
+        <span id="hero-top" aria-hidden className="pointer-events-none absolute left-0 top-6 h-px w-px" />
         <section
           id="hero"
           aria-labelledby="hero-heading"
-          className="relative isolate -mt-[var(--header-h)] min-h-[100svh] overflow-hidden bg-paper"
+          className="sticky top-[var(--header-h)] z-0 isolate h-[calc(100svh-var(--header-h))] overflow-hidden bg-paper"
         >
-          <span id="hero-top" aria-hidden className="absolute left-0 top-6 h-px w-px" />
           {HERO_IMAGE.isPlaceholder ? (
             <div
               aria-hidden
-              className="absolute inset-0 -z-10 bg-[radial-gradient(55%_50%_at_70%_15%,rgba(74,124,247,0.13),transparent_70%),radial-gradient(50%_45%_at_15%_95%,rgba(207,67,48,0.12),transparent_70%),linear-gradient(180deg,#ffffff,#f6f3ee)]"
+              className="absolute inset-0 -z-10 bg-[radial-gradient(55%_50%_at_70%_15%,rgba(74,124,247,0.13),transparent_70%),radial-gradient(50%_45%_at_15%_95%,rgba(207,67,48,0.12),transparent_70%),linear-gradient(180deg,#ffffff,#f6f8fa)]"
             />
           ) : (
             <>
@@ -82,20 +51,31 @@ export default function HomePage() {
                 className="hero-photo -z-10 object-cover"
                 style={photoStyle}
               />
-              <div aria-hidden className="absolute inset-0 -z-10 bg-white/55" />
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 -z-10 bg-white/50 bg-[radial-gradient(45%_45%_at_50%_50%,rgba(255,255,255,0.35),transparent_100%)]"
+              />
             </>
           )}
           <h1 id="hero-heading" className="sr-only">
             {site.name}, {site.institution}
           </h1>
+          {site.logo ? <HeroLogo src={site.logo} alt={`${site.name} logo`} /> : null}
         </section>
-        {site.logo ? <HeroLogo src={site.logo} alt={`${site.name} logo`} /> : null}
 
-        <WhoWeAre site={site} principal={principal} areas={areas} />
-        <WhatWeDo areas={areas} />
-        <People team={team} />
-        <Latest publications={publicationItems} news={newsItems} />
-        <LabLife />
+        <div className="relative z-10 bg-paper shadow-[0_-12px_36px_-16px_rgba(11,16,32,0.08)]">
+          <WhoWeAre
+            site={site}
+            principal={principal}
+            areas={areas}
+            news={news}
+            events={events}
+            publications={publications}
+          />
+          <WhatWeDo />
+          <People team={team} />
+          <LabLife pictures={pictures} />
+        </div>
       </div>
     </MotionProvider>
   );

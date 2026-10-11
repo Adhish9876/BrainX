@@ -7,11 +7,11 @@
  * and clear of the text, which sits at the left on desktop and the bottom on mobile.
  */
 export const HERO_IMAGE = {
-  src: '/images/team-hero.jpg',
+  src: '/back.png',
   alt: 'BrainX Lab team photograph',
   width: 2400,
   height: 1350,
-  positionMobile: '60% 30%',
-  positionDesktop: '65% 35%',
-  isPlaceholder: true,
+  positionMobile: '50% 20%',
+  positionDesktop: '50% 10%',
+  isPlaceholder: false,
 } as const;

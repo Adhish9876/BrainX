@@ -1,43 +1,107 @@
 import Link from 'next/link';
-import { ArrowRight } from '@phosphor-icons/react/dist/ssr';
-import ImagePlaceholder from './ImagePlaceholder';
+import { ArrowUpRight } from '@phosphor-icons/react/dist/ssr';
+import DriftWall, { type DriftWallItem } from '@/components/ui/DriftWall';
+import type { PictureGroup } from '@/lib/types';
 import Reveal from './Reveal';
-import SectionIntro from './SectionIntro';
 
-export default function LabLife() {
+const MIN_WALL_TILES = 15;
+
+function buildWallItems(pictures: PictureGroup[]): DriftWallItem[] | undefined {
+  // Ignore the two built-in placeholder demo groups unless the user renames them or adds real groups
+  const realGroups = pictures.filter((group) => !/placeholder/i.test(group.name));
+  const rawItems: DriftWallItem[] = [];
+
+  for (const group of realGroups) {
+    for (const image of group.images) {
+      rawItems.push({
+        image,
+        title: group.name,
+        subtitle: group.date || group.description || undefined,
+      });
+    }
+  }
+
+  if (rawItems.length === 0) return undefined;
+
+  const filled: DriftWallItem[] = [...rawItems];
+  while (filled.length < MIN_WALL_TILES) {
+    filled.push(rawItems[filled.length % rawItems.length]);
+  }
+  return filled;
+}
+
+export default function LabLife({ pictures = [] }: { pictures?: PictureGroup[] }) {
+  const customItems = buildWallItems(pictures);
+
   return (
-    <section id="gallery" aria-labelledby="gallery-heading" className="bg-paper pb-28 pt-24 md:pb-36 md:pt-32">
+    <section
+      id="gallery"
+      aria-labelledby="gallery-heading"
+      className="border-t border-ink/10 bg-paper pb-20 pt-8 md:pb-28 md:pt-10"
+    >
       <div className="shell">
-        <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+        {/* Header */}
+        <div className="flex items-end justify-between gap-8 border-b border-ink/10 pb-6">
           <Reveal>
-            <SectionIntro index="05" label="Gallery" id="gallery-heading" title="Life in the lab." />
+            <p className="font-mono text-[0.62rem] uppercase tracking-[0.28em] text-muted">
+              04 — Gallery
+            </p>
+            <h2
+              id="gallery-heading"
+              className="mt-3 font-display text-[2.4rem] leading-[1.05] tracking-[-0.02em] text-ink sm:text-5xl"
+            >
+              Life in the lab.
+            </h2>
           </Reveal>
+
           <Reveal delay={0.08}>
             <Link
               href="/pictures"
-              className="group inline-flex min-h-11 items-center gap-2 text-[0.95rem] font-medium text-ink underline-offset-8 hover:underline"
+              className="group hidden items-center gap-2 font-mono text-[0.68rem] uppercase tracking-[0.14em] text-muted transition-colors hover:text-ink md:flex"
             >
-              Browse all pictures
-              <ArrowRight
+              All pictures
+              <ArrowUpRight
                 weight="bold"
-                className="h-4 w-4 text-crimson-600 transition-transform group-hover:translate-x-1"
+                className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                 aria-hidden
               />
             </Link>
           </Reveal>
         </div>
 
-        <div className="mt-14 grid gap-4 md:grid-cols-12 md:items-end">
-          <Reveal className="md:col-span-5">
-            <ImagePlaceholder label="Lab photograph" aspect="aspect-[4/5]" />
-          </Reveal>
-          <Reveal delay={0.08} className="md:col-span-4">
-            <ImagePlaceholder label="Lab photograph" aspect="aspect-square" tone="warm" />
-          </Reveal>
-          <Reveal delay={0.16} className="md:col-span-3">
-            <ImagePlaceholder label="Lab photograph" aspect="aspect-[3/4]" />
-          </Reveal>
-        </div>
+        {/* Mobile CTA */}
+        <Reveal delay={0.2}>
+          <Link
+            href="/pictures"
+            className="group mt-4 inline-flex items-center gap-2 font-mono text-[0.68rem] uppercase tracking-[0.14em] text-muted transition-colors hover:text-ink md:hidden"
+          >
+            All pictures
+            <ArrowUpRight weight="bold" className="h-3.5 w-3.5" aria-hidden />
+          </Link>
+        </Reveal>
+      </div>
+
+      {/* 3D DriftWall stage */}
+      <div className="relative mx-auto mt-4 h-[600px] w-full max-w-[1640px] px-2 md:h-[680px] md:px-6">
+        <DriftWall
+          items={customItems}
+          columns={5}
+          tileWidth={260}
+          tileHeight={172}
+          gap={18}
+          tilt={16}
+          turn={-14}
+          perspective={1200}
+          depth={120}
+          speed={42}
+          direction="up"
+          variance={0.45}
+          parallax={0.6}
+          lift={64}
+          fade={0.55}
+          dim={0.85}
+          overlayColor="#f6f8fa"
+        />
       </div>
     </section>
   );

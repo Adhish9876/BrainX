@@ -1,85 +1,66 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
-import { cubicBezier, motion, useReducedMotion, useScroll, useSpring, useTransform } from 'motion/react';
-
-type Metrics = { vh: number; headerH: number; bigW: number };
+import TextType from '@/components/ui/TextType';
 
 /**
- * The hero logo. It starts large and centred, then travels up and shrinks into
- * the header's centre slot as the first screen scrolls away. Scroll-linked (no
- * scroll listeners of our own); with reduced motion it snaps instead of gliding.
+ * Static hero centerpiece (logo + typed tagline) and scroll cue.
+ * The text container has fixed dimensions so typing/deleting never shifts the logo.
  */
 export default function HeroLogo({ src, alt }: { src: string; alt: string }) {
-  const imageRef = useRef<HTMLImageElement>(null);
-  const reduce = useReducedMotion();
-  const [metrics, setMetrics] = useState<Metrics>({ vh: 800, headerH: 76, bigW: 520 });
-
-  useEffect(() => {
-    const measure = () => {
-      const header = document.querySelector('header');
-      setMetrics({
-        vh: window.innerHeight,
-        headerH: header?.getBoundingClientRect().height ?? 76,
-        bigW: imageRef.current?.offsetWidth ?? 520,
-      });
-    };
-    measure();
-    window.addEventListener('resize', measure);
-    return () => window.removeEventListener('resize', measure);
-  }, []);
-
-  const { scrollY } = useScroll();
-  const smooth = useSpring(scrollY, { stiffness: 140, damping: 26, mass: 0.35 });
-
-  const range = Math.max(metrics.vh * 0.85, 300);
-  const smallW = Math.min(metrics.headerH * 0.74, 60);
-  const endScale = smallW / metrics.bigW;
-  const endY = -(metrics.vh / 2 - metrics.headerH / 2);
-  const ease = cubicBezier(0.65, 0, 0.35, 1);
-
-  const progress = useTransform(
-    reduce ? scrollY : smooth,
-    reduce ? [0, range * 0.5, range * 0.5 + 1] : [0, range],
-    reduce ? [0, 0, 1] : [0, 1],
-    reduce ? undefined : { ease },
-  );
-  const y = useTransform(progress, [0, 1], [0, endY]);
-  const scale = useTransform(progress, [0, 1], [1, endScale]);
-  const cueOpacity = useTransform(scrollY, [0, metrics.vh * 0.2], [1, 0]);
-  const cueVisibility = useTransform(cueOpacity, (value) => (value > 0.02 ? 'visible' : 'hidden'));
-
   return (
-    <>
-      <div className="pointer-events-none fixed inset-x-0 top-0 z-[55] h-0">
-        <motion.div
-          style={{ y, scale }}
-          className="pointer-events-auto absolute left-1/2 top-[50svh] -translate-x-1/2 -translate-y-1/2 will-change-transform"
+    <div className="relative flex h-full w-full items-center justify-center px-6">
+      {/* Logo + typed quote side-by-side on desktop, stacked on mobile */}
+      <div className="flex flex-col items-center gap-6 lg:flex-row lg:items-center lg:gap-12">
+        <Link
+          href="/"
+          aria-label="BrainX Lab home"
+          className="block shrink-0 rounded-full focus-visible:outline-offset-8"
         >
-          <Link href="/" aria-label="BrainX Lab home" className="block rounded-full focus-visible:outline-offset-8">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              ref={imageRef}
-              src={src}
-              alt={alt}
-              width={560}
-              height={567}
-              className="h-auto w-[min(72vw,32rem)] select-none"
-              draggable={false}
-            />
-          </Link>
-        </motion.div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={src}
+            alt={alt}
+            width={560}
+            height={567}
+            className="h-auto w-[min(52vw,22rem)] select-none drop-shadow-[0_10px_28px_rgba(11,16,32,0.18)] lg:w-[min(36vw,22rem)]"
+            draggable={false}
+          />
+        </Link>
+
+        {/* Fixed-width & fixed-height slot so typing/deleting never shifts the logo */}
+        <div className="flex h-[5.5rem] w-[19rem] shrink-0 items-center justify-center text-center sm:w-[22rem] lg:h-[9.5rem] lg:w-[21rem] lg:justify-start lg:text-left xl:w-[25rem]">
+          <TextType
+            as="p"
+            text={[
+              'Understanding the brain, building the interface.',
+              'Decoding neural signals for human cognition.',
+              'Advancing non-invasive brain–computer interfaces.',
+            ]}
+            typingSpeed={55}
+            deletingSpeed={28}
+            pauseDuration={2200}
+            showCursor={true}
+            cursorCharacter="|"
+            cursorClassName="text-crimson-600 font-normal"
+            className="font-display text-[clamp(1.5rem,2.3vw,2.6rem)] font-bold leading-[1.15] tracking-[-0.02em] text-ink [text-shadow:0_1px_14px_rgba(255,255,255,0.95),0_0_28px_rgba(255,255,255,0.9)]"
+          />
+        </div>
       </div>
 
-      <motion.a
+      <a
         href="#who-we-are"
-        style={{ opacity: cueOpacity, visibility: cueVisibility }}
-        className="fixed bottom-6 left-1/2 z-[55] inline-flex min-h-11 -translate-x-1/2 flex-col items-center gap-1 px-4 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-muted hover:text-ink"
+        onClick={(e) => {
+          const target = document.getElementById('who-we-are');
+          if (!target) return;
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }}
+        className="absolute bottom-6 left-1/2 inline-flex min-h-11 -translate-x-1/2 flex-col items-center gap-1 px-4 font-mono text-[0.65rem] font-semibold uppercase tracking-[0.24em] text-ink/80 transition-colors hover:text-ink"
       >
         Scroll
-        <span aria-hidden className="h-8 w-px bg-gradient-to-b from-ink/50 to-transparent" />
-      </motion.a>
-    </>
+        <span aria-hidden className="h-8 w-px bg-gradient-to-b from-ink/60 to-transparent" />
+      </a>
+    </div>
   );
 }

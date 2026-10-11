@@ -5,15 +5,15 @@
 /* ------------------------------------------------------------------ */
 @theme {
   --font-sans: var(--font-geist), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-display: var(--font-instrument), ui-serif, Georgia, "Times New Roman", serif;
+  --font-display: var(--font-geist), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
-  --color-paper: #f6f3ee;
+  --color-paper: #f6f8fa;
   --color-surface: #ffffff;
   --color-ink: #0b1020;
   --color-muted: #566074;
-  --color-rule: #e5e2db;
-  --color-rule-strong: #d3cec3;
+  --color-rule: #e2e5e9;
+  --color-rule-strong: #d0d4db;
   --color-gold: #a97a3c;
 
   --color-navy-50: #f3f6fb;
@@ -125,8 +125,8 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    font-weight: 400;
-    letter-spacing: -0.01em;
+    font-weight: 600;
+    letter-spacing: -0.02em;
   }
 
   html {
