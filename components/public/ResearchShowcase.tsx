@@ -489,10 +489,10 @@ export default function ResearchShowcase({ research }: { research: Research[] })
     <div className="space-y-16 sm:space-y-24">
       {/* ── 1. Top Section: Research Narrative (Left) + Carousel (Right) ── */}
       <section aria-labelledby="research-hero-heading" className="w-full">
-        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-10 xl:gap-14">
+        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-10 xl:gap-12">
           
           {/* Left Column: Clean Apple Typography & Mission Statement */}
-          <div className="lg:col-span-5 xl:col-span-5 flex flex-col justify-center">
+          <div className="lg:col-span-5 xl:col-span-5 flex flex-col pt-1">
             <h1
               id="research-hero-heading"
               className="font-display text-4xl sm:text-5xl lg:text-[3.6rem] font-bold tracking-[-0.035em] text-[#1d1d1f] leading-[1.06]"
@@ -500,11 +500,11 @@ export default function ResearchShowcase({ research }: { research: Research[] })
               Research :
             </h1>
 
-            <p className="mt-5 text-base sm:text-lg font-normal leading-relaxed text-[#3d3d40]">
+            <p className="mt-4 text-base sm:text-lg font-normal leading-relaxed text-[#3d3d40]">
               At BrainX Lab, we decode brain dynamics and physiological signals to pioneer non-invasive brain–computer interfaces, real-time closed-loop biofeedback, and affective neuro-technologies.
             </p>
 
-            <div className="mt-8 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
+            <div className="mt-6 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
               <span>Scroll to explore research themes</span>
               <ArrowDown className="h-3.5 w-3.5 animate-bounce text-[#0066cc]" />
             </div>
@@ -513,34 +513,10 @@ export default function ResearchShowcase({ research }: { research: Research[] })
           {/* Right Column: Carousel in an Apple Frosted Glass Stage */}
           <div className="lg:col-span-7 xl:col-span-7">
             <div
-              className="relative overflow-hidden rounded-[26px] border border-slate-200/90 bg-white/90 p-5 sm:p-7 shadow-[0_14px_38px_-12px_rgba(15,23,42,0.09)] backdrop-blur-md"
+              className="relative overflow-hidden rounded-[26px] border border-slate-200/90 bg-white/90 p-4 sm:p-5 shadow-[0_14px_38px_-12px_rgba(15,23,42,0.09)] backdrop-blur-md"
               onMouseEnter={() => setPaused(true)}
               onMouseLeave={() => setPaused(false)}
             >
-              {/* Carousel Header Nav */}
-              {count > 1 && (
-                <div className="mb-4 flex items-center justify-end border-b border-slate-100 pb-3">
-                  <div className="flex items-center gap-1.5">
-                    <button
-                      type="button"
-                      onClick={prev}
-                      aria-label="Previous research diagram"
-                      className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-2xs transition-colors hover:bg-slate-100 hover:text-black focus-visible:outline-2 focus-visible:outline-[#0066cc]"
-                    >
-                      <ChevronLeft className="h-4 w-4" strokeWidth={2.2} />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={next}
-                      aria-label="Next research diagram"
-                      className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-2xs transition-colors hover:bg-slate-100 hover:text-black focus-visible:outline-2 focus-visible:outline-[#0066cc]"
-                    >
-                      <ChevronRight className="h-4 w-4" strokeWidth={2.2} />
-                    </button>
-                  </div>
-                </div>
-              )}
-
               {/* Diagram Stage */}
               <div className="relative mx-auto flex aspect-[16/8] min-h-[200px] w-full items-center justify-center overflow-hidden rounded-xl bg-slate-50/70 p-2 sm:min-h-[260px]">
                 {currentSlide?.image ? (
@@ -555,32 +531,56 @@ export default function ResearchShowcase({ research }: { research: Research[] })
                 )}
               </div>
 
-              {/* Caption */}
-              <div className="mt-3.5 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+              {/* Caption & Controls Bar */}
+              <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <p className="line-clamp-2 text-xs leading-relaxed text-slate-600 sm:text-[0.82rem]">
                   {currentSlide?.caption}
                 </p>
 
-                {/* Indicator dots */}
-                <div className="mt-2 flex shrink-0 items-center gap-1.5 sm:mt-0" role="tablist" aria-label="Diagram slides">
-                  {slides.map((slide, idx) => {
-                    const isActive = idx === safeIndex;
-                    return (
+                <div className="flex shrink-0 items-center gap-2 sm:gap-2.5">
+                  {/* Prev/Next arrows beside dots */}
+                  {count > 1 && (
+                    <div className="flex items-center gap-1">
                       <button
-                        key={slide.id}
                         type="button"
-                        role="tab"
-                        aria-selected={isActive}
-                        aria-label={`Show diagram ${idx + 1}: ${slide.title}`}
-                        onClick={() => setActiveIndex(idx)}
-                        className={`h-2 rounded-full transition-all ${
-                          isActive
-                            ? 'w-6 bg-[#0066cc]'
-                            : 'w-2 bg-slate-300 hover:bg-slate-400'
-                        }`}
-                      />
-                    );
-                  })}
+                        onClick={prev}
+                        aria-label="Previous research diagram"
+                        className="flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-2xs transition-colors hover:bg-slate-100 hover:text-black focus-visible:outline-2 focus-visible:outline-[#0066cc]"
+                      >
+                        <ChevronLeft className="h-3.5 w-3.5" strokeWidth={2.2} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={next}
+                        aria-label="Next research diagram"
+                        className="flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-2xs transition-colors hover:bg-slate-100 hover:text-black focus-visible:outline-2 focus-visible:outline-[#0066cc]"
+                      >
+                        <ChevronRight className="h-3.5 w-3.5" strokeWidth={2.2} />
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Indicator dots */}
+                  <div className="flex shrink-0 items-center gap-1.5" role="tablist" aria-label="Diagram slides">
+                    {slides.map((slide, idx) => {
+                      const isActive = idx === safeIndex;
+                      return (
+                        <button
+                          key={slide.id}
+                          type="button"
+                          role="tab"
+                          aria-selected={isActive}
+                          aria-label={`Show diagram ${idx + 1}: ${slide.title}`}
+                          onClick={() => setActiveIndex(idx)}
+                          className={`h-2 rounded-full transition-all ${
+                            isActive
+                              ? 'w-6 bg-[#0066cc]'
+                              : 'w-2 bg-slate-300 hover:bg-slate-400'
+                          }`}
+                        />
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             </div>

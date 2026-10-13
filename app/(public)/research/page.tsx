@@ -20,19 +20,19 @@ export default function ResearchPage() {
       {/* Full background image without dual tone — pure organic blue topographic wave */}
       <div
         aria-hidden="true"
-        className="pointer-events-none select-none absolute inset-0 -z-10 overflow-hidden"
+        className="pointer-events-none select-none fixed inset-0 -z-10 overflow-hidden"
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/leftbg.png"
           alt=""
           draggable={false}
-          className="fixed -left-20 top-0 h-full w-auto max-w-[75vw] object-cover object-left opacity-[0.22] mix-blend-multiply sm:-left-28 lg:left-0"
+          className="absolute inset-0 h-full w-full object-cover object-left-top opacity-60 mix-blend-multiply"
         />
       </div>
 
       {/* Main Apple-style Shell Container */}
-      <main id="main" className="shell relative z-10 pt-24 sm:pt-28 md:pt-32 pb-20 md:pb-28">
+      <main id="main" className="shell relative z-10 pt-10 sm:pt-12 md:pt-14 pb-20 md:pb-28">
         {research.length ? (
           <ResearchShowcase research={research} />
         ) : (
