@@ -246,8 +246,12 @@ function ContentManager({ initial, onLogout }: ContentManagerProps) {
     else void doLogout();
   };
 
-  const openNew = (collection: Collection) => {
-    setEditing({ collection, record: createRecord(collection), isNew: true });
+  const openNew = (collection: Collection, initialOverrides?: Partial<RecordValue>) => {
+    setEditing({
+      collection,
+      record: createRecord(collection, initialOverrides),
+      isNew: true,
+    });
   };
 
   const openEdit = (collection: Collection, id: string) => {
@@ -465,7 +469,7 @@ function ContentManager({ initial, onLogout }: ContentManagerProps) {
               <CollectionSection
                 collection={activeSection}
                 records={recordsOf(draft, activeSection)}
-                onNew={() => openNew(activeSection)}
+                onNew={(initialOverrides) => openNew(activeSection, initialOverrides)}
                 onEdit={(id) => openEdit(activeSection, id)}
                 onDelete={(id) => setDraft((prev) => removeRecord(prev, activeSection, id))}
                 onMove={(id, direction) =>
@@ -487,6 +491,7 @@ function ContentManager({ initial, onLogout }: ContentManagerProps) {
           }}
           collection={editing.collection}
           record={editing.record}
+          teamMembers={draft.team}
           isNew={editing.isNew}
           disabled={busy}
           onSave={saveRecord}

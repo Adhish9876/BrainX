@@ -7,7 +7,7 @@ export default function PublicLayout({ children }: { children: ReactNode }) {
   const { site } = getContent();
 
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div className="flex min-h-dvh flex-col bg-white">
       <SiteHeader site={site} />
       <main id="main" className="flex-1">
         {children}

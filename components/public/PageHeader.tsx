@@ -16,15 +16,17 @@ export default function PageHeader({
 }) {
   return (
     <header className={`border-b border-rule ${className ?? 'bg-surface'}`}>
-      <div className="shell py-14 md:py-20">
+      <div className="shell pt-5 pb-7 md:pt-6 md:pb-8">
         {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
-        <h1 className="mt-5 max-w-4xl font-display text-4xl leading-[1.05] tracking-tight text-ink md:text-[3.25rem]">
+        <h1
+          className={`${eyebrow ? 'mt-5 ' : ''}max-w-4xl font-display text-4xl leading-[1.05] tracking-tight text-ink md:text-[3.25rem]`}
+        >
           {title}
         </h1>
         {lead ? (
-          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted">{lead}</p>
+          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-muted">{lead}</p>
         ) : null}
-        {children ? <div className="mt-8">{children}</div> : null}
+        {children ? <div className="mt-4">{children}</div> : null}
       </div>
     </header>
   );

@@ -3,7 +3,6 @@ import type { CSSProperties } from 'react';
 import HeroLogo from '@/components/home/HeroLogo';
 import LabLife from '@/components/home/LabLife';
 import MotionProvider from '@/components/home/MotionProvider';
-import People from '@/components/home/People';
 import WhatWeDo from '@/components/home/WhatWeDo';
 import WhoWeAre from '@/components/home/WhoWeAre';
 import { HERO_IMAGE } from '@/components/public/hero.config';
@@ -27,35 +26,35 @@ export default function HomePage() {
 
   return (
     <MotionProvider>
-      {/* -mb-24 cancels the footer's top margin; the last section carries its own spacing. */}
-      <div className="relative -mb-24">
+      <div className="relative -mt-22 md:-mt-24">
         <span id="hero-top" aria-hidden className="pointer-events-none absolute left-0 top-6 h-px w-px" />
         <section
           id="hero"
           aria-labelledby="hero-heading"
-          className="sticky top-[var(--header-h)] z-0 isolate h-[calc(100svh-var(--header-h))] overflow-hidden bg-paper"
+          className="relative isolate bg-black h-svh min-h-[580px] flex items-center justify-center z-10"
         >
           {HERO_IMAGE.isPlaceholder ? (
             <div
               aria-hidden
-              className="absolute inset-0 -z-10 bg-[radial-gradient(55%_50%_at_70%_15%,rgba(74,124,247,0.13),transparent_70%),radial-gradient(50%_45%_at_15%_95%,rgba(207,67,48,0.12),transparent_70%),linear-gradient(180deg,#ffffff,#f6f8fa)]"
+              className="absolute inset-0 -z-10 overflow-hidden bg-[radial-gradient(55%_50%_at_70%_15%,rgba(74,124,247,0.13),transparent_70%),radial-gradient(50%_45%_at_15%_95%,rgba(207,67,48,0.12),transparent_70%),linear-gradient(180deg,#ffffff,#ffffff)]"
             />
           ) : (
-            <>
+            <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
               <Image
                 src={HERO_IMAGE.src}
                 alt=""
                 fill
                 priority
                 sizes="100vw"
-                className="hero-photo -z-10 object-cover"
+                className="hero-photo object-cover"
                 style={photoStyle}
               />
+              {/* Rich overall dark tint across the entire background */}
               <div
                 aria-hidden
-                className="pointer-events-none absolute inset-0 -z-10 bg-white/50 bg-[radial-gradient(45%_45%_at_50%_50%,rgba(255,255,255,0.35),transparent_100%)]"
+                className="pointer-events-none absolute inset-0 bg-black/45"
               />
-            </>
+            </div>
           )}
           <h1 id="hero-heading" className="sr-only">
             {site.name}, {site.institution}
@@ -63,7 +62,7 @@ export default function HomePage() {
           {site.logo ? <HeroLogo src={site.logo} alt={`${site.name} logo`} /> : null}
         </section>
 
-        <div className="relative z-10 bg-paper shadow-[0_-12px_36px_-16px_rgba(11,16,32,0.08)]">
+        <div className="relative z-10 bg-[#f5f5f7]">
           <WhoWeAre
             site={site}
             principal={principal}
@@ -73,7 +72,6 @@ export default function HomePage() {
             publications={publications}
           />
           <WhatWeDo />
-          <People team={team} />
           <LabLife pictures={pictures} />
         </div>
       </div>

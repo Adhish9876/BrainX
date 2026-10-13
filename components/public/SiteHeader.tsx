@@ -7,19 +7,47 @@ import { AnimatePresence, motion } from 'motion/react';
 import { List, X } from '@phosphor-icons/react';
 import type { Site } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { Monogram } from './Monogram';
 import { isActive, NAV_ITEMS } from './navigation';
 
 export default function SiteHeader({ site }: { site: Site }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const isHome = pathname === '/';
 
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
 
+  useEffect(() => {
+    const checkScroll = () => {
+      const y =
+        window.scrollY ||
+        document.documentElement.scrollTop ||
+        document.body.scrollTop ||
+        0;
+      setScrolled(y > 2);
+    };
+
+    checkScroll();
+    window.addEventListener('scroll', checkScroll, { passive: true });
+    return () => window.removeEventListener('scroll', checkScroll);
+  }, [pathname]);
+
+  const showSolid = scrolled || open;
+  const hiddenOnHome = isHome && !showSolid;
+
   return (
-    <header className="sticky top-0 z-50 border-b border-ink/10 bg-white/95 backdrop-blur-md">
+    <header
+      className={cn(
+        'sticky top-0 z-50 border-b transition-[background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out',
+        hiddenOnHome
+          ? 'pointer-events-none -translate-y-full border-transparent bg-transparent opacity-0 shadow-none'
+          : showSolid
+            ? 'pointer-events-auto translate-y-0 border-ink/10 bg-white opacity-100 shadow-[0_2px_10px_-4px_rgba(15,23,42,0.06)]'
+            : 'pointer-events-auto translate-y-0 border-transparent bg-transparent opacity-100 shadow-none',
+      )}
+    >
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:rounded-md focus:bg-ink focus:px-4 focus:py-2 focus:text-sm focus:text-white"
@@ -27,21 +55,30 @@ export default function SiteHeader({ site }: { site: Site }) {
         Skip to content
       </a>
 
-      <div className="shell flex h-16 items-center justify-between gap-6 md:h-[4.5rem]">
+      <div className="flex h-22 w-full items-center justify-between gap-6 px-4 sm:px-6 md:h-24 lg:px-10">
         {/* Brand on the left */}
         <Link
           href="/"
           aria-label={`${site.name} home`}
-          className="flex shrink-0 items-center gap-3 focus-visible:outline-offset-4"
+          className="flex shrink-0 items-center gap-3.5 focus-visible:outline-offset-4"
         >
-          <Monogram logo={site.logo} name={site.name} size={42} />
-          <span className="font-display text-lg font-semibold tracking-tight text-ink">
-            {site.name}
-          </span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/assets/iiitdm.png"
+            alt="IIITDM"
+            className="h-14 w-14 shrink-0 object-contain md:h-[4.25rem] md:w-[4.25rem]"
+          />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/main_logo.png"
+            alt=""
+            className="h-10 w-auto shrink-0 object-contain md:h-12"
+          />
+          <span className="sr-only">{site.name}</span>
         </Link>
 
         {/* Clean horizontal navigation links */}
-        <nav aria-label="Primary" className="hidden items-center gap-7 lg:flex xl:gap-9">
+        <nav aria-label="Primary" className="hidden items-center gap-8 lg:flex xl:gap-10">
           {NAV_ITEMS.map((item) => {
             const active = isActive(pathname, item.href);
             return (
@@ -50,7 +87,7 @@ export default function SiteHeader({ site }: { site: Site }) {
                 href={item.href}
                 aria-current={active ? 'page' : undefined}
                 className={cn(
-                  'py-1 text-[0.95rem] font-medium transition-colors',
+                  'py-1 text-[1.08rem] font-medium transition-colors xl:text-[1.14rem]',
                   active
                     ? 'text-[#1d9bf0]'
                     : 'text-[#5b616e] hover:text-ink',

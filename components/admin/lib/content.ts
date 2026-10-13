@@ -14,7 +14,8 @@ export type FieldKind =
   | 'date'
   | 'tags'
   | 'image'
-  | 'url';
+  | 'url'
+  | 'select';
 
 export interface FieldDef {
   key: string;
@@ -23,6 +24,7 @@ export interface FieldDef {
   placeholder?: string;
   help?: string;
   rows?: number;
+  options?: { value: string; label: string }[];
 }
 
 /** Field order is chosen to match how each record reads on the public site. */
@@ -47,12 +49,30 @@ export const RECORD_FIELDS: Record<Collection, FieldDef[]> = {
   research: [
     { key: 'title', label: 'Title', kind: 'text', placeholder: 'Research area' },
     { key: 'description', label: 'Description', kind: 'textarea', rows: 4 },
+    { key: 'image', label: 'Diagram / Image', kind: 'image' },
     { key: 'tags', label: 'Tags', kind: 'tags' },
   ],
   projects: [
     { key: 'title', label: 'Title', kind: 'text', placeholder: 'Project name' },
-    { key: 'description', label: 'Description', kind: 'textarea', rows: 4 },
-    { key: 'image', label: 'Image', kind: 'image' },
+    {
+      key: 'category',
+      label: 'Category',
+      kind: 'select',
+      options: [
+        { value: 'inhouse', label: 'In-house Project' },
+        { value: 'students', label: 'Student Project' },
+      ],
+      help: 'Categorize whether this is an in-house lab project or student work.',
+    },
+    { key: 'description', label: 'Description', kind: 'textarea', rows: 4, placeholder: 'Brief description and explanation of the project' },
+    {
+      key: 'members',
+      label: 'People Working on Project',
+      kind: 'tags',
+      placeholder: 'Type a person name and press Enter',
+      help: 'Add each person working on this project (press Enter after each name).',
+    },
+    { key: 'image', label: 'Cover Image', kind: 'image' },
     { key: 'link', label: 'Link', kind: 'url', placeholder: 'https://…' },
     { key: 'tags', label: 'Tags', kind: 'tags' },
   ],
@@ -74,9 +94,16 @@ export const RECORD_FIELDS: Record<Collection, FieldDef[]> = {
     { key: 'tags', label: 'Tags', kind: 'tags' },
   ],
   pictures: [
-    { key: 'name', label: 'Name', kind: 'text', placeholder: 'Group name' },
+    { key: 'name', label: 'Name', kind: 'text', placeholder: 'Event name (e.g. AI Day @ IIITDM 2026)' },
+    { key: 'description', label: 'Description', kind: 'textarea', rows: 3, placeholder: 'Short event subtitle or description' },
+    {
+      key: 'tags',
+      label: 'Tags',
+      kind: 'tags',
+      placeholder: 'e.g. EVENTS, CELEBRATIONS (press Enter)',
+      help: 'Category badge displayed at the bottom of the event card.',
+    },
     { key: 'date', label: 'Date', kind: 'date' },
-    { key: 'description', label: 'Description', kind: 'textarea', rows: 4 },
   ],
 };
 
@@ -105,24 +132,36 @@ export function recordLabel(
 }
 
 /** A brand new, empty record for the given collection with a fresh id. */
-export function createRecord(collection: Collection): RecordValue {
+export function createRecord(
+  collection: Collection,
+  initialOverrides?: Partial<RecordValue>,
+): RecordValue {
   const id = newId();
+  let base: RecordValue;
   switch (collection) {
     case 'publications':
-      return { id, title: '', authors: '', year: new Date().getFullYear(), venue: '', tags: [], link: '' };
+      base = { id, title: '', authors: '', year: new Date().getFullYear(), venue: '', tags: [], link: '' };
+      break;
     case 'team':
-      return { id, name: '', role: '', position: '', description: '', image: '', link: '', tags: [] };
+      base = { id, name: '', role: '', position: '', description: '', image: '', link: '', tags: [] };
+      break;
     case 'research':
-      return { id, title: '', description: '', tags: [] };
+      base = { id, title: '', description: '', image: '', tags: [] };
+      break;
     case 'projects':
-      return { id, title: '', description: '', tags: [], image: '', link: '' };
+      base = { id, title: '', category: 'inhouse', description: '', tags: [], image: '', images: [], members: [], link: '' };
+      break;
     case 'news':
-      return { id, title: '', date: '', description: '', tags: [], link: '' };
+      base = { id, title: '', date: '', description: '', tags: [], link: '' };
+      break;
     case 'events':
-      return { id, title: '', date: '', description: '', tags: [], link: '', image: '', time: '', venue: '' };
+      base = { id, title: '', date: '', description: '', tags: [], link: '', image: '', time: '', venue: '' };
+      break;
     case 'pictures':
-      return { id, name: '', date: '', description: '', thumbnail: '', images: [] };
+      base = { id, name: '', date: '', description: '', thumbnail: '', images: [], tags: [] };
+      break;
   }
+  return initialOverrides ? { ...base, ...initialOverrides } : base;
 }
 
 export function updateSite(draft: Content, patch: Partial<Site>): Content {
@@ -172,6 +211,45 @@ export function moveRecord(
   const list = [...listOf(draft, collection)];
   const index = list.findIndex((item) => item.id === id);
   if (index < 0) return draft;
+
+  if (collection === 'projects') {
+    const curCat =
+      list[index].category === 'students' || list[index].category === 'student'
+        ? 'students'
+        : 'inhouse';
+
+    let target = -1;
+    if (direction === -1) {
+      for (let i = index - 1; i >= 0; i--) {
+        const cat =
+          list[i].category === 'students' || list[i].category === 'student'
+            ? 'students'
+            : 'inhouse';
+        if (cat === curCat) {
+          target = i;
+          break;
+        }
+      }
+    } else {
+      for (let i = index + 1; i < list.length; i++) {
+        const cat =
+          list[i].category === 'students' || list[i].category === 'student'
+            ? 'students'
+            : 'inhouse';
+        if (cat === curCat) {
+          target = i;
+          break;
+        }
+      }
+    }
+
+    if (target < 0) return draft;
+    const temp = list[index];
+    list[index] = list[target];
+    list[target] = temp;
+    return { ...draft, [collection]: list } as Content;
+  }
+
   const target = index + direction;
   if (target < 0 || target >= list.length) return draft;
   const [item] = list.splice(index, 1);

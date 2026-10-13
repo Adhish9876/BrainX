@@ -1,7 +1,8 @@
 'use client';
 
 import * as React from 'react';
-import { ImagePlus } from 'lucide-react';
+import { Check, ImagePlus, Users } from 'lucide-react';
+import type { Member } from '@/lib/types';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -25,6 +26,7 @@ interface RecordEditorProps {
   onOpenChange: (open: boolean) => void;
   collection: Collection;
   record: RecordValue;
+  teamMembers?: Member[];
   isNew: boolean;
   disabled?: boolean;
   onSave: (record: RecordValue) => void;
@@ -45,6 +47,7 @@ export function RecordEditor({
   onOpenChange,
   collection,
   record,
+  teamMembers = [],
   isNew,
   disabled,
   onSave,
@@ -63,6 +66,40 @@ export function RecordEditor({
   };
 
   const fields = RECORD_FIELDS[collection];
+
+  // Deduplicate team members by name (preferring records with an uploaded image)
+  const uniqueTeamMembers = React.useMemo(() => {
+    const byName = new Map<string, Member>();
+    for (const member of teamMembers) {
+      const key = member.name.trim().toLowerCase();
+      if (!key) continue;
+      const existing = byName.get(key);
+      if (!existing || (!existing.image && member.image)) {
+        byName.set(key, member);
+      }
+    }
+    return [...byName.values()];
+  }, [teamMembers]);
+
+  const selectedMembers = Array.isArray(value.members)
+    ? (value.members as string[])
+    : [];
+
+  const toggleProjectMember = (memberName: string) => {
+    const exists = selectedMembers.some(
+      (m) => m.trim().toLowerCase() === memberName.trim().toLowerCase(),
+    );
+    if (exists) {
+      setField(
+        'members',
+        selectedMembers.filter(
+          (m) => m.trim().toLowerCase() !== memberName.trim().toLowerCase(),
+        ),
+      );
+    } else {
+      setField('members', [...selectedMembers, memberName]);
+    }
+  };
 
   return (
     <Dialog
@@ -90,22 +127,132 @@ export function RecordEditor({
             />
           ) : null}
           {fields.map((field) => (
-            <FieldControl
-              key={field.key}
-              field={field}
-              id={`record-${field.key}`}
-              value={value[field.key]}
-              onChange={(next) => setField(field.key, next)}
-              onUpload={onUpload}
-              disabled={disabled}
-            />
+            <React.Fragment key={field.key}>
+              <FieldControl
+                field={field}
+                id={`record-${field.key}`}
+                value={value[field.key]}
+                onChange={(next) => setField(field.key, next)}
+                onUpload={onUpload}
+                disabled={disabled}
+              />
+
+              {collection === 'projects' &&
+              field.key === 'members' &&
+              uniqueTeamMembers.length > 0 ? (
+                <div className="rounded-lg border border-slate-200 bg-slate-50/70 p-3">
+                  <p className="flex items-center gap-1.5 text-xs font-medium text-slate-700">
+                    <Users className="size-3.5 text-slate-600" />
+                    Quick-select from Lab Team (automatically wires member photo &amp; role):
+                  </p>
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {uniqueTeamMembers.map((member) => {
+                      const active = selectedMembers.some(
+                        (m) =>
+                          m.trim().toLowerCase() ===
+                          member.name.trim().toLowerCase(),
+                      );
+                      return (
+                        <button
+                          key={member.id}
+                          type="button"
+                          disabled={disabled}
+                          onClick={() => toggleProjectMember(member.name)}
+                          className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors ${
+                            active
+                              ? 'border-navy-700 bg-navy-700 text-white'
+                              : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
+                          }`}
+                        >
+                          {member.image ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={member.image}
+                              alt=""
+                              className="size-4 rounded-full object-cover"
+                            />
+                          ) : null}
+                          <span>{member.name}</span>
+                          {active ? <Check className="size-3" /> : null}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : null}
+              {collection === 'pictures' && field.key === 'tags' ? (
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="mr-1 text-xs font-medium text-slate-600">
+                    Quick category:
+                  </span>
+                  {['EVENTS', 'CELEBRATIONS', 'WORKSHOPS', 'CONFERENCES', 'LAB LIFE'].map(
+                    (preset) => {
+                      const currentTags = Array.isArray(value.tags)
+                        ? (value.tags as string[])
+                        : [];
+                      const active = currentTags.some(
+                        (t) => t.trim().toUpperCase() === preset,
+                      );
+                      return (
+                        <button
+                          key={preset}
+                          type="button"
+                          disabled={disabled}
+                          onClick={() => {
+                            if (active) {
+                              setField(
+                                'tags',
+                                currentTags.filter(
+                                  (t) => t.trim().toUpperCase() !== preset,
+                                ),
+                              );
+                            } else {
+                              setField('tags', [...currentTags, preset]);
+                            }
+                          }}
+                          className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[0.7rem] font-semibold uppercase tracking-wider transition-colors ${
+                            active
+                              ? 'border-navy-700 bg-navy-700 text-white'
+                              : 'border-slate-200 bg-slate-100 text-slate-700 hover:border-slate-300'
+                          }`}
+                        >
+                          <span>{preset}</span>
+                          {active ? <Check className="size-3" /> : null}
+                        </button>
+                      );
+                    },
+                  )}
+                </div>
+              ) : null}
+            </React.Fragment>
           ))}
+
+          {collection === 'projects' ? (
+            <div className="space-y-2">
+              <Label className="flex items-center gap-2">
+                <ImagePlus className="size-4 text-slate-600" />
+                Project Carousel Images (Modal)
+              </Label>
+              <GalleryField
+                images={Array.isArray(value.images) ? (value.images as string[]) : []}
+                thumbnail={typeof value.image === 'string' ? value.image : ''}
+                onChangeImages={(next) => setField('images', next)}
+                onChangeThumbnail={(next) => setField('image', next)}
+                onUpload={onUpload}
+                disabled={disabled}
+              />
+              <p className="text-xs text-slate-600">
+                Upload multiple images for the project modal carousel. Star any
+                image to set it as the card cover image.
+              </p>
+            </div>
+          ) : null}
 
           {collection === 'pictures' ? (
             <div className="space-y-2">
               <Label className="flex items-center gap-2">
                 <ImagePlus className="size-4 text-slate-600" />
-                Images
+                Event Photos
               </Label>
               <GalleryField
                 images={Array.isArray(value.images) ? (value.images as string[]) : []}
@@ -116,8 +263,8 @@ export function RecordEditor({
                 disabled={disabled}
               />
               <p className="text-xs text-slate-600">
-                Pick any image as the group thumbnail. The thumbnail is used on
-                the gallery index.
+                Upload photos for this event. Star any photo to set it as the
+                event card cover image.
               </p>
             </div>
           ) : null}

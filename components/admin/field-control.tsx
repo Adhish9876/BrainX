@@ -48,6 +48,23 @@ export function FieldControl({
         />
       ) : null}
 
+      {field.kind === 'select' ? (
+        <select
+          id={id}
+          value={typeof value === 'string' && value ? value : (field.options?.[0]?.value ?? '')}
+          disabled={disabled}
+          aria-describedby={helpId}
+          onChange={(event) => onChange(event.target.value)}
+          className="flex h-9 w-full rounded-md border border-slate-200 bg-white px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ink disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {field.options?.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+      ) : null}
+
       {field.kind === 'url' ? (
         <Input
           id={id}
@@ -111,6 +128,7 @@ export function FieldControl({
           value={Array.isArray(value) ? (value as string[]) : []}
           onChange={(next) => onChange(next)}
           disabled={disabled}
+          placeholder={field.placeholder}
           aria-describedby={helpId}
         />
       ) : null}

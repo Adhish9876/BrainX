@@ -335,14 +335,13 @@ const DriftWall = ({
   );
   const imgClass = cx(
     'block h-full w-full select-none object-cover',
-    '[filter:grayscale(var(--dw-gray))_saturate(0.92)]',
     'transition-[filter] duration-[420ms] ease-[cubic-bezier(0.22,1,0.36,1)]',
-    'group-[.is-active]/tile:[filter:grayscale(0)_saturate(1.05)] group-focus-visible/tile:[filter:grayscale(0)_saturate(1.05)]'
+    'group-[.is-active]/tile:scale-[1.02]'
   );
   const overlayClass = cx(
-    'pointer-events-none absolute inset-0 bg-[var(--dw-overlay)] opacity-[0.15]',
-    'transition-opacity duration-[420ms] ease-[cubic-bezier(0.22,1,0.36,1)]',
-    'group-[.is-active]/tile:opacity-0 group-focus-visible/tile:opacity-0'
+    overlayColor === 'transparent'
+      ? 'hidden'
+      : 'pointer-events-none absolute inset-0 bg-[var(--dw-overlay)] opacity-[0.15] transition-opacity duration-[420ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-[.is-active]/tile:opacity-0 group-focus-visible/tile:opacity-0'
   );
 
   const renderTile = (item: DriftWallItem, id: string, colIndex: number, itemIndex: number) => {

@@ -195,12 +195,18 @@ const researchSchema = z
     title: bounded(500),
     description: bounded(LIMITS.longText),
     tags,
+    image: imageField.optional().default(''),
   })
   .strict();
 
+const projectCategory = z.enum(['inhouse', 'students', 'student']).optional().default('inhouse');
+
 const projectSchema = researchSchema.extend({
   image: imageField,
+  images: z.array(imageField).max(LIMITS.groupImages).optional().default([]),
+  members: z.array(z.string()).optional().default([]),
   link: url,
+  category: projectCategory,
 });
 
 const newsSchema = z
@@ -228,6 +234,7 @@ const pictureGroupSchema = z
     description: bounded(LIMITS.mediumText),
     thumbnail: imageField,
     images: z.array(imageField).max(LIMITS.groupImages),
+    tags: tags.optional(),
   })
   .strict()
   .superRefine((group, ctx) => {

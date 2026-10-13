@@ -51,6 +51,8 @@ type PictureMeta = {
   thumbnail?: string;
   /** Optional explicit ordering by bare stem or filename; unknown entries are ignored. */
   imageOrder?: string[];
+  /** Optional category/tag pills for the event album card. */
+  tags?: string[];
 };
 
 function readJson<T>(relativePath: string, fallback: T): T {
@@ -122,6 +124,7 @@ function scanPictureGroup(id: string, meta: PictureMeta): PictureGroup {
     description: meta.description ?? '',
     thumbnail: thumbnailStem ? mediaUrl(id, thumbnailStem) : '',
     images: ordered.map((stem) => mediaUrl(id, stem)),
+    ...(Array.isArray(meta.tags) && meta.tags.length > 0 ? { tags: meta.tags } : {}),
   };
 }
 

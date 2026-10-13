@@ -1,0 +1,16 @@
+{
+  "id": "demo_pic",
+  "name": "Lab Moments & Activities",
+  "date": "2026",
+  "description": "Snapshots of research, teamwork, and life at BrainX Lab.",
+  "thumbnail": "photo-01",
+  "imageOrder": [
+    "photo-01",
+    "photo-02",
+    "photo-03",
+    "photo-04",
+    "photo-05",
+    "photo-06",
+    "photo-07"
+  ]
+}

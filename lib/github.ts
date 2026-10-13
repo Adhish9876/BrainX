@@ -130,7 +130,13 @@ export function collectStagedTokens(content: Content): Set<string> {
   };
   add(content.site.logo);
   for (const member of content.team) add(member.image);
-  for (const project of content.projects) add(project.image);
+  for (const item of content.research) if (item.image) add(item.image);
+  for (const project of content.projects) {
+    add(project.image);
+    if (project.images) {
+      for (const img of project.images) add(img);
+    }
+  }
   for (const event of content.events) add(event.image);
   for (const group of content.pictures) {
     add(group.thumbnail);
@@ -187,6 +193,7 @@ type PictureMetaOut = {
   description: string;
   thumbnail: string;
   imageOrder: string[];
+  tags?: string[];
 };
 
 /**
@@ -308,6 +315,7 @@ export function planCommit(
       description: group.description,
       thumbnail: isLocalThumb ? toStem(basename(thumbUrl)) : '',
       imageOrder: finalStems,
+      ...(Array.isArray(group.tags) && group.tags.length > 0 ? { tags: group.tags } : {}),
     };
     json.push({ path: metaPath, buf: serializeJson(meta) });
     desired.add(metaPath);
@@ -329,7 +337,20 @@ export function planCommit(
 
   working.site.logo = resolvePlain(working.site.logo, 'site logo');
   for (const member of working.team) member.image = resolvePlain(member.image, `member ${member.id}`);
-  for (const project of working.projects) project.image = resolvePlain(project.image, `project ${project.id}`);
+  for (const item of working.research) {
+    if (item.image) item.image = resolvePlain(item.image, `research ${item.id}`);
+  }
+  for (const project of working.projects) {
+    project.image = resolvePlain(project.image, `project ${project.id}`);
+    if (project.images) {
+      project.images = project.images
+        .map((img: string, idx: number) => resolvePlain(img, `project ${project.id} image ${idx}`))
+        .filter(Boolean);
+    }
+    if (!project.image && project.images && project.images.length > 0) {
+      project.image = project.images[0];
+    }
+  }
   for (const event of working.events) event.image = resolvePlain(event.image, `event ${event.id}`);
 
   // --- collection JSON ----------------------------------------------------
@@ -580,6 +601,7 @@ type PictureMetaIn = {
   description?: string;
   thumbnail?: string;
   imageOrder?: string[];
+  tags?: string[];
 };
 
 function scanGroups(entries: TreeEntry[], id: string, meta: PictureMetaIn): PictureGroup {
@@ -602,6 +624,7 @@ function scanGroups(entries: TreeEntry[], id: string, meta: PictureMetaIn): Pict
     description: meta.description ?? '',
     thumbnail: thumbnailStem ? url(thumbnailStem) : '',
     images: ordered.map(url),
+    ...(Array.isArray(meta.tags) && meta.tags.length > 0 ? { tags: meta.tags } : {}),
   };
 }
 

@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'motion/react';
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'motion/react';
 import { ArrowUpRight } from '@phosphor-icons/react';
 import Reveal from './Reveal';
 
@@ -55,67 +55,147 @@ const PILLARS: Pillar[] = [
   },
 ];
 
+const EASE_SLOW = [0.12, 1, 0.2, 1] as const;
+
+const titleVariants = {
+  hidden: {
+    opacity: 0,
+    y: 44,
+    transition: { duration: 1.2, ease: EASE_SLOW },
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 2.4, ease: EASE_SLOW },
+  },
+};
+
+const brainVariants = {
+  hidden: {
+    opacity: 0,
+    scale: 0.84,
+    y: 56,
+    transition: { duration: 1.2, ease: EASE_SLOW },
+  },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: { duration: 2.5, ease: EASE_SLOW },
+  },
+};
+
+const linesVariants = {
+  hidden: {
+    opacity: 0,
+    transition: { duration: 1.0, ease: EASE_SLOW },
+  },
+  visible: {
+    opacity: 0.45,
+    transition: { duration: 2.5, ease: EASE_SLOW },
+  },
+};
+
+const nodeVariants = {
+  tl: {
+    hidden: {
+      opacity: 0,
+      x: -44,
+      y: 64,
+      transition: { duration: 1.2, ease: EASE_SLOW },
+    },
+    visible: {
+      opacity: 1,
+      x: 0,
+      y: 0,
+      transition: { duration: 2.5, ease: EASE_SLOW },
+    },
+  },
+  tr: {
+    hidden: {
+      opacity: 0,
+      x: 44,
+      y: 64,
+      transition: { duration: 1.2, ease: EASE_SLOW },
+    },
+    visible: {
+      opacity: 1,
+      x: 0,
+      y: 0,
+      transition: { duration: 2.5, ease: EASE_SLOW },
+    },
+  },
+  bl: {
+    hidden: {
+      opacity: 0,
+      x: -44,
+      y: 76,
+      transition: { duration: 1.2, ease: EASE_SLOW },
+    },
+    visible: {
+      opacity: 1,
+      x: 0,
+      y: 0,
+      transition: { duration: 2.5, ease: EASE_SLOW },
+    },
+  },
+  br: {
+    hidden: {
+      opacity: 0,
+      x: 44,
+      y: 76,
+      transition: { duration: 1.2, ease: EASE_SLOW },
+    },
+    visible: {
+      opacity: 1,
+      x: 0,
+      y: 0,
+      transition: { duration: 2.5, ease: EASE_SLOW },
+    },
+  },
+};
+
 export default function WhatWeDo() {
   const [hoveredPillar, setHoveredPillar] = useState<Pillar | null>(null);
+  const [isUnlocked, setIsUnlocked] = useState(false);
   const containerRef = useRef<HTMLElement>(null);
 
-  // Track scroll strictly within this section [start enters viewport, center in viewport]
+  // Track when the section crosses a clear scroll threshold
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ['start 92%', 'start 25%'],
+    offset: ['start end', 'start start'],
   });
 
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 160,
-    damping: 24,
-    restDelta: 0.001,
+  useMotionValueEvent(scrollYProgress, 'change', (latest) => {
+    if (latest > 0.28 && !isUnlocked) {
+      setIsUnlocked(true);
+    } else if (latest <= 0.18 && isUnlocked) {
+      setIsUnlocked(false);
+    }
   });
 
-  // 1. Title scroll tracking: Fades in from left and glides directly to center
-  const titleOpacity = useTransform(smoothProgress, [0, 0.45], [0, 1]);
-  const titleX = useTransform(smoothProgress, [0, 0.45], [-140, 0]);
-
-  // 2. Center Brain: Scale in and fade in as user scrolls
-  const brainOpacity = useTransform(smoothProgress, [0.15, 0.55], [0, 1]);
-  const brainScale = useTransform(smoothProgress, [0.15, 0.55], [0.75, 1]);
-
-  // 3. Four Outer Domains: Glide inward from corners toward their positions
-  const tlX = useTransform(smoothProgress, [0.25, 0.8], [-60, 0]);
-  const tlY = useTransform(smoothProgress, [0.25, 0.8], [-40, 0]);
-  const tlOpacity = useTransform(smoothProgress, [0.25, 0.7], [0, 1]);
-
-  const trX = useTransform(smoothProgress, [0.25, 0.8], [60, 0]);
-  const trY = useTransform(smoothProgress, [0.25, 0.8], [-40, 0]);
-  const trOpacity = useTransform(smoothProgress, [0.25, 0.7], [0, 1]);
-
-  const blX = useTransform(smoothProgress, [0.35, 0.9], [-60, 0]);
-  const blY = useTransform(smoothProgress, [0.35, 0.9], [40, 0]);
-  const blOpacity = useTransform(smoothProgress, [0.35, 0.8], [0, 1]);
-
-  const brX = useTransform(smoothProgress, [0.35, 0.9], [60, 0]);
-  const brY = useTransform(smoothProgress, [0.35, 0.9], [40, 0]);
-  const brOpacity = useTransform(smoothProgress, [0.35, 0.8], [0, 1]);
-
-  // Connecting lines opacity
-  const linesOpacity = useTransform(smoothProgress, [0.45, 0.85], [0, 0.45]);
+  const animState = isUnlocked ? 'visible' : 'hidden';
 
   return (
     <section
       ref={containerRef}
       id="what-we-do"
       aria-labelledby="what-heading"
-      className="relative bg-paper pt-6 pb-4 md:pt-8 md:pb-6 border-t border-ink/10 overflow-hidden"
+      className="relative bg-white min-h-[92svh] flex flex-col justify-center items-center py-6 md:py-10 border-t border-ink/10 overflow-hidden"
     >
-      <div className="mx-auto w-full max-w-[1220px] px-4 sm:px-6 lg:px-8">
-        {/* ── DESKTOP WHITEBOARD CANVAS ── */}
-        <div className="hidden lg:block relative mx-auto w-full aspect-[1672/941] select-none">
+      <div className="w-full flex items-center justify-center px-4 sm:px-8 lg:px-12">
+        {/* ── DESKTOP WHITEBOARD CANVAS (Slightly smaller with generous framing) ── */}
+        <div
+          style={{ maxWidth: 'min(86vw, calc(82svh * 1672 / 941))' }}
+          className="hidden lg:block relative mx-auto w-full aspect-[1672/941] select-none"
+        >
           {/* Whiteboard background image in exact native aspect ratio */}
           <Image
             src="/Board.png"
             alt=""
             fill
             priority
-            sizes="(min-width: 1024px) 1220px, 100vw"
+            sizes="90vw"
             className="pointer-events-none object-contain drop-shadow-[0_20px_40px_rgba(11,16,32,0.10)]"
           />
 
@@ -126,20 +206,26 @@ export default function WhatWeDo() {
               <h2 id="what-heading" className="sr-only">
                 Our Research Domains
               </h2>
-              <motion.div style={{ opacity: titleOpacity, x: titleX }}>
+              <motion.div
+                initial="hidden"
+                animate={animState}
+                variants={titleVariants}
+              >
                 <img
                   src="/research_domain.png"
                   alt="Our Research Domains"
-                  className="h-20 w-auto object-contain xl:h-24"
+                  className="h-[4.8rem] w-auto object-contain xl:h-[5.6rem]"
                 />
               </motion.div>
             </div>
 
             {/* Diagram area below title */}
-            <div className="relative -mt-4 h-[calc(100%-3.5rem)] w-full">
-              {/* Connecting Curved Guide Lines - Scroll Driven */}
+            <div className="relative -mt-3 h-[calc(100%-3.2rem)] w-full">
+              {/* Connecting Curved Guide Lines - Threshold Triggered */}
               <motion.svg
-                style={{ opacity: linesOpacity }}
+                initial="hidden"
+                animate={animState}
+                variants={linesVariants}
                 className="pointer-events-none absolute inset-0 h-full w-full"
                 viewBox="0 0 1000 560"
                 fill="none"
@@ -186,7 +272,7 @@ export default function WhatWeDo() {
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.8, y: 8 }}
                       transition={{ type: 'spring', stiffness: 450, damping: 28 }}
-                      className="pointer-events-none absolute -top-52 left-[74%] -translate-x-1/2 z-50 w-[260px] h-[260px] filter drop-shadow-[0_16px_36px_rgba(0,0,0,0.18)]"
+                      className="pointer-events-none absolute -top-56 left-[75%] -translate-x-1/2 z-50 w-[275px] h-[275px] xl:w-[295px] xl:h-[295px] xl:-top-62 filter drop-shadow-[0_16px_36px_rgba(0,0,0,0.18)]"
                     >
                       <div className="relative w-full h-full">
                         <Image
@@ -198,15 +284,15 @@ export default function WhatWeDo() {
                         />
 
                         <div className="absolute inset-x-11 top-9 bottom-26 flex flex-col items-center justify-center text-center">
-                          <h4 className="font-sans text-[0.76rem] font-bold leading-tight text-black max-w-[160px]">
+                          <h4 className="font-sans text-[0.8rem] font-bold leading-tight text-black max-w-[170px]">
                             {hoveredPillar.title}
                           </h4>
 
-                          <p className="mt-1 font-sans text-[0.62rem] font-medium leading-relaxed text-black/90 max-w-[165px]">
+                          <p className="mt-1 font-sans text-[0.66rem] font-medium leading-relaxed text-black/90 max-w-[175px]">
                             {hoveredPillar.shortSummary}
                           </p>
 
-                          <span className="mt-1.5 inline-flex items-center gap-1 font-mono text-[0.55rem] font-bold text-black/80">
+                          <span className="mt-1.5 inline-flex items-center gap-1 font-mono text-[0.58rem] font-bold text-black/80">
                             <span>Click node to view</span>
                             <ArrowUpRight weight="bold" className="h-2 w-2" />
                           </span>
@@ -216,65 +302,70 @@ export default function WhatWeDo() {
                   )}
                 </AnimatePresence>
 
-                {/* Central Brain Illustration - Scroll Linked */}
+                {/* Central Brain Illustration - Threshold Triggered */}
                 <motion.div
-                  style={{ opacity: brainOpacity, scale: brainScale }}
-                  className="relative w-52 h-42 xl:w-60 xl:h-48 filter drop-shadow-[0_12px_28px_rgba(0,0,0,0.06)]"
+                  initial="hidden"
+                  animate={animState}
+                  variants={brainVariants}
+                  className="flex flex-col items-center"
                 >
-                  <Image
-                    src="/assets/main-Photoroom.png"
-                    alt="Brain Core"
-                    fill
-                    className="object-contain"
-                    priority
-                  />
-                </motion.div>
+                  <div className="relative w-[13.5rem] h-[10.8rem] xl:w-[15.5rem] xl:h-[12.4rem] 2xl:w-[17rem] 2xl:h-[13.6rem] filter drop-shadow-[0_12px_28px_rgba(0,0,0,0.06)]">
+                    <Image
+                      src="/assets/main-Photoroom.png"
+                      alt="Brain Core"
+                      fill
+                      className="object-contain"
+                      priority
+                    />
+                  </div>
 
-                <motion.span
-                  style={{ opacity: brainOpacity }}
-                  className="mt-1 text-center font-mono text-[0.65rem] font-semibold tracking-widest text-muted/75 uppercase"
-                >
-                  Neural Processing Core
-                </motion.span>
+                  <span className="mt-1 text-center font-mono text-[0.66rem] xl:text-[0.72rem] font-semibold tracking-widest text-muted/75 uppercase">
+                    Neural Processing Core
+                  </span>
+                </motion.div>
               </div>
 
               {/* 1. TOP-LEFT: Brain–Computer Interfaces */}
-              <div className="absolute left-[5.5%] top-[1%] z-30">
+              <div className="absolute left-[8%] top-[2%] z-30">
                 <NodeItem
                   pillar={PILLARS[0]}
                   onHover={() => setHoveredPillar(PILLARS[0])}
                   onLeave={() => setHoveredPillar(null)}
-                  style={{ opacity: tlOpacity, x: tlX, y: tlY }}
+                  animState={animState}
+                  variants={nodeVariants.tl}
                 />
               </div>
 
               {/* 2. TOP-RIGHT: EEG Signal Processing */}
-              <div className="absolute right-[5.5%] top-[1%] z-30">
+              <div className="absolute right-[8%] top-[2%] z-30">
                 <NodeItem
                   pillar={PILLARS[1]}
                   onHover={() => setHoveredPillar(PILLARS[1])}
                   onLeave={() => setHoveredPillar(null)}
-                  style={{ opacity: trOpacity, x: trX, y: trY }}
+                  animState={animState}
+                  variants={nodeVariants.tr}
                 />
               </div>
 
               {/* 3. BOTTOM-LEFT: Affective Computing */}
-              <div className="absolute left-[5.5%] bottom-[2%] z-30">
+              <div className="absolute left-[8%] bottom-[2.5%] z-30">
                 <NodeItem
                   pillar={PILLARS[2]}
                   onHover={() => setHoveredPillar(PILLARS[2])}
                   onLeave={() => setHoveredPillar(null)}
-                  style={{ opacity: blOpacity, x: blX, y: blY }}
+                  animState={animState}
+                  variants={nodeVariants.bl}
                 />
               </div>
 
               {/* 4. BOTTOM-RIGHT: Machine Learning */}
-              <div className="absolute right-[5.5%] bottom-[2%] z-30">
+              <div className="absolute right-[8%] bottom-[2.5%] z-30">
                 <NodeItem
                   pillar={PILLARS[3]}
                   onHover={() => setHoveredPillar(PILLARS[3])}
                   onLeave={() => setHoveredPillar(null)}
-                  style={{ opacity: brOpacity, x: brX, y: brY }}
+                  animState={animState}
+                  variants={nodeVariants.br}
                 />
               </div>
             </div>
@@ -282,7 +373,7 @@ export default function WhatWeDo() {
         </div>
 
         {/* ── MOBILE / TABLET VIEW ── */}
-        <div className="lg:hidden">
+        <div className="lg:hidden w-full max-w-[76rem] mx-auto px-4 sm:px-6">
           <div className="flex flex-col items-center text-center pb-4">
             <img
               src="/research_domain.png"
@@ -354,15 +445,22 @@ function NodeItem({
   pillar,
   onHover,
   onLeave,
-  style,
+  animState,
+  variants,
 }: {
   pillar: Pillar;
   onHover: () => void;
   onLeave: () => void;
-  style: any;
+  animState: 'hidden' | 'visible';
+  variants: any;
 }) {
   return (
-    <motion.div style={style} className="relative">
+    <motion.div
+      initial="hidden"
+      animate={animState}
+      variants={variants}
+      className="relative will-change-transform"
+    >
       <Link
         href="/research"
         onMouseEnter={onHover}
@@ -370,7 +468,7 @@ function NodeItem({
         className="group block cursor-pointer transition-transform duration-300 hover:scale-105 active:scale-95"
       >
         {/* Standalone illustration sized to fit cleanly inside the whiteboard */}
-        <div className="relative w-60 h-42 xl:w-72 xl:h-48 filter drop-shadow-[0_8px_20px_rgba(0,0,0,0.06)]">
+        <div className="relative w-[15.5rem] h-[10.8rem] xl:w-[18rem] xl:h-[12.5rem] 2xl:w-[20rem] 2xl:h-[14rem] filter drop-shadow-[0_8px_20px_rgba(0,0,0,0.06)]">
           <Image
             src={pillar.image}
             alt={pillar.title}
@@ -381,7 +479,7 @@ function NodeItem({
 
         {/* Click indicator */}
         <div className="mt-1 text-center">
-          <span className="inline-flex items-center gap-1 font-mono text-[0.65rem] font-semibold uppercase tracking-wider text-muted/80 group-hover:text-ink transition-colors">
+          <span className="inline-flex items-center gap-1 font-mono text-[0.68rem] xl:text-[0.74rem] font-semibold uppercase tracking-wider text-muted/80 group-hover:text-ink transition-colors">
             <span>Explore {pillar.title}</span>
             <ArrowUpRight weight="bold" className="h-3 w-3" />
           </span>
@@ -390,3 +488,4 @@ function NodeItem({
     </motion.div>
   );
 }
+
