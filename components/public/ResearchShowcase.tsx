@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { ArrowDown, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
+import { ArrowDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Research } from '@/lib/types';
 import ScrollStack, { ScrollStackItem } from '@/components/ui/ScrollStack';
 import TagList from './TagList';
@@ -493,11 +493,6 @@ export default function ResearchShowcase({ research }: { research: Research[] })
           
           {/* Left Column: Clean Apple Typography & Mission Statement */}
           <div className="lg:col-span-5 xl:col-span-5 flex flex-col justify-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-slate-200/80 bg-white/90 px-3.5 py-1 text-xs font-semibold tracking-wide text-[#0066cc] backdrop-blur-xs w-fit shadow-2xs mb-4">
-              <Sparkles className="h-3.5 w-3.5 text-[#0066cc]" />
-              <span>Neural Engineering & Cognitive Systems</span>
-            </div>
-
             <h1
               id="research-hero-heading"
               className="font-display text-4xl sm:text-5xl lg:text-[3.6rem] font-bold tracking-[-0.035em] text-[#1d1d1f] leading-[1.06]"
@@ -508,17 +503,6 @@ export default function ResearchShowcase({ research }: { research: Research[] })
             <p className="mt-5 text-base sm:text-lg font-normal leading-relaxed text-[#3d3d40]">
               At BrainX Lab, we decode brain dynamics and physiological signals to pioneer non-invasive brain–computer interfaces, real-time closed-loop biofeedback, and affective neuro-technologies.
             </p>
-
-            <div className="mt-6 flex flex-wrap gap-2">
-              {['Brain–Computer Interfaces', 'EEG Signal Processing', 'Affective Computing', 'Machine Learning'].map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full border border-slate-200/90 bg-white px-3 py-1 text-xs font-medium text-slate-700 shadow-2xs"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
 
             <div className="mt-8 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
               <span>Scroll to explore research themes</span>
@@ -533,20 +517,9 @@ export default function ResearchShowcase({ research }: { research: Research[] })
               onMouseEnter={() => setPaused(true)}
               onMouseLeave={() => setPaused(false)}
             >
-              {/* Carousel Header Bar */}
-              <div className="mb-4 flex items-center justify-between border-b border-slate-100 pb-3">
-                <div className="flex items-center gap-2">
-                  <span className="font-mono text-xs font-bold text-[#0066cc]">
-                    Pipeline {String(safeIndex + 1).padStart(2, '0')}
-                  </span>
-                  <span className="text-slate-300">/</span>
-                  <span className="text-xs font-medium text-slate-500 truncate max-w-[200px] sm:max-w-xs">
-                    {currentSlide?.title}
-                  </span>
-                </div>
-
-                {/* Left/Right nav buttons */}
-                {count > 1 && (
+              {/* Carousel Header Nav */}
+              {count > 1 && (
+                <div className="mb-4 flex items-center justify-end border-b border-slate-100 pb-3">
                   <div className="flex items-center gap-1.5">
                     <button
                       type="button"
@@ -565,8 +538,8 @@ export default function ResearchShowcase({ research }: { research: Research[] })
                       <ChevronRight className="h-4 w-4" strokeWidth={2.2} />
                     </button>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
 
               {/* Diagram Stage */}
               <div className="relative mx-auto flex aspect-[16/8] min-h-[200px] w-full items-center justify-center overflow-hidden rounded-xl bg-slate-50/70 p-2 sm:min-h-[260px]">
