@@ -295,3 +295,38 @@ describe('commitContent', () => {
     expect(state.commitCalls).toBe(0);
   });
 });
+
+describe('admin-managed home content', () => {
+  const T3 = 'c'.repeat(32);
+  const T4 = 'd'.repeat(32);
+  const T5 = 'e'.repeat(32);
+
+  it('publishes uploaded publication photos and equipment-partner images', () => {
+    const content = makeContent();
+    content.site.grantAmount = 15_000_000;
+    content.site.partners = [
+      { name: 'Acme', logo: `/api/admin/uploads/${T3}`, product: `/api/admin/uploads/${T4}`, productName: '', description: '', link: '' },
+    ];
+    content.publications = [
+      { id: 'p1', title: 't', authors: 'a', year: 2025, venue: 'v', tags: [], link: '', image: `/api/admin/uploads/${T5}` },
+    ];
+
+    const tokens = collectStagedTokens(content);
+    expect([T3, T4, T5].every((t) => tokens.has(t))).toBe(true);
+
+    const staged = new Map<string, Buffer>([
+      [T3, Buffer.from('3')],
+      [T4, Buffer.from('4')],
+      [T5, Buffer.from('5')],
+    ]);
+    const plan = planCommit(content, [], staged);
+    const site = JSON.parse(plan.json.find((f) => f.path === 'data/site.json')!.buf.toString('utf8'));
+    const pubs = JSON.parse(plan.json.find((f) => f.path === 'data/publications.json')!.buf.toString('utf8'));
+
+    expect(site.grantAmount).toBe(15_000_000);
+    expect(site.partners[0].logo).toBe(`/media/uploads/${T3}.webp`);
+    expect(site.partners[0].product).toBe(`/media/uploads/${T4}.webp`);
+    expect(pubs[0].image).toBe(`/media/uploads/${T5}.webp`);
+    expect(JSON.stringify(plan.json)).not.toContain('/api/admin/uploads/');
+  });
+});

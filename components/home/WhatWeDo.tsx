@@ -181,8 +181,14 @@ export default function WhatWeDo() {
       ref={containerRef}
       id="what-we-do"
       aria-labelledby="what-heading"
-      className="relative bg-white min-h-[92svh] flex flex-col justify-center items-center py-6 md:py-10 border-t border-ink/10 overflow-hidden"
+      className="relative isolate bg-white lg:bg-[#0b1020] min-h-[92svh] flex flex-col justify-center items-center py-6 md:py-10 border-t border-ink/10 lg:border-white/10 overflow-hidden"
     >
+      {/* Soft brand-coloured light behind the board (desktop only) */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 hidden overflow-hidden lg:block">
+        <div className="absolute -left-40 top-1/4 h-[34rem] w-[34rem] rounded-full bg-sky-500/25 blur-[120px]" />
+        <div className="absolute -right-40 bottom-0 h-[32rem] w-[32rem] rounded-full bg-orange-400/20 blur-[120px]" />
+      </div>
+
       <div className="w-full flex items-center justify-center px-4 sm:px-8 lg:px-12">
         {/* ── DESKTOP WHITEBOARD CANVAS (Slightly smaller with generous framing) ── */}
         <div
@@ -190,6 +196,8 @@ export default function WhatWeDo() {
           className="hidden lg:block relative mx-auto w-full aspect-[1672/941] select-none"
         >
           {/* Whiteboard background image in exact native aspect ratio */}
+          {/* Solid white backing: the board photo is semi-transparent, so on the black page it would turn grey */}
+          <div aria-hidden="true" className="absolute inset-x-[2.2%] top-[2.6%] bottom-[5%] rounded-[0.4rem] bg-white" />
           <Image
             src="/Board.png"
             alt=""
@@ -212,9 +220,9 @@ export default function WhatWeDo() {
                 variants={titleVariants}
               >
                 <img
-                  src="/research_domain.png"
+                  src="/research_domain_clean.png"
                   alt="Our Research Domains"
-                  className="h-[4.8rem] w-auto object-contain xl:h-[5.6rem]"
+                  className="h-[2.9rem] w-auto object-contain xl:h-[3.4rem]"
                 />
               </motion.div>
             </div>
@@ -233,28 +241,28 @@ export default function WhatWeDo() {
               >
                 {/* Top-Left: BCI */}
                 <path
-                  d="M 310 165 C 370 195, 425 235, 460 260"
+                  d="M 255 150 C 335 190, 420 235, 460 260"
                   stroke="#0284c7"
                   strokeWidth="2.4"
                   strokeDasharray="5 5"
                 />
                 {/* Top-Right: EEG */}
                 <path
-                  d="M 690 165 C 630 195, 575 235, 540 260"
+                  d="M 745 150 C 665 190, 580 235, 540 260"
                   stroke="#059669"
                   strokeWidth="2.4"
                   strokeDasharray="5 5"
                 />
                 {/* Bottom-Left: Affective */}
                 <path
-                  d="M 310 395 C 370 365, 425 325, 460 300"
+                  d="M 255 410 C 335 370, 420 325, 460 300"
                   stroke="#d97706"
                   strokeWidth="2.4"
                   strokeDasharray="5 5"
                 />
                 {/* Bottom-Right: ML */}
                 <path
-                  d="M 690 395 C 630 365, 575 325, 540 300"
+                  d="M 745 410 C 665 370, 580 325, 540 300"
                   stroke="#7c3aed"
                   strokeWidth="2.4"
                   strokeDasharray="5 5"
@@ -272,7 +280,7 @@ export default function WhatWeDo() {
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.8, y: 8 }}
                       transition={{ type: 'spring', stiffness: 450, damping: 28 }}
-                      className="pointer-events-none absolute -top-56 left-[75%] -translate-x-1/2 z-50 w-[275px] h-[275px] xl:w-[295px] xl:h-[295px] xl:-top-62 filter drop-shadow-[0_16px_36px_rgba(0,0,0,0.18)]"
+                      className="pointer-events-none absolute top-12 left-[75%] -translate-x-1/2 -translate-y-full z-50 w-[250px] h-[250px] xl:w-[272px] xl:h-[272px] filter drop-shadow-[0_16px_36px_rgba(0,0,0,0.18)]"
                     >
                       <div className="relative w-full h-full">
                         <Image
@@ -283,12 +291,12 @@ export default function WhatWeDo() {
                           priority
                         />
 
-                        <div className="absolute inset-x-11 top-9 bottom-26 flex flex-col items-center justify-center text-center">
-                          <h4 className="font-sans text-[0.8rem] font-bold leading-tight text-black max-w-[170px]">
+                        <div className="absolute inset-x-12 top-8 bottom-[5.6rem] flex flex-col items-center justify-center text-center">
+                          <h4 className="font-sans text-[0.8rem] font-bold leading-tight text-black max-w-[150px]">
                             {hoveredPillar.title}
                           </h4>
 
-                          <p className="mt-1 font-sans text-[0.66rem] font-medium leading-relaxed text-black/90 max-w-[175px]">
+                          <p className="mt-1 font-sans text-[0.62rem] font-medium leading-snug text-black/90 max-w-[140px]">
                             {hoveredPillar.shortSummary}
                           </p>
 
@@ -309,7 +317,7 @@ export default function WhatWeDo() {
                   variants={brainVariants}
                   className="flex flex-col items-center"
                 >
-                  <div className="relative w-[13.5rem] h-[10.8rem] xl:w-[15.5rem] xl:h-[12.4rem] 2xl:w-[17rem] 2xl:h-[13.6rem] filter drop-shadow-[0_12px_28px_rgba(0,0,0,0.06)]">
+                  <div className="relative w-[15rem] h-[12rem] xl:w-[17.5rem] xl:h-[14rem] 2xl:w-[19rem] 2xl:h-[15.2rem] filter drop-shadow-[0_12px_28px_rgba(0,0,0,0.06)]">
                     <Image
                       src="/assets/main-Photoroom.png"
                       alt="Brain Core"
@@ -326,7 +334,7 @@ export default function WhatWeDo() {
               </div>
 
               {/* 1. TOP-LEFT: Brain–Computer Interfaces */}
-              <div className="absolute left-[8%] top-[2%] z-30">
+              <div className="absolute left-[2.5%] top-[0%] z-30">
                 <NodeItem
                   pillar={PILLARS[0]}
                   onHover={() => setHoveredPillar(PILLARS[0])}
@@ -337,7 +345,7 @@ export default function WhatWeDo() {
               </div>
 
               {/* 2. TOP-RIGHT: EEG Signal Processing */}
-              <div className="absolute right-[8%] top-[2%] z-30">
+              <div className="absolute right-[2.5%] top-[0%] z-30">
                 <NodeItem
                   pillar={PILLARS[1]}
                   onHover={() => setHoveredPillar(PILLARS[1])}
@@ -348,7 +356,7 @@ export default function WhatWeDo() {
               </div>
 
               {/* 3. BOTTOM-LEFT: Affective Computing */}
-              <div className="absolute left-[8%] bottom-[2.5%] z-30">
+              <div className="absolute left-[2.5%] bottom-[0.5%] z-30">
                 <NodeItem
                   pillar={PILLARS[2]}
                   onHover={() => setHoveredPillar(PILLARS[2])}
@@ -359,7 +367,7 @@ export default function WhatWeDo() {
               </div>
 
               {/* 4. BOTTOM-RIGHT: Machine Learning */}
-              <div className="absolute right-[8%] bottom-[2.5%] z-30">
+              <div className="absolute right-[2.5%] bottom-[0.5%] z-30">
                 <NodeItem
                   pillar={PILLARS[3]}
                   onHover={() => setHoveredPillar(PILLARS[3])}
@@ -376,9 +384,9 @@ export default function WhatWeDo() {
         <div className="lg:hidden w-full max-w-[76rem] mx-auto px-4 sm:px-6">
           <div className="flex flex-col items-center text-center pb-4">
             <img
-              src="/research_domain.png"
+              src="/research_domain_clean.png"
               alt="Our Research Domains"
-              className="h-16 w-auto object-contain sm:h-20"
+              className="h-9 w-auto object-contain sm:h-11"
             />
           </div>
 
@@ -468,7 +476,7 @@ function NodeItem({
         className="group block cursor-pointer transition-transform duration-300 hover:scale-105 active:scale-95"
       >
         {/* Standalone illustration sized to fit cleanly inside the whiteboard */}
-        <div className="relative w-[15.5rem] h-[10.8rem] xl:w-[18rem] xl:h-[12.5rem] 2xl:w-[20rem] 2xl:h-[14rem] filter drop-shadow-[0_8px_20px_rgba(0,0,0,0.06)]">
+        <div className="relative w-[17rem] h-[11.8rem] xl:w-[20rem] xl:h-[13.9rem] 2xl:w-[22rem] 2xl:h-[15.4rem] filter drop-shadow-[0_8px_20px_rgba(0,0,0,0.06)]">
           <Image
             src={pillar.image}
             alt={pillar.title}

@@ -5,9 +5,8 @@ import * as Tabs from '@radix-ui/react-tabs';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { CalendarDays, Newspaper } from 'lucide-react';
 import type { Event, News } from '@/lib/types';
-import { cn } from '@/lib/utils';
 import EmptyState from './EmptyState';
-import EventAccordion from './EventAccordion';
+import EventCarousel from './EventCarousel';
 import NewsList from './NewsList';
 
 const TAB_EVENTS = 'events';
@@ -23,7 +22,7 @@ function sortNews(news: News[]): News[] {
 }
 
 const triggerClass =
-  'inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-muted transition-colors data-[state=active]:bg-navy-700 data-[state=active]:text-paper hover:text-ink data-[state=active]:hover:text-paper';
+  'inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-slate-600 transition-all duration-300 hover:text-[#1d1d1f] data-[state=active]:bg-[#1d1d1f] data-[state=active]:text-white data-[state=active]:shadow-[0_8px_20px_-8px_rgba(11,16,32,0.5)] data-[state=active]:hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-600';
 
 /**
  * Events & News tabs. The active tab is driven by the `?tab=` query parameter so
@@ -52,33 +51,34 @@ export default function EventsNewsTabs({ events, news }: { events: Event[]; news
     <Tabs.Root value={value} onValueChange={onValueChange}>
       <Tabs.List
         aria-label="Events and news"
-        className="inline-flex items-center gap-1 rounded-full border border-rule bg-surface p-1"
+        className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 p-1.5"
       >
-        <Tabs.Trigger value={TAB_EVENTS} className={cn(triggerClass)}>
+        <Tabs.Trigger value={TAB_EVENTS} className={triggerClass}>
           <CalendarDays className="h-4 w-4" aria-hidden />
           Events
-          <span className="text-xs">({events.length})</span>
+          <span className="font-mono text-xs opacity-60">{events.length}</span>
         </Tabs.Trigger>
-        <Tabs.Trigger value={TAB_NEWS} className={cn(triggerClass)}>
+        <Tabs.Trigger value={TAB_NEWS} className={triggerClass}>
           <Newspaper className="h-4 w-4" aria-hidden />
           News
-          <span className="text-xs">({news.length})</span>
+          <span className="font-mono text-xs opacity-60">{news.length}</span>
         </Tabs.Trigger>
       </Tabs.List>
 
-      <Tabs.Content value={TAB_EVENTS} className="mt-8 focus-visible:outline-none">
+      <Tabs.Content value={TAB_EVENTS} className="mt-10 focus-visible:outline-none">
         {events.length > 0 ? (
-          <EventAccordion events={events} />
+          <EventCarousel events={events} />
         ) : (
           <EmptyState
             icon={<CalendarDays className="h-5 w-5" aria-hidden />}
             title="No events scheduled"
             message="Workshops, seminars and talks hosted by the lab will be listed here. Check back soon."
+            className="rounded-[2rem] border-slate-200 bg-slate-50/60 py-20 shadow-none"
           />
         )}
       </Tabs.Content>
 
-      <Tabs.Content value={TAB_NEWS} className="mt-8 focus-visible:outline-none">
+      <Tabs.Content value={TAB_NEWS} className="mt-10 focus-visible:outline-none">
         {sortedNews.length > 0 ? (
           <NewsList news={sortedNews} />
         ) : (
@@ -86,6 +86,7 @@ export default function EventsNewsTabs({ events, news }: { events: Event[]; news
             icon={<Newspaper className="h-5 w-5" aria-hidden />}
             title="No news yet"
             message="Announcements, awards and updates from the lab will appear here. Nothing has been published so far."
+            className="rounded-[2rem] border-slate-200 bg-slate-50/60 py-20 shadow-none"
           />
         )}
       </Tabs.Content>

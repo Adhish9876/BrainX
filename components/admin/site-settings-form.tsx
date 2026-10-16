@@ -6,6 +6,7 @@ import type { Site } from '@/lib/types';
 
 import type { FieldDef } from './lib/content';
 import { FieldControl } from './field-control';
+import { PartnersEditor } from './partners-editor';
 
 const SITE_FIELDS: FieldDef[] = [
   { key: 'name', label: 'Lab name', kind: 'text', placeholder: 'e.g. BrainX Lab' },
@@ -17,6 +18,13 @@ const SITE_FIELDS: FieldDef[] = [
   { key: 'phone', label: 'Phone', kind: 'text' },
   { key: 'address', label: 'Address', kind: 'textarea', rows: 3 },
   { key: 'logo', label: 'Logo', kind: 'image' },
+  {
+    key: 'grantAmount',
+    label: 'Grant funding (₹)',
+    kind: 'number',
+    placeholder: 'e.g. 15000000',
+    help: 'Total funding won, in rupees, as plain digits (15000000 shows as ₹1,50,00,000+ on the home page). Leave 0 to hide it.',
+  },
 ];
 
 interface SiteSettingsFormProps {
@@ -48,6 +56,13 @@ export function SiteSettingsForm({
           disabled={disabled}
         />
       ))}
+
+      <PartnersEditor
+        partners={site.partners ?? []}
+        onChange={(next) => onChange({ partners: next })}
+        onUpload={onUpload}
+        disabled={disabled}
+      />
     </div>
   );
 }

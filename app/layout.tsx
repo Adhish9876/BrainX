@@ -14,6 +14,7 @@ const instrument = Instrument_Serif({
   display: 'swap',
 });
 
+// Site identity (name, logo/favicon) is read from data/site.json
 const { site } = getContent();
 
 export const metadata: Metadata = {

@@ -129,6 +129,11 @@ export function collectStagedTokens(content: Content): Set<string> {
     if (token) tokens.add(token);
   };
   add(content.site.logo);
+  for (const partner of content.site.partners ?? []) {
+    add(partner.logo);
+    add(partner.product);
+  }
+  for (const publication of content.publications) if (publication.image) add(publication.image);
   for (const member of content.team) add(member.image);
   for (const item of content.research) if (item.image) add(item.image);
   for (const project of content.projects) {
@@ -336,6 +341,13 @@ export function planCommit(
   };
 
   working.site.logo = resolvePlain(working.site.logo, 'site logo');
+  for (const [i, partner] of (working.site.partners ?? []).entries()) {
+    partner.logo = resolvePlain(partner.logo, `partner ${i + 1} logo`);
+    partner.product = resolvePlain(partner.product, `partner ${i + 1} product`);
+  }
+  for (const publication of working.publications) {
+    if (publication.image) publication.image = resolvePlain(publication.image, `publication ${publication.id}`);
+  }
   for (const member of working.team) member.image = resolvePlain(member.image, `member ${member.id}`);
   for (const item of working.research) {
     if (item.image) item.image = resolvePlain(item.image, `research ${item.id}`);

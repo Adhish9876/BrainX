@@ -7,5 +7,24 @@
   "email": "",
   "phone": "",
   "address": "Indian Institute of Information Technology, Design and Manufacturing (IIITDM) Kancheepuram, Chennai",
-  "logo": "/main_logo.png"
+  "logo": "/brainx_lab_logo.png",
+  "grantAmount": 15000000,
+  "partners": [
+    {
+      "name": "Brain Products",
+      "logo": "/partner-brain-products-logo.png",
+      "product": "/partner-brain-products-product.jpg",
+      "productName": "",
+      "description": "",
+      "link": ""
+    },
+    {
+      "name": "Axxonet",
+      "logo": "/partner-axxonet-logo.png",
+      "product": "/partner-axxonet-product.png",
+      "productName": "",
+      "description": "",
+      "link": ""
+    }
+  ]
 }

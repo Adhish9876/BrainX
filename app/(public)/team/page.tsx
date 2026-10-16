@@ -1,9 +1,7 @@
 import type { Metadata } from 'next';
-import { ArrowRight, User } from 'lucide-react';
-import PageHeader from '@/components/public/PageHeader';
-import SectionHeading from '@/components/public/SectionHeading';
-import TagList from '@/components/public/TagList';
-import TeamCard from '@/components/public/TeamCard';
+import { ArrowRight, Mail } from 'lucide-react';
+import Reveal from '@/components/home/Reveal';
+import PeopleRow from '@/components/public/PeopleRow';
 import { getContent, groupTeamByRole } from '@/lib/content';
 
 export const dynamic = 'force-static';
@@ -13,130 +11,148 @@ export const metadata: Metadata = {
   description: 'The people of BrainX Lab, IIITDM Kancheepuram.',
 };
 
-function getInitials(name: string): string {
-  const cleaned = name.replace(/^(dr|prof|mr|ms|mrs)\.?\s+/i, '').trim();
-  const parts = cleaned.split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return '?';
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+function slugify(value: string): string {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 }
 
 export default function TeamPage() {
-  const { team } = getContent();
+  const { team, site } = getContent();
   const principal = team.find((member) => member.role === 'Principal Investigator');
-  const groups = groupTeamByRole(team.filter((member) => member.id !== principal?.id));
+  const rawGroups = groupTeamByRole(team.filter((member) => member.id !== principal?.id));
+
+  // Project Staff and Research Scholar are presented together as one section
+  const COMBINED_ROLES = ['Project Staff', 'Research Scholar'];
+  // A person listed under both roles (same name) is shown once, with their details combined
+  const combinedMembers = COMBINED_ROLES.flatMap(
+    (role) => rawGroups.find((group) => group.role === role)?.members ?? [],
+  ).reduce<typeof team>((merged, member) => {
+    const existing = merged.find((m) => m.name.trim().toLowerCase() === member.name.trim().toLowerCase());
+    if (!existing) return [...merged, { ...member }];
+    const join = (x: string, y: string, sep: string) =>
+      [x, y].filter((v, i, arr) => v && arr.indexOf(v) === i).join(sep);
+    existing.position = join(existing.position, member.position, ' · ');
+    existing.tagline = join(existing.tagline ?? '', member.tagline ?? '', ' · ');
+    existing.description = join(existing.description, member.description, ' ');
+    existing.image = existing.image || member.image;
+    existing.link = existing.link || member.link;
+    return merged;
+  }, []);
+  const firstCombinedIndex = rawGroups.findIndex((group) => COMBINED_ROLES.includes(group.role));
+  const groups = rawGroups
+    .filter((group) => !COMBINED_ROLES.includes(group.role))
+    .map((group) => ({ ...group }));
+  if (combinedMembers.length > 0) {
+    groups.splice(Math.max(0, firstCombinedIndex), 0, {
+      role: 'Project Staff & Research Scholar',
+      members: combinedMembers,
+    });
+  }
+
+  const sections = [
+    ...(principal ? [{ role: 'Principal Investigator', members: [principal] }] : []),
+    ...groups,
+  ];
 
   return (
     <div className="relative isolate bg-white">
-      <div className="relative isolate -mt-22 overflow-hidden bg-white pt-22 md:-mt-24 md:pt-24">
-        {/* Top decorative contour background flowing from the navbar and confined strictly to the header div */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none select-none absolute inset-0 -z-10 overflow-hidden"
-        >
+      {/* ── HERO ─────────────────────────────────────────────────────────── */}
+      <section className="relative isolate -mt-22 overflow-hidden pt-22 md:-mt-24 md:pt-24">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 select-none">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/2stage.png"
+            src="/team_bg.png"
             alt=""
             draggable={false}
-            className="absolute left-1/2 -top-[760px] w-[1100px] max-w-none -translate-x-1/2 rotate-90 mix-blend-multiply opacity-90 sm:-top-[980px] sm:w-[1380px] lg:-top-[1200px] lg:w-[1680px]"
+            className="h-full w-full object-cover object-left"
           />
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-white to-transparent" />
         </div>
 
-        <PageHeader
-          title="People"
-          lead="BrainX Lab brings together a principal investigator, project staff, research scholars and students working across brain–computer interfaces and affective computing."
-          className="bg-transparent"
-        />
-      </div>
+        <div className="shell pb-12 pt-8 sm:pb-14 sm:pt-12 md:pb-16 md:pt-14">
+          <Reveal>
+            <h1 className="max-w-4xl font-display text-5xl font-extrabold leading-[1.02] tracking-tight text-[#1d1d1f] sm:text-6xl lg:text-7xl">
+              The people behind the brain research.
+            </h1>
+          </Reveal>
 
-      <div className="shell space-y-14 pt-5 pb-12 md:pt-7">
-        {principal ? (
-          <section aria-labelledby="principal-investigator">
-            <article className="flex flex-col gap-7 rounded-2xl border border-slate-200/90 bg-surface p-5 shadow-[0_12px_34px_-10px_rgba(11,16,32,0.11),0_4px_14px_-3px_rgba(11,16,32,0.06)] sm:p-7 md:flex-row md:items-stretch md:gap-9 md:p-8">
-              {/* Left — PI Portrait (from Admin Panel) */}
-              <div className="relative aspect-[4/4.5] w-full shrink-0 overflow-hidden rounded-xl bg-transparent md:w-64 lg:w-72">
-                {principal.image ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={principal.image}
-                    alt={principal.name}
-                    className="h-full w-full object-cover object-top"
-                  />
-                ) : (
-                  <div className="flex h-full w-full flex-col items-center justify-center gap-2.5 rounded-xl border border-slate-200/70 bg-white p-6 text-center">
-                    <div className="flex h-16 w-16 items-center justify-center rounded-full border border-slate-200/80 bg-white font-display text-xl font-semibold tracking-wider text-navy-700 shadow-2xs">
-                      {getInitials(principal.name)}
-                    </div>
-                    <span className="inline-flex items-center gap-1 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-slate-400">
-                      <User className="h-3.5 w-3.5" aria-hidden />
-                      Photo
+        </div>
+      </section>
+
+      <div className="space-y-16 pb-20 md:space-y-20">
+        {sections.map((group) => {
+          const id = `role-${slugify(group.role)}`;
+          return (
+            <section key={group.role} id={id} aria-labelledby={`${id}-title`} className="scroll-mt-28">
+              <div className="shell">
+                <Reveal>
+                  <div className="flex items-end justify-between gap-4 border-b border-slate-200 pb-5">
+                    <h2
+                      id={`${id}-title`}
+                      className="font-display text-3xl font-extrabold tracking-tight text-[#1d1d1f] sm:text-4xl"
+                    >
+                      {group.role}
+                    </h2>
+                    <span className="mb-1 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 font-mono text-xs font-bold text-slate-600">
+                      {String(group.members.length).padStart(2, '0')}
                     </span>
                   </div>
-                )}
+                </Reveal>
               </div>
 
-              {/* Right — PI Bio & Details */}
-              <div className="flex min-w-0 flex-1 flex-col justify-between py-1">
-                <div>
-                  <span className="font-mono text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-crimson-600">
-                    Principal Investigator
-                  </span>
-                  <h3
-                    id="principal-investigator"
-                    className="mt-2 font-display text-2xl font-bold leading-tight tracking-tight text-ink sm:text-3xl lg:text-[2.1rem]"
+              <Reveal delay={0.08} y={20} className="mt-8">
+                <PeopleRow
+                  members={group.members}
+                  large={group.role === 'Principal Investigator'}
+                  center={group.role === 'Principal Investigator'}
+                />
+              </Reveal>
+            </section>
+          );
+        })}
+
+        {/* ── JOIN THE LAB ───────────────────────────────────────────────── */}
+        {site.email ? (
+          <Reveal className="shell">
+            <section
+              aria-labelledby="join-title"
+              className="relative overflow-hidden rounded-[2rem] bg-[#0b1020] px-6 py-12 text-white sm:px-12 sm:py-16"
+            >
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -right-20 -top-24 h-80 w-80 rounded-full bg-sky-500/30 blur-3xl"
+              />
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -bottom-32 left-1/3 h-72 w-72 rounded-full bg-orange-400/20 blur-3xl"
+              />
+              <div className="relative flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
+                <div className="max-w-xl">
+                  <h2
+                    id="join-title"
+                    className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl"
                   >
-                    {principal.name}
-                  </h3>
-                  {principal.position ? (
-                    <p className="mt-1.5 font-mono text-xs font-medium text-navy-700 sm:text-sm">
-                      {principal.position}
-                    </p>
-                  ) : null}
-
-                  <p className="mt-4 max-w-3xl text-sm leading-relaxed text-muted sm:text-base sm:leading-[1.75]">
-                    {principal.description}
+                    Interested in working with us?
+                  </h2>
+                  <p className="mt-3 text-base leading-relaxed text-white/75">
+                    We welcome students and collaborators curious about brain–computer interfaces and
+                    affective computing. Say hello.
                   </p>
-
-                  {principal.tags.length > 0 ? (
-                    <TagList tags={principal.tags} className="mt-5" />
-                  ) : null}
                 </div>
-
-                {principal.link ? (
-                  <div className="mt-6 pt-1">
-                    <a
-                      href={principal.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-paper/80 px-5 py-2.5 text-sm font-semibold text-ink transition-all hover:border-ink hover:bg-ink hover:text-white"
-                    >
-                      View profile
-                      <ArrowRight className="h-4 w-4" aria-hidden />
-                      <span className="sr-only"> for {principal.name}</span>
-                    </a>
-                  </div>
-                ) : null}
+                <a
+                  href={`mailto:${site.email}`}
+                  className="group inline-flex shrink-0 items-center gap-2.5 rounded-full bg-white px-6 py-3.5 text-sm font-semibold text-[#0b1020] transition-all hover:shadow-[0_10px_30px_-8px_rgba(255,255,255,0.5)]"
+                >
+                  <Mail className="h-4 w-4" aria-hidden />
+                  Get in touch
+                  <ArrowRight
+                    className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                    aria-hidden
+                  />
+                </a>
               </div>
-            </article>
-          </section>
+            </section>
+          </Reveal>
         ) : null}
-
-        {groups.map((group, index) => (
-          <section key={group.role} aria-labelledby={`team-role-${index}`}>
-            <SectionHeading
-              id={`team-role-${index}`}
-              eyebrow="Team"
-              title={group.role}
-              description={`${group.members.length} ${group.members.length === 1 ? 'member' : 'members'}`}
-            />
-            <div className="mt-8 grid gap-6 lg:grid-cols-2">
-              {group.members.map((member) => (
-                <TeamCard key={member.id} member={member} />
-              ))}
-            </div>
-          </section>
-        ))}
       </div>
     </div>
   );

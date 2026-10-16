@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
-import { Images } from 'lucide-react';
-import EmptyState from '@/components/public/EmptyState';
+import Reveal from '@/components/home/Reveal';
 import Gallery from '@/components/public/Gallery';
-import PageHeader from '@/components/public/PageHeader';
 import { getContent } from '@/lib/content';
 
 export const dynamic = 'force-static';
@@ -16,41 +14,31 @@ export default function PicturesPage() {
   const { pictures } = getContent();
 
   return (
-    <div className="relative isolate bg-white">
-      <div className="relative isolate -mt-22 overflow-hidden bg-white pt-22 md:-mt-24 md:pt-24">
-        {/* Top decorative contour background flowing from the navbar and confined strictly to the header div */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none select-none absolute inset-0 -z-10 overflow-hidden"
-        >
+    <div className="relative isolate overflow-x-clip bg-white">
+      {/* ── HERO ─────────────────────────────────────────────────────────── */}
+      <section className="relative isolate -mt-22 overflow-hidden pt-22 md:-mt-24 md:pt-24">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 select-none">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/leftbg.png"
+            src="/pictures_bg.png"
             alt=""
             draggable={false}
-            className="absolute left-[46%] -top-[680px] w-[1200px] max-w-none -translate-x-1/2 rotate-90 mix-blend-multiply opacity-90 sm:-top-[860px] sm:w-[1500px] lg:-top-[1040px] lg:w-[1800px]"
+            className="h-full w-full object-cover object-left opacity-60 saturate-[0.85]"
           />
+          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white to-transparent" />
         </div>
 
-        <PageHeader
-          title="Pictures"
-          lead="A visual record of the lab, its people and its work."
-          className="relative z-10 border-slate-200/90 bg-transparent shadow-[0_4px_14px_-4px_rgba(15,23,42,0.08)]"
-        />
-      </div>
-
-      <div className="min-h-[60vh] bg-[#F8F9FA] shadow-[inset_0_6px_14px_-6px_rgba(15,23,42,0.08)]">
-        <div className="shell py-8 md:py-10">
-          {pictures.length > 0 ? (
-            <Gallery groups={pictures} />
-          ) : (
-            <EmptyState
-              icon={<Images className="h-5 w-5" aria-hidden />}
-              title="No pictures yet"
-              message="Photographs from the lab will be collected here. Nothing has been added so far."
-            />
-          )}
+        <div className="shell pb-2 pt-4 sm:pb-3 sm:pt-6 md:pb-4 md:pt-8">
+          <Reveal>
+            <h1 className="max-w-4xl font-display text-5xl font-extrabold leading-[1.02] tracking-tight text-[#1d1d1f] sm:text-6xl lg:text-7xl">
+              Moments from the lab.
+            </h1>
+          </Reveal>
         </div>
+      </section>
+
+      <div className="pb-24 md:pb-28">
+        <Gallery groups={pictures} />
       </div>
     </div>
   );

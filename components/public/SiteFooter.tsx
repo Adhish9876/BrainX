@@ -10,18 +10,18 @@ import { NAV_ITEMS } from './navigation';
  */
 export default function SiteFooter({ site }: { site: Site }) {
   const linkClass =
-    'inline-flex min-h-9 items-center text-white/60 transition-colors hover:text-white';
+    'inline-flex min-h-8 items-center text-white/60 transition-colors hover:text-white';
 
   return (
-    <footer className="relative mt-24 overflow-hidden border-t border-white/10 bg-black text-white">
-      <div className="shell relative z-10 grid gap-12 pt-16 pb-12 lg:grid-cols-[1.4fr_1fr] lg:gap-20">
+    <footer className="relative mt-12 overflow-hidden border-t border-white/10 bg-black text-white">
+      <div className="shell relative z-10 grid gap-8 pt-9 pb-5 lg:grid-cols-[1.4fr_1fr] lg:gap-14">
         <div>
           <div className="flex items-center gap-4">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/logo2.png"
+              src="/brainx_lab_logo_solid.png"
               alt={`${site.name} logo`}
-              className="h-10 sm:h-12 w-auto max-w-[140px] shrink-0 object-contain"
+              className="h-12 sm:h-14 w-auto shrink-0 object-contain"
             />
             <div className="leading-tight">
               <p className="font-display text-2xl font-bold tracking-tight text-white">{site.name}</p>
@@ -31,15 +31,15 @@ export default function SiteFooter({ site }: { site: Site }) {
             </div>
           </div>
           {site.tagline ? (
-            <p className="mt-6 max-w-md text-[0.95rem] leading-relaxed text-white/70">{site.tagline}</p>
+            <p className="mt-4 max-w-md text-[0.9rem] leading-relaxed text-white/70">{site.tagline}</p>
           ) : null}
           <p className="mt-3 text-sm text-white/50">Department of Computer Science and Engineering.</p>
         </div>
 
-        <div className="grid gap-10 sm:grid-cols-2">
+        <div className="grid gap-8 sm:grid-cols-[1.3fr_1fr]">
           <nav aria-label="Footer" className="text-sm">
             <p className="font-mono text-[0.68rem] uppercase tracking-[0.2em] text-white/40">Explore</p>
-            <ul className="mt-4 grid grid-cols-2 gap-x-4 sm:grid-cols-1">
+            <ul className="mt-3 grid grid-cols-2 gap-x-6">
               {NAV_ITEMS.map((item) => (
                 <li key={item.href}>
                   <Link href={item.href} className={linkClass}>
@@ -81,15 +81,21 @@ export default function SiteFooter({ site }: { site: Site }) {
       {/* Massive "BrainX" bottom display text */}
       <div
         aria-hidden="true"
-        className="pointer-events-none select-none relative w-full flex justify-center overflow-hidden leading-none pt-6 pb-2"
+        className="pointer-events-none select-none relative w-full flex justify-center overflow-hidden leading-none pb-1"
       >
-        <span className="font-display text-[17vw] font-black tracking-tight select-none block text-white">
+        <span
+          className="font-display text-[9vw] font-black tracking-tight select-none block text-white"
+          style={{
+            maskImage: 'linear-gradient(to bottom, #000 0%, #000 38%, transparent 96%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, #000 0%, #000 38%, transparent 96%)',
+          }}
+        >
           BrainX
         </span>
       </div>
 
       <div className="relative z-10 border-t border-white/10">
-        <div className="shell flex flex-col sm:flex-row items-center justify-between gap-3 py-5 text-xs text-white/40">
+        <div className="shell flex flex-col sm:flex-row items-center justify-between gap-3 py-3 text-xs text-white/40">
           <p>
             © {new Date().getFullYear()} {site.name}, {site.institution}.
           </p>

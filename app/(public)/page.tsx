@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react';
 import HeroLogo from '@/components/home/HeroLogo';
 import LabLife from '@/components/home/LabLife';
 import MotionProvider from '@/components/home/MotionProvider';
+import Partners from '@/components/home/Partners';
 import WhatWeDo from '@/components/home/WhatWeDo';
 import WhoWeAre from '@/components/home/WhoWeAre';
 import { HERO_IMAGE } from '@/components/public/hero.config';
@@ -15,8 +16,18 @@ const photoStyle = {
   '--hero-pos-lg': HERO_IMAGE.positionDesktop,
 } as CSSProperties;
 
+/** Digit/comma layout for the rolling counter, using Indian grouping (1,50,00,000). */
+function grantStat(amount: number) {
+  const text = amount.toLocaleString('en-IN');
+  const digits = text.replace(/,/g, '').length;
+  let remaining = digits;
+  const places = [...text].map((ch) => (ch === ',' ? ',' : 10 ** --remaining));
+  return { label: 'Grant funding', prefix: '₹', value: amount, suffix: '+', places };
+}
+
 export default function HomePage() {
-  const { site, news, events, publications, team, pictures } = getContent();
+  const { site, news, events, publications, team, pictures, projects } = getContent();
+  const peopleCount = new Set(team.map((member) => member.name.trim().toLowerCase())).size;
 
   const areas = site.focus
     .split(',')
@@ -26,6 +37,15 @@ export default function HomePage() {
 
   return (
     <MotionProvider>
+      {/* Reload while scrolled down: the browser restores the scroll position after first paint, so the
+          "Pioneering…" section would flash in its parked-below state. Remember the scroll position and
+          pre-place the section before the first paint. */}
+      <style>{`html.bx-restored #who-we-are > div { transform: none !important; }`}</style>
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `(function(){try{var d=document.documentElement;addEventListener('pagehide',function(){sessionStorage.setItem('bx-home-sy',String(window.scrollY))});var n=performance.getEntriesByType('navigation')[0];var r=n&&(n.type==='reload'||n.type==='back_forward');if(r&&Number(sessionStorage.getItem('bx-home-sy'))>50)d.classList.add('bx-restored')}catch(e){}})()`,
+        }}
+      />
       <div className="relative -mt-22 md:-mt-24">
         <span id="hero-top" aria-hidden className="pointer-events-none absolute left-0 top-6 h-px w-px" />
         <section
@@ -70,8 +90,15 @@ export default function HomePage() {
             news={news}
             events={events}
             publications={publications}
+            stats={[
+              { label: 'Publications', value: publications.length },
+              { label: 'People', value: peopleCount },
+              ...(site.grantAmount && site.grantAmount > 0 ? [grantStat(site.grantAmount)] : []),
+              { label: 'Projects', value: projects.length },
+            ].filter((stat) => stat.value > 0)}
           />
           <WhatWeDo />
+          <Partners partners={site.partners ?? []} />
           <LabLife pictures={pictures} />
         </div>
       </div>

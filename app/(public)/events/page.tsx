@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
+import Reveal from '@/components/home/Reveal';
 import EventsNewsTabs from '@/components/public/EventsNewsTabs';
-import PageHeader from '@/components/public/PageHeader';
 import { getContent } from '@/lib/content';
 
 export const dynamic = 'force-static';
@@ -13,9 +13,9 @@ export const metadata: Metadata = {
 
 function TabsFallback() {
   return (
-    <div className="animate-pulse space-y-4" aria-hidden>
-      <div className="h-11 w-64 rounded-full bg-rule/70" />
-      <div className="h-40 w-full rounded-md bg-rule/40" />
+    <div className="animate-pulse space-y-6" aria-hidden>
+      <div className="h-12 w-56 rounded-full bg-slate-100" />
+      <div className="h-64 w-full rounded-[2rem] bg-slate-100" />
     </div>
   );
 }
@@ -25,29 +25,29 @@ export default function EventsPage() {
 
   return (
     <div className="relative isolate bg-white">
-      <div className="relative isolate -mt-22 overflow-hidden bg-white pt-22 md:-mt-24 md:pt-24">
-        {/* Top decorative contour background flowing from the navbar and confined strictly to the header div */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none select-none absolute inset-0 -z-10 overflow-hidden"
-        >
+      {/* ── HERO ─────────────────────────────────────────────────────────── */}
+      <section className="relative isolate -mt-22 overflow-hidden pt-22 md:-mt-24 md:pt-24">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 select-none">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/leftbg.png"
+            src="/event_bg.png"
             alt=""
             draggable={false}
-            className="absolute left-[46%] -top-[680px] w-[1200px] max-w-none -translate-x-1/2 rotate-90 mix-blend-multiply opacity-90 sm:-top-[860px] sm:w-[1500px] lg:-top-[1040px] lg:w-[1800px]"
+            className="h-full w-full object-cover object-left opacity-55 saturate-[0.8]"
           />
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-white to-transparent" />
         </div>
 
-        <PageHeader
-          title="Events & News"
-          lead="Talks, workshops and announcements from the lab. Use the tabs to switch between upcoming events and news."
-          className="bg-transparent"
-        />
-      </div>
+        <div className="shell pb-12 pt-8 sm:pb-14 sm:pt-12 md:pb-16 md:pt-14">
+          <Reveal>
+            <h1 className="max-w-4xl font-display text-5xl font-extrabold leading-[1.02] tracking-tight text-[#1d1d1f] sm:text-6xl lg:text-7xl">
+              What&apos;s happening at BrainX.
+            </h1>
+          </Reveal>
+        </div>
+      </section>
 
-      <div className="shell py-8 md:py-10">
+      <div className="shell pb-24 md:pb-28">
         <Suspense fallback={<TabsFallback />}>
           <EventsNewsTabs events={events} news={news} />
         </Suspense>

@@ -150,6 +150,17 @@ const dateField = bounded(10).refine(isValidCalendarDate, { message: 'invalid ca
 const url = bounded(LIMITS.urlLength).refine(isSafeUrl, { message: 'unsafe url' });
 const imageField = bounded(LIMITS.urlLength).refine(isSafeUrl, { message: 'unsafe image url' });
 
+const partnerSchema = z
+  .object({
+    name: bounded(LIMITS.shortText),
+    logo: imageField,
+    product: imageField,
+    productName: bounded(LIMITS.shortText),
+    description: bounded(LIMITS.longText),
+    link: url,
+  })
+  .strict();
+
 const siteSchema = z
   .object({
     name: bounded(LIMITS.shortText),
@@ -161,6 +172,8 @@ const siteSchema = z
     phone: bounded(80),
     address: bounded(LIMITS.shortText),
     logo: imageField,
+    grantAmount: z.number().int().min(0).max(999_999_999_999).optional(),
+    partners: z.array(partnerSchema).max(6).optional(),
   })
   .strict();
 
@@ -173,6 +186,7 @@ const publicationSchema = z
     venue: bounded(500),
     tags,
     link: url,
+    image: imageField.optional(),
   })
   .strict();
 
@@ -182,6 +196,7 @@ const memberSchema = z
     name: bounded(LIMITS.shortText),
     role: bounded(LIMITS.shortText),
     position: bounded(LIMITS.shortText),
+    tagline: bounded(LIMITS.shortText).optional(),
     description: bounded(LIMITS.longText),
     image: imageField,
     link: url,

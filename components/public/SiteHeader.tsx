@@ -64,14 +64,14 @@ export default function SiteHeader({ site }: { site: Site }) {
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/assets/iiitdm.png"
-            alt="IIITDM"
-            className="h-14 w-14 shrink-0 object-contain md:h-[4.25rem] md:w-[4.25rem]"
+            src="/brainx_lab_logo.png"
+            alt=""
+            className="h-14 w-auto shrink-0 object-contain md:h-16"
           />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/main_logo.png"
-            alt=""
+            src="/iiit_header.png"
+            alt="IIITDM Kancheepuram"
             className="h-10 w-auto shrink-0 object-contain md:h-12"
           />
           <span className="sr-only">{site.name}</span>

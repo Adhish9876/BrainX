@@ -34,6 +34,12 @@ export const RECORD_FIELDS: Record<Collection, FieldDef[]> = {
     { key: 'authors', label: 'Authors', kind: 'text', placeholder: 'Comma-separated author list' },
     { key: 'year', label: 'Year', kind: 'number', placeholder: '2026' },
     { key: 'venue', label: 'Venue', kind: 'text', placeholder: 'Journal or conference' },
+    {
+      key: 'image',
+      label: 'Year photo (optional)',
+      kind: 'image',
+      help: 'Shown beside the year of this paper on the Publications timeline. If several papers from the same year have a photo, the first one is used.',
+    },
     { key: 'link', label: 'Link', kind: 'url', placeholder: 'https://…' },
     { key: 'tags', label: 'Tags', kind: 'tags' },
   ],
@@ -41,6 +47,13 @@ export const RECORD_FIELDS: Record<Collection, FieldDef[]> = {
     { key: 'name', label: 'Name', kind: 'text', placeholder: 'Full name' },
     { key: 'role', label: 'Role', kind: 'text', placeholder: 'e.g. Principal Investigator' },
     { key: 'position', label: 'Position', kind: 'text', placeholder: 'e.g. Assistant Professor, Dept. of CSE' },
+    {
+      key: 'tagline',
+      label: 'Short tag (shown on the People page photo)',
+      kind: 'text',
+      placeholder: 'e.g. JRF · Ph.D. Scholar',
+      help: 'A few words shown under the name on the photo card. Leave empty to use the Position instead.',
+    },
     { key: 'description', label: 'Description', kind: 'textarea', rows: 5, placeholder: 'Short biography' },
     { key: 'image', label: 'Photo', kind: 'image' },
     { key: 'link', label: 'Link', kind: 'url', placeholder: 'https://…' },
@@ -72,7 +85,6 @@ export const RECORD_FIELDS: Record<Collection, FieldDef[]> = {
       placeholder: 'Type a person name and press Enter',
       help: 'Add each person working on this project (press Enter after each name).',
     },
-    { key: 'image', label: 'Cover Image', kind: 'image' },
     { key: 'link', label: 'Link', kind: 'url', placeholder: 'https://…' },
     { key: 'tags', label: 'Tags', kind: 'tags' },
   ],
@@ -143,7 +155,7 @@ export function createRecord(
       base = { id, title: '', authors: '', year: new Date().getFullYear(), venue: '', tags: [], link: '' };
       break;
     case 'team':
-      base = { id, name: '', role: '', position: '', description: '', image: '', link: '', tags: [] };
+      base = { id, name: '', role: '', position: '', tagline: '', description: '', image: '', link: '', tags: [] };
       break;
     case 'research':
       base = { id, title: '', description: '', image: '', tags: [] };

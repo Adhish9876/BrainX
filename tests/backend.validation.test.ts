@@ -145,3 +145,20 @@ describe('validateContent', () => {
     expect(validateContent(dupesTeam).ok).toBe(false);
   });
 });
+
+import { validateContent as validateContentForHome } from '../lib/validation';
+
+describe('home settings in validation', () => {
+  it('accepts grant amount, partners, team short tag and publication photo', async () => {
+    const { getContent } = await import('../lib/content');
+    const content = structuredClone(getContent());
+    content.site.grantAmount = 1234;
+    content.site.partners = [{ name: 'A', logo: '/partner-axxonet-logo.png', product: '', productName: '', description: '', link: '' }];
+    if (content.team[0]) content.team[0].tagline = 'PI';
+    if (content.publications[0]) content.publications[0].image = '/media/uploads/x.webp';
+    const ok = validateContentForHome(content);
+    expect(ok.ok).toBe(true);
+    content.site.grantAmount = -5;
+    expect(validateContentForHome(content).ok).toBe(false);
+  });
+});

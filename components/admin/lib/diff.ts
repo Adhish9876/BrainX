@@ -20,6 +20,8 @@ const SITE_FIELD_LABELS: Record<keyof Site, string> = {
   phone: 'Phone',
   address: 'Address',
   logo: 'Logo',
+  grantAmount: 'Grant funding',
+  partners: 'Equipment partners',
 };
 
 function stable(value: unknown): string {

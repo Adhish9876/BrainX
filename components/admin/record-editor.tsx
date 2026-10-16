@@ -231,7 +231,7 @@ export function RecordEditor({
             <div className="space-y-2">
               <Label className="flex items-center gap-2">
                 <ImagePlus className="size-4 text-slate-600" />
-                Project Carousel Images (Modal)
+                Project Photos (shown as a carousel on the Projects map)
               </Label>
               <GalleryField
                 images={Array.isArray(value.images) ? (value.images as string[]) : []}
@@ -242,8 +242,8 @@ export function RecordEditor({
                 disabled={disabled}
               />
               <p className="text-xs text-slate-600">
-                Upload multiple images for the project modal carousel. Star any
-                image to set it as the card cover image.
+                Upload one or more photos; they appear as a carousel on the project's
+                panel in the order shown. The starred photo is the cover (first shown).
               </p>
             </div>
           ) : null}

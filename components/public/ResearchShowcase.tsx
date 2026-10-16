@@ -1,10 +1,10 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 import { ArrowDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import Reveal from '@/components/home/Reveal';
 import type { Research } from '@/lib/types';
-import ScrollStack, { ScrollStackItem } from '@/components/ui/ScrollStack';
-import TagList from './TagList';
 
 interface DiagramSlide {
   id: string;
@@ -442,6 +442,13 @@ function ScientificPipelineSvg({ variant }: { variant: number }) {
   );
 }
 
+const CARD_TINTS = [
+  'from-sky-100 via-sky-50 to-white',
+  'from-orange-100 via-orange-50 to-white',
+  'from-indigo-100 via-indigo-50 to-white',
+  'from-teal-100 via-teal-50 to-white',
+];
+
 export default function ResearchShowcase({ research }: { research: Research[] }) {
   const slides: DiagramSlide[] =
     research.length > 0
@@ -486,191 +493,213 @@ export default function ResearchShowcase({ research }: { research: Research[] })
   const currentSlide = slides[safeIndex];
 
   return (
-    <div className="space-y-16 sm:space-y-24">
-      {/* ── 1. Top Section: Research Narrative (Left) + Carousel (Right) ── */}
-      <section aria-labelledby="research-hero-heading" className="w-full">
-        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-10 xl:gap-12">
-          
-          {/* Left Column: Clean Apple Typography & Mission Statement */}
-          <div className="lg:col-span-5 xl:col-span-5 flex flex-col pt-1">
-            <h1
-              id="research-hero-heading"
-              className="font-display text-4xl sm:text-5xl lg:text-[3.6rem] font-bold tracking-[-0.035em] text-[#1d1d1f] leading-[1.06]"
-            >
-              Research :
-            </h1>
+    <div className="relative isolate bg-white">
+      {/* ── 1. HERO: mission statement + live diagram carousel ───────────── */}
+      <section
+        aria-labelledby="research-hero-heading"
+        className="relative isolate -mt-22 overflow-hidden pt-22 md:-mt-24 md:pt-24"
+      >
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 select-none">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/leftbg.png"
+            alt=""
+            draggable={false}
+            className="h-full w-full object-cover object-left opacity-70"
+          />
+          <div className="absolute -right-24 top-10 h-96 w-96 rounded-full bg-sky-200/50 blur-3xl" />
+          <div className="absolute -bottom-24 left-1/3 h-80 w-80 rounded-full bg-orange-200/40 blur-3xl" />
+          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white to-transparent" />
+        </div>
 
-            <p className="mt-4 text-base sm:text-lg font-normal leading-relaxed text-[#3d3d40]">
-              At BrainX Lab, we decode brain dynamics and physiological signals to pioneer non-invasive brain–computer interfaces, real-time closed-loop biofeedback, and affective neuro-technologies.
-            </p>
-
-            <div className="mt-6 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
-              <span>Scroll to explore research themes</span>
-              <ArrowDown className="h-3.5 w-3.5 animate-bounce text-[#0066cc]" />
-            </div>
-          </div>
-
-          {/* Right Column: Carousel in an Apple Frosted Glass Stage */}
-          <div className="lg:col-span-7 xl:col-span-7">
-            <div
-              className="relative overflow-hidden rounded-[26px] border border-slate-200/90 bg-white/90 p-4 sm:p-5 shadow-[0_14px_38px_-12px_rgba(15,23,42,0.09)] backdrop-blur-md"
-              onMouseEnter={() => setPaused(true)}
-              onMouseLeave={() => setPaused(false)}
-            >
-              {/* Diagram Stage */}
-              <div className="relative mx-auto flex aspect-[16/8] min-h-[200px] w-full items-center justify-center overflow-hidden rounded-xl bg-slate-50/70 p-2 sm:min-h-[260px]">
-                {currentSlide?.image ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={currentSlide.image}
-                    alt={currentSlide.title}
-                    className="max-h-full max-w-full object-contain"
-                  />
-                ) : (
-                  <ScientificPipelineSvg variant={currentSlide?.diagramIndex ?? 0} />
-                )}
-              </div>
-
-              {/* Caption & Controls Bar */}
-              <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <p className="line-clamp-2 text-xs leading-relaxed text-slate-600 sm:text-[0.82rem]">
-                  {currentSlide?.caption}
+        <div className="shell pb-16 pt-8 sm:pt-12 md:pb-20 md:pt-14">
+          <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-12">
+            {/* Left: heading + mission */}
+            <div className="flex flex-col justify-center lg:col-span-5">
+              <Reveal>
+                <h1
+                  id="research-hero-heading"
+                  className="font-display text-5xl font-extrabold leading-[1.02] tracking-tight text-[#1d1d1f] sm:text-6xl lg:text-7xl"
+                >
+                  Research.
+                </h1>
+              </Reveal>
+              <Reveal delay={0.1}>
+                <p className="mt-6 max-w-lg text-base leading-relaxed text-[#424245] sm:text-lg">
+                  At BrainX Lab, we decode brain dynamics and physiological signals to pioneer
+                  non-invasive brain–computer interfaces, real-time closed-loop biofeedback, and
+                  affective neuro-technologies.
                 </p>
+              </Reveal>
+              <Reveal delay={0.2}>
+                <a
+                  href="#core-themes-heading"
+                  className="group mt-8 inline-flex w-fit items-center gap-2.5 rounded-full bg-[#1d1d1f] px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-black hover:shadow-lg"
+                >
+                  Explore research themes
+                  <ArrowDown className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
+                </a>
+              </Reveal>
+            </div>
 
-                <div className="flex shrink-0 items-center gap-2 sm:gap-2.5">
-                  {/* Prev/Next arrows beside dots */}
-                  {count > 1 && (
-                    <div className="flex items-center gap-1">
-                      <button
-                        type="button"
-                        onClick={prev}
-                        aria-label="Previous research diagram"
-                        className="flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-2xs transition-colors hover:bg-slate-100 hover:text-black focus-visible:outline-2 focus-visible:outline-[#0066cc]"
-                      >
-                        <ChevronLeft className="h-3.5 w-3.5" strokeWidth={2.2} />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={next}
-                        aria-label="Next research diagram"
-                        className="flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-2xs transition-colors hover:bg-slate-100 hover:text-black focus-visible:outline-2 focus-visible:outline-[#0066cc]"
-                      >
-                        <ChevronRight className="h-3.5 w-3.5" strokeWidth={2.2} />
-                      </button>
-                    </div>
-                  )}
+            {/* Right: diagram carousel */}
+            <Reveal delay={0.15} className="lg:col-span-7">
+              <div
+                className="relative overflow-hidden rounded-[2rem] border border-white/70 bg-white/80 p-4 shadow-[0_2px_4px_rgba(11,16,32,0.04),0_36px_80px_-30px_rgba(11,16,32,0.35)] backdrop-blur-xl sm:p-5"
+                onMouseEnter={() => setPaused(true)}
+                onMouseLeave={() => setPaused(false)}
+              >
+                <div className="mb-3 flex items-center justify-between gap-3 px-1">
+                  <p className="min-w-0 truncate font-display text-sm font-bold tracking-tight text-[#1d1d1f] sm:text-base">
+                    {currentSlide?.title}
+                  </p>
+                  <span className="shrink-0 rounded-full border border-slate-200 bg-white px-3 py-1 font-mono text-xs font-bold text-slate-600">
+                    {String(safeIndex + 1).padStart(2, '0')}
+                    <span className="text-slate-400"> / {String(count).padStart(2, '0')}</span>
+                  </span>
+                </div>
 
-                  {/* Indicator dots */}
-                  <div className="flex shrink-0 items-center gap-1.5" role="tablist" aria-label="Diagram slides">
-                    {slides.map((slide, idx) => {
-                      const isActive = idx === safeIndex;
-                      return (
+                <div className="relative mx-auto flex aspect-[16/8] min-h-[200px] w-full items-center justify-center overflow-hidden rounded-2xl border border-slate-200/70 bg-gradient-to-br from-slate-50 to-white p-2 sm:min-h-[260px]">
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.div
+                      key={currentSlide?.id}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.35, ease: 'easeOut' }}
+                      className="flex h-full w-full items-center justify-center"
+                    >
+                      {currentSlide?.image ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={currentSlide.image}
+                          alt={currentSlide.title}
+                          className="max-h-full max-w-full object-contain"
+                        />
+                      ) : (
+                        <ScientificPipelineSvg variant={currentSlide?.diagramIndex ?? 0} />
+                      )}
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+
+                <div className="mt-4 flex flex-col gap-3 px-1 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="line-clamp-2 text-xs leading-relaxed text-slate-600 sm:text-[0.82rem]">
+                    {currentSlide?.caption}
+                  </p>
+
+                  <div className="flex shrink-0 items-center gap-3">
+                    {count > 1 && (
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={prev}
+                          aria-label="Previous research diagram"
+                          className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 transition-colors hover:border-[#1d1d1f] hover:bg-[#1d1d1f] hover:text-white cursor-pointer"
+                        >
+                          <ChevronLeft className="h-4 w-4" strokeWidth={2.2} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={next}
+                          aria-label="Next research diagram"
+                          className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 transition-colors hover:border-[#1d1d1f] hover:bg-[#1d1d1f] hover:text-white cursor-pointer"
+                        >
+                          <ChevronRight className="h-4 w-4" strokeWidth={2.2} />
+                        </button>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-1.5" role="tablist" aria-label="Diagram slides">
+                      {slides.map((slide, idx) => (
                         <button
                           key={slide.id}
                           type="button"
                           role="tab"
-                          aria-selected={isActive}
+                          aria-selected={idx === safeIndex}
                           aria-label={`Show diagram ${idx + 1}: ${slide.title}`}
                           onClick={() => setActiveIndex(idx)}
-                          className={`h-2 rounded-full transition-all ${
-                            isActive
-                              ? 'w-6 bg-[#0066cc]'
-                              : 'w-2 bg-slate-300 hover:bg-slate-400'
+                          className={`h-2 rounded-full transition-all cursor-pointer ${
+                            idx === safeIndex ? 'w-6 bg-[#1d1d1f]' : 'w-2 bg-slate-300 hover:bg-slate-400'
                           }`}
                         />
-                      );
-                    })}
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </Reveal>
           </div>
         </div>
       </section>
 
-      {/* ── 2. On Scroll: Bottom Section with <ScrollStack /> ── */}
-      <section aria-labelledby="core-themes-heading" className="relative pt-4">
-        <div className="mb-8 flex flex-col items-center text-center">
-          <span className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-[#0066cc]">
-            Deep Dive
-          </span>
-          <h2
-            id="core-themes-heading"
-            className="mt-2 font-display text-3xl sm:text-4xl font-semibold tracking-[-0.03em] text-[#1d1d1f]"
-          >
-            Core Research Domains
-          </h2>
-          <p className="mt-2.5 max-w-xl text-sm sm:text-base text-slate-600">
-            Scroll down to review the neural decoding pipelines, biosignal architectures, and clinical applications developed in our laboratory.
-          </p>
-        </div>
+      {/* ── 2. CORE RESEARCH DOMAINS: editorial rows, alternating sides ───── */}
+      <section aria-labelledby="core-themes-heading" className="shell scroll-mt-28 pb-16 md:pb-20">
+        <Reveal>
+          <div className="flex items-end justify-between gap-4 border-b border-slate-300/80 pb-5">
+            <h2
+              id="core-themes-heading"
+              className="font-display text-3xl font-extrabold tracking-tight text-[#1d1d1f] sm:text-4xl"
+            >
+              Core research domains
+            </h2>
+            <span className="mb-1 font-mono text-xs font-bold tracking-[0.16em] text-slate-500">
+              {String(slides.length).padStart(2, '0')} AREAS
+            </span>
+          </div>
+        </Reveal>
 
-        <ScrollStack
-          useWindowScroll={true}
-          itemDistance={90}
-          itemStackDistance={24}
-          stackPosition="14%"
-          itemScale={0.04}
-          baseScale={0.86}
-          dimAmount={0.16}
-          smoothScroll={false}
-          className="pb-16"
-        >
+        <ol>
           {slides.map((item, index) => {
             const description = cleanDescription(item.caption);
-            const origItem = research[index];
-            const tags = cleanTags(origItem?.tags ?? ['Neural Systems', 'EEG']);
+            const tags = cleanTags(research[index]?.tags ?? []).slice(0, 4);
+            const flip = index % 2 === 1;
 
             return (
-              <ScrollStackItem
-                key={item.id}
-                itemClassName="border border-slate-200/90 bg-white/95 backdrop-blur-md rounded-[28px] p-6 sm:p-9 shadow-[0_16px_40px_-16px_rgba(0,0,0,0.12)] min-h-[22rem]"
-              >
-                <div className="grid grid-cols-1 items-center gap-6 lg:grid-cols-12 lg:gap-8">
-                  {/* Left Column: Details */}
-                  <div className="min-w-0 flex-1 lg:col-span-7">
-                    <div className="flex flex-wrap items-center gap-3">
-                      <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#0066cc]/10 font-mono text-xs font-bold text-[#0066cc]">
+              <li key={item.id} className="border-b border-slate-300/80">
+                <Reveal y={18}>
+                  <article className="grid items-center gap-8 py-12 md:grid-cols-12 md:gap-14 md:py-16">
+                    {/* Diagram, drawn straight on the page with a soft tint behind it */}
+                    <div className={`relative md:col-span-6 ${flip ? 'md:order-2' : ''}`}>
+                      <div
+                        aria-hidden="true"
+                        className={`absolute -inset-4 -z-10 rounded-[2.5rem] bg-gradient-to-br ${CARD_TINTS[index % CARD_TINTS.length]} opacity-80 blur-2xl`}
+                      />
+                      <div className="aspect-[16/10] w-full">
+                        {item.image ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={item.image} alt={item.title} className="h-full w-full object-contain" />
+                        ) : (
+                          <ScientificPipelineSvg variant={item.diagramIndex} />
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Text */}
+                    <div className={`relative md:col-span-6 ${flip ? 'md:order-1' : ''}`}>
+                      <span
+                        aria-hidden="true"
+                        className="pointer-events-none absolute -top-10 left-0 select-none font-display text-[7rem] font-extrabold leading-none tracking-tighter text-slate-900/[0.06] md:-top-14 md:text-[9rem]"
+                      >
                         {String(index + 1).padStart(2, '0')}
                       </span>
-                      <span className="font-mono text-xs font-semibold uppercase tracking-wider text-slate-500">
-                        Domain {String(index + 1).padStart(2, '0')}
-                      </span>
+                      <h3 className="relative font-display text-3xl font-extrabold leading-[1.08] tracking-tight text-[#1d1d1f] sm:text-4xl">
+                        {item.title}
+                      </h3>
+                      <p className="relative mt-5 max-w-xl text-base leading-relaxed text-[#424245]">
+                        {description}
+                      </p>
+                      {tags.length > 0 ? (
+                        <p className="relative mt-5 font-mono text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+                          {tags.join('  ·  ')}
+                        </p>
+                      ) : null}
                     </div>
-
-                    <h3 className="mt-3 font-sans text-xl sm:text-2xl lg:text-[1.75rem] font-semibold leading-snug tracking-tight text-[#1d1d1f]">
-                      {item.title}
-                    </h3>
-
-                    <p className="mt-3.5 text-sm sm:text-base leading-relaxed text-slate-700">
-                      {description}
-                    </p>
-
-                    <div className="mt-5">
-                      <TagList tags={tags} />
-                    </div>
-                  </div>
-
-                  {/* Right Column: Visual Diagram Preview */}
-                  <div className="lg:col-span-5">
-                    <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-50/80 p-3 shadow-2xs">
-                      {item.image ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={item.image}
-                          alt={item.title}
-                          className="h-full w-full object-contain"
-                        />
-                      ) : (
-                        <ScientificPipelineSvg variant={item.diagramIndex} />
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </ScrollStackItem>
+                  </article>
+                </Reveal>
+              </li>
             );
           })}
-        </ScrollStack>
+        </ol>
       </section>
     </div>
   );

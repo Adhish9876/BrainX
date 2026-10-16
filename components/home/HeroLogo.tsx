@@ -10,6 +10,12 @@ import TextType from '@/components/ui/TextType';
 export default function HeroLogo({ src, alt }: { src: string; alt: string }) {
   return (
     <div className="relative flex h-full w-full items-center justify-center px-4">
+      {/* Dark shade behind the institute banner so its white text stays readable */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 z-10 h-[16rem] bg-gradient-to-b from-black/80 via-black/45 to-transparent"
+      />
+
       {/* Top-center institute banner logo */}
       <div className="pointer-events-none absolute top-1.5 sm:top-2 md:top-2.5 left-1/2 -translate-x-1/2 z-20 flex w-full justify-center px-4">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -18,13 +24,13 @@ export default function HeroLogo({ src, alt }: { src: string; alt: string }) {
           alt="Indian Institute of Information Technology, Design and Manufacturing, Kancheepuram"
           width={2048}
           height={327}
-          className="h-auto w-[min(85vw,34rem)] lg:w-[min(72vw,40rem)] object-contain select-none drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]"
+          className="h-auto w-[min(92vw,40rem)] lg:w-[min(80vw,48rem)] object-contain select-none drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]"
           draggable={false}
         />
       </div>
 
       {/* Logo + typed quote side-by-side on desktop, centered cleanly in the hero banner */}
-      <div className="flex flex-col items-center gap-6 lg:flex-row lg:items-center lg:gap-10 -translate-y-4 sm:-translate-y-6 md:-translate-y-8">
+      <div className="flex flex-col items-center gap-6 lg:flex-row lg:items-center lg:gap-10 translate-y-2 sm:translate-y-3 md:translate-y-5">
         <Link
           href="/"
           aria-label="BrainX Lab home"
@@ -37,11 +43,11 @@ export default function HeroLogo({ src, alt }: { src: string; alt: string }) {
           />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/logo_white.png"
+            src="/brainx_lab_logo_solid.png"
             alt={alt}
-            width={2170}
-            height={725}
-            className="relative h-auto w-[min(58vw,24rem)] select-none drop-shadow-[0_6px_28px_rgba(255,255,255,0.45)] drop-shadow-[0_0_16px_rgba(255,255,255,0.3)] lg:w-[min(38vw,25rem)]"
+            width={426}
+            height={430}
+            className="relative h-[min(44vw,15rem)] w-auto select-none drop-shadow-[0_10px_34px_rgba(0,0,0,0.45)] lg:h-[min(27vw,18rem)]"
             draggable={false}
           />
         </Link>
@@ -61,7 +67,7 @@ export default function HeroLogo({ src, alt }: { src: string; alt: string }) {
             showCursor={true}
             cursorCharacter="|"
             cursorClassName="text-white font-normal"
-            className="font-display text-[clamp(1.3rem,2.2vw,2.5rem)] font-bold leading-[1.15] tracking-[-0.02em] text-[#38bdf8] [text-shadow:0_0_20px_rgba(56,189,248,0.5),0_2px_14px_rgba(0,0,0,0.9)]"
+            className="font-display text-[clamp(1.3rem,2.2vw,2.5rem)] font-bold leading-[1.15] tracking-[-0.02em] text-white [text-shadow:0_2px_18px_rgba(0,0,0,0.75),0_1px_3px_rgba(0,0,0,0.5)]"
           />
         </div>
       </div>
