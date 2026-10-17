@@ -45,8 +45,8 @@ export function ImageField({
     try {
       const url = await onUpload(file);
       onChange(url);
-    } catch {
-      setError('Upload failed. Please try again.');
+    } catch (err) {
+      setError(err instanceof Error && err.message ? err.message : 'Upload failed. Please try again.');
     } finally {
       setUploading(false);
       if (inputRef.current) inputRef.current.value = '';

@@ -50,11 +50,13 @@ export function GalleryField({
     setUploading((count) => count + list.length);
     const uploaded: string[] = [];
     let failedCount = 0;
+    let lastReason = '';
     for (const file of list) {
       try {
         uploaded.push(await onUpload(file));
-      } catch {
+      } catch (err) {
         failedCount += 1;
+        if (err instanceof Error && err.message) lastReason = err.message;
       } finally {
         setUploading((count) => Math.max(0, count - 1));
       }
@@ -63,9 +65,8 @@ export function GalleryField({
     if (uploaded.length && !thumbnail) onChangeThumbnail(images[0] ?? uploaded[0]);
     if (failedCount) {
       setError(
-        failedCount === 1
-          ? 'One image failed to upload.'
-          : `${failedCount} images failed to upload.`,
+        lastReason ||
+          (failedCount === 1 ? 'One image failed to upload.' : `${failedCount} images failed to upload.`),
       );
     }
     if (inputRef.current) inputRef.current.value = '';

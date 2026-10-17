@@ -63,9 +63,33 @@ export function blobEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
   return Boolean(env.BLOB_READ_WRITE_TOKEN?.trim());
 }
 
-/** Private stores are the default; set BLOB_ACCESS=public if the Blob store was created as public. */
-function blobAccess(): 'public' | 'private' {
-  return process.env.BLOB_ACCESS === 'public' ? 'public' : 'private';
+/** Which access mode the Blob store uses. Starts from BLOB_ACCESS (default private) and self-corrects. */
+let accessMode: 'public' | 'private' = process.env.BLOB_ACCESS === 'public' ? 'public' : 'private';
+
+/** Run a Blob call; if the store rejects the access mode (public vs private store), retry with the other. */
+async function withBlobAccess<T>(run: (access: 'public' | 'private') => Promise<T>): Promise<T> {
+  try {
+    return await run(accessMode);
+  } catch (first) {
+    const other = accessMode === 'private' ? 'public' : 'private';
+    try {
+      const result = await run(other);
+      accessMode = other;
+      return result;
+    } catch {
+      throw first;
+    }
+  }
+}
+
+/** On Vercel there is no persistent disk, so uploads need the Blob store to be connected. */
+function assertStorageAvailable(): void {
+  if (process.env.VERCEL && !blobEnabled()) {
+    throw new UploadError(
+      'Photo storage is not connected. In Vercel open this project > Storage, create a Blob store and connect it to the project, then redeploy.',
+      503,
+    );
+  }
 }
 
 const blobImagePath = (token: string) => `staged/${token}.webp`;
@@ -73,7 +97,7 @@ const blobRecordPath = (token: string) => `staged/${token}.json`;
 
 async function blobReadBytes(pathname: string): Promise<Buffer | null> {
   try {
-    const result = await blobGet(pathname, { access: blobAccess(), useCache: false });
+    const result = await withBlobAccess((access) => blobGet(pathname, { access, useCache: false }));
     if (!result || !result.stream) return null;
     return Buffer.from(await new Response(result.stream).arrayBuffer());
   } catch {
@@ -262,6 +286,7 @@ export async function createUpload(input: CreateUploadInput): Promise<UploadReco
   const now = input.now ?? Date.now();
   const maxPerSession = input.maxPerSession ?? MAX_UPLOADS_PER_SESSION;
 
+  assertStorageAvailable();
   if (!blobEnabled()) await ensureUploadDir(input.dir);
   await pruneExpiredUploads(input.dir, now);
   const existing = await countSessionUploads(input.dir, input.sessionId, now);
@@ -285,21 +310,29 @@ export async function createUpload(input: CreateUploadInput): Promise<UploadReco
 
   if (blobEnabled()) {
     try {
-      await blobPut(blobImagePath(token), processed.data, {
-        access: blobAccess(),
-        contentType: 'image/webp',
-        addRandomSuffix: false,
-        allowOverwrite: true,
-      });
-      await blobPut(blobRecordPath(token), JSON.stringify(record), {
-        access: blobAccess(),
-        contentType: 'application/json',
-        addRandomSuffix: false,
-        allowOverwrite: true,
-      });
-    } catch {
+      await withBlobAccess((access) =>
+        blobPut(blobImagePath(token), processed.data, {
+          access,
+          contentType: 'image/webp',
+          addRandomSuffix: false,
+          allowOverwrite: true,
+        }),
+      );
+      await withBlobAccess((access) =>
+        blobPut(blobRecordPath(token), JSON.stringify(record), {
+          access,
+          contentType: 'application/json',
+          addRandomSuffix: false,
+          allowOverwrite: true,
+        }),
+      );
+    } catch (error) {
+      console.error('[upload] Vercel Blob write failed:', error instanceof Error ? error.message : error);
       await blobDeleteUpload(token);
-      throw new UploadError('failed to store upload', 500);
+      throw new UploadError(
+        `Photo storage rejected the upload (${error instanceof Error ? error.message.slice(0, 140) : 'unknown error'}).`,
+        500,
+      );
     }
     return record;
   }

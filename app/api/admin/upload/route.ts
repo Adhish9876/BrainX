@@ -62,6 +62,7 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     if (error instanceof UploadError) return jsonError(error.status, 'invalid_upload', error.message);
+    console.error('[upload] unexpected failure:', error);
     return jsonError(500, 'upload_failed', 'failed to store upload');
   }
 }
