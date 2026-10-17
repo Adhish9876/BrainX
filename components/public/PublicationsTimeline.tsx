@@ -5,7 +5,7 @@ import { motion, useScroll, useSpring } from 'motion/react';
 import { ArrowUpRight, BookOpen, Calendar, Layers } from 'lucide-react';
 import type { Publication } from '@/lib/types';
 import TagList from './TagList';
-import { publicationFallbackImages, publicationYearImages } from './publications.config';
+import { publicationFallbackImages } from './publications.config';
 
 type PublicationYearGroup = { year: number; items: Publication[] };
 
@@ -23,8 +23,10 @@ function groupPublicationsByYear(publications: Publication[]): PublicationYearGr
 
 export default function PublicationsTimeline({
   publications,
+  yearImages = {},
 }: {
   publications: Publication[];
+  yearImages?: Record<string, string>;
 }) {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [scrollBlur, setScrollBlur] = React.useState(0);
@@ -155,7 +157,7 @@ export default function PublicationsTimeline({
                       /* ── 2026: Year on Left, All Cards on Right ── */
                       <>
                         {/* Left Side: full-cover year image with milestone badge */}
-                        <YearVisual year={group.year} count={group.items.length} image={yearImage(group.year, groupIndex, group.items)} side="left" />
+                        <YearVisual year={group.year} count={group.items.length} image={yearImage(group.year, groupIndex, group.items, yearImages)} side="left" />
 
                         {/* Right Side: All cards of this year stacked */}
                         <div className="space-y-6 pl-6">
@@ -205,7 +207,7 @@ export default function PublicationsTimeline({
                         </div>
 
                         {/* Right Side: full-cover year image with milestone badge */}
-                        <YearVisual year={group.year} count={group.items.length} image={yearImage(group.year, groupIndex, group.items)} side="right" />
+                        <YearVisual year={group.year} count={group.items.length} image={yearImage(group.year, groupIndex, group.items, yearImages)} side="right" />
                       </>
                     )}
                   </div>
@@ -261,15 +263,14 @@ export default function PublicationsTimeline({
 }
 
 /**
- * Image for a year's empty side: a photo uploaded on any publication of that year (admin page),
- * else `publicationYearImages` (publications.config.ts), else rotating fallback photos.
+ * Image for a year's empty side: the photo set for that year in the admin, else a rotating fallback photo.
  */
-function yearImage(year: number, groupIndex: number, items: Publication[]): string {
+function yearImage(year: number, groupIndex: number, items: Publication[], yearImages: Record<string, string>): string {
   return (
+    yearImages[String(year)] ||
     items.find((item) => item.image)?.image ||
-    (publicationYearImages[year] ??
     publicationFallbackImages[groupIndex % publicationFallbackImages.length]
-  ));
+  );
 }
 
 // Feathers all four edges so the photo dissolves into the page background instead of reading as a box

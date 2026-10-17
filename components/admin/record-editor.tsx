@@ -57,9 +57,10 @@ export function RecordEditor({
 
   const singular = COLLECTION_SINGULAR[collection];
   const primaryKey = PRIMARY_FIELD[collection];
-  const primaryValue = value[primaryKey];
-  const canSave =
-    typeof primaryValue === 'string' && primaryValue.trim().length > 0;
+  const [attempted, setAttempted] = React.useState(false);
+  const isEmpty = (v: unknown) => v === undefined || v === null || (typeof v === 'string' && v.trim() === '') || (Array.isArray(v) && v.length === 0);
+  const requiredKeys = [...new Set([primaryKey, ...RECORD_FIELDS[collection].filter((f) => f.required).map((f) => f.key)])];
+  const missingKeys = requiredKeys.filter((key) => isEmpty(value[key]));
 
   const setField = (key: string, next: unknown) => {
     setValue((prev) => ({ ...prev, [key]: next }));
@@ -135,6 +136,7 @@ export function RecordEditor({
                 onChange={(next) => setField(field.key, next)}
                 onUpload={onUpload}
                 disabled={disabled}
+                error={attempted && missingKeys.includes(field.key) ? 'This field is required' : undefined}
               />
 
               {collection === 'projects' &&
@@ -280,6 +282,12 @@ export function RecordEditor({
           </div>
         </div>
 
+        {attempted && missingKeys.length > 0 ? (
+          <p className="shrink-0 border-t border-red-100 bg-red-50 px-4 py-2 text-sm font-medium text-red-700 sm:px-6">
+            Please fill in the fields marked with a red asterisk.
+          </p>
+        ) : null}
+
         <DialogFooter className="shrink-0 border-t border-slate-200 px-4 py-4 sm:px-6">
           <Button
             type="button"
@@ -291,8 +299,13 @@ export function RecordEditor({
           </Button>
           <Button
             type="button"
-            disabled={disabled || !canSave}
+            disabled={disabled}
             onClick={() => {
+              if (missingKeys.length > 0) {
+                setAttempted(true);
+                document.getElementById(`record-${missingKeys[0]}`)?.focus();
+                return;
+              }
               onSave(value);
               onOpenChange(false);
             }}

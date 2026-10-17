@@ -13,6 +13,7 @@ import { guardMutation, jsonError, jsonNoStore, requireSession } from '../_share
 import { BodyTooLargeError, readLimitedBody } from '@/lib/request-body';
 
 export const runtime = 'nodejs';
+export const maxDuration = 60;
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {

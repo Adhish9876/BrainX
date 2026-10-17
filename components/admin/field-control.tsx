@@ -17,6 +17,8 @@ interface FieldControlProps {
   onChange: (next: unknown) => void;
   onUpload: (file: File) => Promise<string>;
   disabled?: boolean;
+  /** Shown under the field, in red (e.g. "Required"). */
+  error?: string;
 }
 
 /** Renders one labelled form control for a record field definition. */
@@ -27,6 +29,7 @@ export function FieldControl({
   onChange,
   onUpload,
   disabled,
+  error,
 }: FieldControlProps) {
   const helpId = field.help ? `${id}-help` : undefined;
 
@@ -34,6 +37,7 @@ export function FieldControl({
     <div className="space-y-2">
       <Label htmlFor={id}>
         {field.label}
+        {field.required ? <span className="ml-0.5 text-red-600" aria-hidden="true">*</span> : null}
       </Label>
 
       {field.kind === 'text' ? (
@@ -43,6 +47,8 @@ export function FieldControl({
           value={typeof value === 'string' ? value : ''}
           placeholder={field.placeholder}
           disabled={disabled}
+          aria-invalid={error ? true : undefined}
+          className={error ? 'border-red-400' : undefined}
           aria-describedby={helpId}
           onChange={(event) => onChange(event.target.value)}
         />
@@ -51,12 +57,22 @@ export function FieldControl({
       {field.kind === 'select' ? (
         <select
           id={id}
-          value={typeof value === 'string' && value ? value : (field.options?.[0]?.value ?? '')}
+          value={typeof value === 'string' && value ? value : field.required ? '' : (field.options?.[0]?.value ?? '')}
           disabled={disabled}
+          required={field.required}
+          aria-invalid={error ? true : undefined}
           aria-describedby={helpId}
           onChange={(event) => onChange(event.target.value)}
-          className="flex h-9 w-full rounded-md border border-slate-200 bg-white px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ink disabled:cursor-not-allowed disabled:opacity-50"
+          className={`flex h-9 w-full rounded-md border bg-white px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ink disabled:cursor-not-allowed disabled:opacity-50 ${error ? 'border-red-400' : 'border-slate-200'}`}
         >
+          {field.required ? (
+            <option value="" disabled>
+              {field.placeholder ?? 'Select…'}
+            </option>
+          ) : null}
+          {typeof value === 'string' && value && !field.options?.some((o) => o.value === value) ? (
+            <option value={value}>{value} (not in the list)</option>
+          ) : null}
           {field.options?.map((opt) => (
             <option key={opt.value} value={opt.value}>
               {opt.label}
@@ -143,6 +159,8 @@ export function FieldControl({
           aria-describedby={helpId}
         />
       ) : null}
+
+      {error ? <p className="text-xs font-medium text-red-600">{error}</p> : null}
 
       {field.help ? (
         <p id={helpId} className="text-xs text-slate-600">

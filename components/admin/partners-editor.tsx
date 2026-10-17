@@ -43,8 +43,7 @@ export function PartnersEditor({ partners, onChange, onUpload, disabled }: Partn
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="text-sm font-semibold text-slate-900">Equipment partners</h3>
-        <p className="mt-1 text-xs text-slate-600">
+        <p className="text-sm text-slate-500">
           Companies whose equipment the lab uses, shown on the home page after the research board. Each appears as
           its logo, then the equipment photo, then the description. They alternate left and right.
         </p>

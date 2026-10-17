@@ -174,6 +174,7 @@ const siteSchema = z
     logo: imageField,
     grantAmount: z.number().int().min(0).max(999_999_999_999).optional(),
     partners: z.array(partnerSchema).max(6).optional(),
+    publicationYearImages: z.record(z.string().regex(/^\d{4}$/), imageField).optional(),
   })
   .strict();
 
@@ -193,9 +194,9 @@ const publicationSchema = z
 const memberSchema = z
   .object({
     id,
-    name: bounded(LIMITS.shortText),
-    role: bounded(LIMITS.shortText),
-    position: bounded(LIMITS.shortText),
+    name: bounded(LIMITS.shortText).refine((v) => v.trim().length > 0, { message: 'name is required' }),
+    role: bounded(LIMITS.shortText).refine((v) => v.trim().length > 0, { message: 'role is required' }),
+    position: bounded(LIMITS.shortText).refine((v) => v.trim().length > 0, { message: 'position is required' }),
     tagline: bounded(LIMITS.shortText).optional(),
     description: bounded(LIMITS.longText),
     image: imageField,

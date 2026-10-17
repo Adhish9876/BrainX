@@ -22,6 +22,7 @@ const SITE_FIELD_LABELS: Record<keyof Site, string> = {
   logo: 'Logo',
   grantAmount: 'Grant funding',
   partners: 'Equipment partners',
+  publicationYearImages: 'Publication year photos',
 };
 
 function stable(value: unknown): string {

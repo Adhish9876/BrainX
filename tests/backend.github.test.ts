@@ -329,4 +329,14 @@ describe('admin-managed home content', () => {
     expect(pubs[0].image).toBe(`/media/uploads/${T5}.webp`);
     expect(JSON.stringify(plan.json)).not.toContain('/api/admin/uploads/');
   });
+
+  it('publishes uploaded per-year publication photos', () => {
+    const T6 = 'f'.repeat(32);
+    const content = makeContent();
+    content.site.publicationYearImages = { '2025': `/api/admin/uploads/${T6}` };
+    expect(collectStagedTokens(content).has(T6)).toBe(true);
+    const plan = planCommit(content, [], new Map([[T6, Buffer.from('6')]]));
+    const site = JSON.parse(plan.json.find((f) => f.path === 'data/site.json')!.buf.toString('utf8'));
+    expect(site.publicationYearImages['2025']).toBe(`/media/uploads/${T6}.webp`);
+  });
 });

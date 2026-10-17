@@ -208,7 +208,33 @@ export async function commit(
 }
 
 /** POST /api/admin/upload (multipart, field name "file") */
-export async function uploadFile(file: File): Promise<string> {
+/** Vercel rejects request bodies over ~4.5 MB, so large photos are downsized in the browser first. */
+const MAX_CLIENT_UPLOAD_BYTES = 3.5 * 1024 * 1024;
+
+async function shrinkForUpload(file: File): Promise<File> {
+  if (file.size <= MAX_CLIENT_UPLOAD_BYTES || !file.type.startsWith('image/') || file.type === 'image/gif') return file;
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, 2560 / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+    canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+    canvas.getContext('2d')?.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close?.();
+    for (const quality of [0.85, 0.75, 0.65, 0.55]) {
+      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/webp', quality));
+      if (blob && blob.size <= MAX_CLIENT_UPLOAD_BYTES) {
+        return new File([blob], file.name.replace(/\.[^.]+$/, '') + '.webp', { type: 'image/webp' });
+      }
+    }
+  } catch {
+    /* fall through to the original file; the server will report any real problem */
+  }
+  return file;
+}
+
+export async function uploadFile(original: File): Promise<string> {
+  const file = await shrinkForUpload(original);
   const form = new FormData();
   form.append('file', file);
   const res = await fetch('/api/admin/upload', {

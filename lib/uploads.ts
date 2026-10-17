@@ -2,6 +2,7 @@ import { randomBytes } from 'node:crypto';
 import { mkdir, readFile, readdir, rename, stat, unlink, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
+import { del as blobDel, get as blobGet, list as blobList, put as blobPut } from '@vercel/blob';
 
 /**
  * Session-bound image staging for the admin CMS.
@@ -11,6 +12,10 @@ import sharp from 'sharp';
  * and referenced by an opaque token. Records expire after 24h and are bound to
  * the admin session that created them. Nothing here is written into the repo;
  * committing copies the staged bytes into git via `lib/github.ts`.
+ *
+ * Storage: a local directory by default (dev server, VPS). When `BLOB_READ_WRITE_TOKEN` is set
+ * (Vercel, where there is no persistent disk) the same records live in Vercel Blob instead, so a
+ * photo uploaded in one request can be read by the next one, even on another serverless instance.
  */
 
 export const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
@@ -49,6 +54,65 @@ export type UploadRecord = {
   format: string;
   createdAt: number;
 };
+
+// ---------------------------------------------------------------------------
+// Vercel Blob backend (used when BLOB_READ_WRITE_TOKEN is set)
+// ---------------------------------------------------------------------------
+
+export function blobEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
+  return Boolean(env.BLOB_READ_WRITE_TOKEN?.trim());
+}
+
+/** Private stores are the default; set BLOB_ACCESS=public if the Blob store was created as public. */
+function blobAccess(): 'public' | 'private' {
+  return process.env.BLOB_ACCESS === 'public' ? 'public' : 'private';
+}
+
+const blobImagePath = (token: string) => `staged/${token}.webp`;
+const blobRecordPath = (token: string) => `staged/${token}.json`;
+
+async function blobReadBytes(pathname: string): Promise<Buffer | null> {
+  try {
+    const result = await blobGet(pathname, { access: blobAccess(), useCache: false });
+    if (!result || !result.stream) return null;
+    return Buffer.from(await new Response(result.stream).arrayBuffer());
+  } catch {
+    return null;
+  }
+}
+
+async function blobReadRecord(token: string): Promise<UploadRecord | null> {
+  if (!isUploadToken(token)) return null;
+  const bytes = await blobReadBytes(blobRecordPath(token));
+  if (!bytes) return null;
+  try {
+    const record = JSON.parse(bytes.toString('utf8')) as UploadRecord;
+    if (!record || record.token !== token || typeof record.createdAt !== 'number') return null;
+    return record;
+  } catch {
+    return null;
+  }
+}
+
+async function blobListRecords(): Promise<UploadRecord[]> {
+  const records: UploadRecord[] = [];
+  let cursor: string | undefined;
+  do {
+    const page = await blobList({ prefix: 'staged/', limit: 500, cursor });
+    for (const blob of page.blobs) {
+      if (!blob.pathname.endsWith('.json')) continue;
+      const token = blob.pathname.slice('staged/'.length, -'.json'.length);
+      const record = await blobReadRecord(token);
+      if (record) records.push(record);
+    }
+    cursor = page.hasMore ? page.cursor : undefined;
+  } while (cursor);
+  return records;
+}
+
+async function blobDeleteUpload(token: string): Promise<void> {
+  await Promise.allSettled([blobDel(blobImagePath(token)), blobDel(blobRecordPath(token))]);
+}
 
 export function uploadDir(env: NodeJS.ProcessEnv = process.env): string {
   const configured = env.UPLOAD_DIR?.trim() || '.uploads';
@@ -156,6 +220,7 @@ async function readRecordFile(dir: string, token: string): Promise<UploadRecord 
 }
 
 export async function listUploads(dir: string): Promise<UploadRecord[]> {
+  if (blobEnabled()) return blobListRecords();
   let files: string[];
   try {
     files = await readdir(dir);
@@ -197,7 +262,7 @@ export async function createUpload(input: CreateUploadInput): Promise<UploadReco
   const now = input.now ?? Date.now();
   const maxPerSession = input.maxPerSession ?? MAX_UPLOADS_PER_SESSION;
 
-  await ensureUploadDir(input.dir);
+  if (!blobEnabled()) await ensureUploadDir(input.dir);
   await pruneExpiredUploads(input.dir, now);
   const existing = await countSessionUploads(input.dir, input.sessionId, now);
   if (existing >= maxPerSession) throw new UploadError('too many staged uploads for this session', 429);
@@ -217,6 +282,27 @@ export async function createUpload(input: CreateUploadInput): Promise<UploadReco
     format: processed.format,
     createdAt: now,
   };
+
+  if (blobEnabled()) {
+    try {
+      await blobPut(blobImagePath(token), processed.data, {
+        access: blobAccess(),
+        contentType: 'image/webp',
+        addRandomSuffix: false,
+        allowOverwrite: true,
+      });
+      await blobPut(blobRecordPath(token), JSON.stringify(record), {
+        access: blobAccess(),
+        contentType: 'application/json',
+        addRandomSuffix: false,
+        allowOverwrite: true,
+      });
+    } catch {
+      await blobDeleteUpload(token);
+      throw new UploadError('failed to store upload', 500);
+    }
+    return record;
+  }
 
   const image = imagePath(input.dir, token);
   const tmp = `${image}.tmp`;
@@ -240,6 +326,12 @@ export async function readUpload(
   token: string,
   now: number = Date.now(),
 ): Promise<LoadedUpload | null> {
+  if (blobEnabled()) {
+    const blobRecord = await blobReadRecord(token);
+    if (!blobRecord || isUploadExpired(blobRecord, now)) return null;
+    const bytes = await blobReadBytes(blobImagePath(token));
+    return bytes ? { record: blobRecord, data: bytes } : null;
+  }
   const record = await readRecordFile(dir, token);
   if (!record) return null;
   if (isUploadExpired(record, now)) return null;
@@ -275,11 +367,22 @@ export async function loadStagedForSession(
 
 export async function deleteUpload(dir: string, token: string): Promise<void> {
   if (!isUploadToken(token)) return;
+  if (blobEnabled()) return blobDeleteUpload(token);
   await Promise.allSettled([unlink(imagePath(dir, token)), unlink(recordPath(dir, token))]);
 }
 
 /** Remove expired records and their files; returns the number of records pruned. */
 export async function pruneExpiredUploads(dir: string, now: number = Date.now()): Promise<number> {
+  if (blobEnabled()) {
+    let pruned = 0;
+    for (const record of await blobListRecords()) {
+      if (isUploadExpired(record, now)) {
+        await blobDeleteUpload(record.token);
+        pruned += 1;
+      }
+    }
+    return pruned;
+  }
   let files: string[];
   try {
     files = await readdir(dir);

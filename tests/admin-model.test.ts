@@ -9,8 +9,11 @@ describe('browser-side CMS model', () => {
     it(`adds, edits, reorders and removes ${collection} without mutating the baseline`, () => {
       const baseline = getContent();
       const before = JSON.stringify(baseline);
-      const record = createRecord(collection);
-      const second = createRecord(collection);
+      // People must have a name, role and position before they can be published.
+      const fill = (r: ReturnType<typeof createRecord>) =>
+        collection === 'team' ? { ...r, name: `Person ${String(r.id).slice(0, 4)}`, role: 'Project Staff', position: 'Staff' } : r;
+      const record = fill(createRecord(collection));
+      const second = fill(createRecord(collection));
       const initialCount = baseline[collection].length;
       let draft = addRecord(addRecord(baseline, collection, record), collection, second);
       expect(draft[collection]).toHaveLength(initialCount + 2);
@@ -31,9 +34,15 @@ describe('browser-side CMS model', () => {
     let draft = updateSite(baseline, { tagline: 'a' });
     draft = updateSite(draft, { tagline: 'abc' });
     expect(diffContent(baseline, draft)).toHaveLength(1);
-    if (baseline.publications.length > 1) {
-      const reordered = moveRecord(baseline, 'publications', baseline.publications[0].id, 1);
+    // Papers are grouped by year in the admin, so reordering swaps within a year.
+    const list = baseline.publications;
+    const index = list.findIndex((p, i) => list.some((q, j) => j !== i && q.year === p.year));
+    if (index >= 0) {
+      const reordered = moveRecord(baseline, 'publications', list[index].id, list.slice(index + 1).some((q) => q.year === list[index].year) ? 1 : -1);
       expect(diffContent(baseline, reordered)).toEqual([{ kind: 'reorder', collection: 'publications', label: 'publications' }]);
+      // A paper alone in its year cannot move.
+      const lone = list.find((p) => list.filter((q) => q.year === p.year).length === 1);
+      if (lone) expect(moveRecord(baseline, 'publications', lone.id, 1)).toBe(baseline);
     }
   });
 });

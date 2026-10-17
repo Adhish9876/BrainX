@@ -7,6 +7,6 @@ export type News = { id: string; title: string; date: string; description: strin
 export type Event = News & { image: string; time: string; venue: string };
 export type PictureGroup = { id: string; name: string; date: string; description: string; thumbnail: string; images: string[]; tags?: string[] };
 export type Partner = { name: string; logo: string; product: string; productName: string; description: string; link: string };
-export type Site = { name: string; institution: string; tagline: string; about: string; focus: string; email: string; phone: string; address: string; logo: string; grantAmount?: number; partners?: Partner[] };
+export type Site = { name: string; institution: string; tagline: string; about: string; focus: string; email: string; phone: string; address: string; logo: string; grantAmount?: number; partners?: Partner[]; publicationYearImages?: Record<string, string> };
 export type Content = { site: Site; publications: Publication[]; team: Member[]; research: Research[]; projects: Project[]; news: News[]; events: Event[]; pictures: PictureGroup[] };
 export type Collection = Exclude<keyof Content, 'site'>;

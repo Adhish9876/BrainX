@@ -7,15 +7,17 @@ import {
   ChevronUp,
   GraduationCap,
   ImageOff,
+  Loader2,
   Pencil,
   Plus,
   Trash2,
+  Upload,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
-import { COLLECTION_SINGULAR, type Collection, type RecordValue } from './lib/content-types';
+import { COLLECTION_LABELS, COLLECTION_SINGULAR, type Collection, type RecordValue } from './lib/content-types';
 import { recordLabel } from './lib/content';
 import { ConfirmDialog } from './confirm-dialog';
 
@@ -67,6 +69,74 @@ function RecordThumb({ src }: { src: string }) {
   );
 }
 
+/** One photo for a publication year: add, replace or remove it. */
+function YearPhoto({
+  year,
+  src,
+  onChange,
+  onUpload,
+  disabled,
+}: {
+  year: number;
+  src: string;
+  onChange: (url: string) => void;
+  onUpload?: (file: File) => Promise<string>;
+  disabled?: boolean;
+}) {
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const [busy, setBusy] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+
+  const handle = async (files: FileList | null) => {
+    const file = files?.[0];
+    if (!file || !onUpload) return;
+    setBusy(true);
+    setError(null);
+    try {
+      onChange(await onUpload(file));
+    } catch {
+      setError('Upload failed. Try again.');
+    } finally {
+      setBusy(false);
+      if (inputRef.current) inputRef.current.value = '';
+    }
+  };
+
+  return (
+    <div>
+      <div className="group/photo relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-slate-100">
+        {src ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={src} alt={`${year} photo`} className="size-full object-cover" />
+        ) : (
+          <button
+            type="button"
+            disabled={disabled || busy}
+            onClick={() => inputRef.current?.click()}
+            className="flex size-full flex-col items-center justify-center gap-1.5 border-2 border-dashed border-slate-300 text-slate-500 transition-colors hover:border-navy-400 hover:bg-white hover:text-navy-700 cursor-pointer"
+          >
+            {busy ? <Loader2 className="size-5 animate-spin" /> : <Upload className="size-5" />}
+            <span className="text-xs font-semibold">{busy ? 'Uploading…' : 'Add photo for ' + year}</span>
+          </button>
+        )}
+        {src ? (
+          <div className="absolute inset-x-2 bottom-2 flex items-center justify-between gap-1 opacity-0 transition-opacity group-hover/photo:opacity-100 focus-within:opacity-100">
+            <Button type="button" size="sm" variant="secondary" disabled={disabled || busy} onClick={() => inputRef.current?.click()}>
+              {busy ? <Loader2 className="size-3.5 animate-spin" /> : <Upload className="size-3.5" />}
+              Change
+            </Button>
+            <Button type="button" size="icon-sm" variant="secondary" aria-label={`Remove ${year} photo`} disabled={disabled || busy} onClick={() => onChange('')}>
+              <Trash2 className="size-3.5 text-red-600" />
+            </Button>
+          </div>
+        ) : null}
+      </div>
+      <input ref={inputRef} type="file" accept="image/*" className="hidden" tabIndex={-1} aria-hidden="true" onChange={(e) => void handle(e.target.files)} />
+      {error ? <p className="mt-1 text-xs text-red-600">{error}</p> : null}
+    </div>
+  );
+}
+
 interface CollectionSectionProps {
   collection: Collection;
   records: RecordValue[];
@@ -75,6 +145,10 @@ interface CollectionSectionProps {
   onDelete: (id: string) => void;
   onMove: (id: string, direction: -1 | 1) => void;
   disabled?: boolean;
+  /** Publications only: photo per year, shown on the Publications timeline. */
+  yearImages?: Record<string, string>;
+  onYearImage?: (year: number, url: string) => void;
+  onUpload?: (file: File) => Promise<string>;
 }
 
 /** List of records for one collection with create / edit / delete / reorder. */
@@ -86,6 +160,9 @@ export function CollectionSection({
   onDelete,
   onMove,
   disabled,
+  yearImages = {},
+  onYearImage,
+  onUpload,
 }: CollectionSectionProps) {
   const [pendingDelete, setPendingDelete] = React.useState<string | null>(null);
   const [projectTab, setProjectTab] = React.useState<'all' | 'inhouse' | 'students'>('all');
@@ -95,6 +172,16 @@ export function CollectionSection({
 
   // When collection is projects, separate into inhouse and students
   const isProjects = collection === 'projects';
+  const isPublications = collection === 'publications';
+  const publicationYears = React.useMemo(() => {
+    if (!isPublications) return [];
+    const byYear = new Map<number, RecordValue[]>();
+    for (const record of records) {
+      const year = Number(record.year) || 0;
+      byYear.set(year, [...(byYear.get(year) ?? []), record]);
+    }
+    return [...byYear.entries()].sort((a, b) => b[0] - a[0]).map(([year, items]) => ({ year, items }));
+  }, [isPublications, records]);
   const inhouseProjects = React.useMemo(
     () => records.filter((r) => (r.category ?? 'inhouse') === 'inhouse'),
     [records],
@@ -118,64 +205,72 @@ export function CollectionSection({
     return (
       <li
         key={id}
-        className="flex items-start gap-3 rounded-lg border border-slate-200 bg-white p-3 shadow-sm transition-all hover:border-slate-300"
+        className="group flex items-center gap-4 rounded-2xl border border-slate-200/80 bg-white p-3 pr-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-px hover:border-slate-300 hover:shadow-[0_10px_24px_-14px_rgba(15,23,42,0.25)]"
       >
-        {thumb ? (
-          <div className="size-12 shrink-0 overflow-hidden rounded-md border border-slate-200 bg-slate-50">
+        <span className="hidden w-6 shrink-0 text-right font-mono text-xs font-bold text-slate-300 sm:block">
+          {String(index + 1).padStart(2, '0')}
+        </span>
+
+        <div className="grid size-14 shrink-0 place-items-center overflow-hidden rounded-xl border border-slate-200 bg-gradient-to-br from-slate-50 to-slate-100">
+          {thumb ? (
             <RecordThumb src={thumb} />
-          </div>
-        ) : null}
+          ) : (
+            <span className="font-display text-lg font-bold text-slate-400">
+              {label.trim().charAt(0).toUpperCase() || '·'}
+            </span>
+          )}
+        </div>
 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="truncate font-medium text-slate-900">{label}</p>
+            <p className="truncate font-semibold text-slate-900">{label}</p>
             {categoryBadge}
           </div>
           {detail ? (
-            <p className="mt-0.5 line-clamp-2 text-sm text-slate-600">{detail}</p>
+            <p className="mt-0.5 line-clamp-1 text-sm text-slate-500">{detail}</p>
           ) : null}
         </div>
 
-        <div className="flex shrink-0 flex-wrap items-center justify-end gap-1">
-          <Badge variant="outline" className="mr-1 hidden sm:inline-flex">
-            #{index + 1}
-          </Badge>
+        <div className="flex shrink-0 items-center gap-2">
+          <div className="hidden items-center rounded-lg bg-slate-100 p-0.5 sm:flex">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              aria-label={`Move ${label} up`}
+              disabled={disabled || index === 0}
+              onClick={() => onMove(id, -1)}
+            >
+              <ChevronUp className="size-4" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              aria-label={`Move ${label} down`}
+              disabled={disabled || index === totalCount - 1}
+              onClick={() => onMove(id, 1)}
+            >
+              <ChevronDown className="size-4" />
+            </Button>
+          </div>
           <Button
             type="button"
-            variant="ghost"
-            size="icon-sm"
-            aria-label={`Move ${label} up`}
-            disabled={disabled || index === 0}
-            onClick={() => onMove(id, -1)}
-          >
-            <ChevronUp className="size-4" />
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-sm"
-            aria-label={`Move ${label} down`}
-            disabled={disabled || index === totalCount - 1}
-            onClick={() => onMove(id, 1)}
-          >
-            <ChevronDown className="size-4" />
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-sm"
+            variant="outline"
+            size="sm"
             aria-label={`Edit ${label}`}
             disabled={disabled}
             onClick={() => onEdit(id)}
           >
-            <Pencil className="size-4" />
+            <Pencil className="size-3.5" />
+            Edit
           </Button>
           <Button
             type="button"
             variant="ghost"
             size="icon-sm"
             aria-label={`Delete ${label}`}
-            className="text-red-600 hover:bg-red-50 hover:text-red-700"
+            className="text-slate-400 hover:bg-red-50 hover:text-red-600"
             disabled={disabled}
             onClick={() => setPendingDelete(id)}
           >
@@ -195,7 +290,7 @@ export function CollectionSection({
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-xl font-bold tracking-tight text-slate-900">
-                Projects Management
+                Projects
               </h2>
               <p className="text-sm text-slate-600">
                 Manage and categorize lab projects into In-House research and Student innovation.
@@ -244,7 +339,7 @@ export function CollectionSection({
 
           {/* Section 1: In-House Projects */}
           {(projectTab === 'all' || projectTab === 'inhouse') && (
-            <div className="rounded-xl border border-sky-100 bg-sky-50/30 p-5 space-y-4">
+            <div className="rounded-2xl border border-sky-100 bg-sky-50/40 p-5 space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-sky-100 pb-3">
                 <div className="flex items-center gap-2.5">
                   <div className="flex size-8 items-center justify-center rounded-lg bg-sky-100 text-sky-700">
@@ -307,7 +402,7 @@ export function CollectionSection({
 
           {/* Section 2: Student Projects */}
           {(projectTab === 'all' || projectTab === 'students') && (
-            <div className="rounded-xl border border-emerald-100 bg-emerald-50/30 p-5 space-y-4">
+            <div className="rounded-2xl border border-emerald-100 bg-emerald-50/40 p-5 space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-emerald-100 pb-3">
                 <div className="flex items-center gap-2.5">
                   <div className="flex size-8 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700">
@@ -368,33 +463,100 @@ export function CollectionSection({
             </div>
           )}
         </div>
+      ) : isPublications ? (
+        /* ── PUBLICATIONS, GROUPED BY YEAR ── */
+        <div className="space-y-5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 className="text-xl font-bold tracking-tight text-slate-900">Publications</h2>
+              <p className="text-sm text-slate-600">
+                {records.length} {records.length === 1 ? 'paper' : 'papers'} across {publicationYears.length}{' '}
+                {publicationYears.length === 1 ? 'year' : 'years'} · one photo per year appears on the timeline
+              </p>
+            </div>
+            <Button type="button" className="shadow-sm" onClick={() => onNew()} disabled={disabled}>
+              <Plus className="size-4" />
+              New publication
+            </Button>
+          </div>
+
+          {publicationYears.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-slate-300 bg-white/60 p-12 text-center">
+              <p className="text-sm font-medium text-slate-700">A blank page, full of possibilities ✨</p>
+              <p className="mt-1 text-xs text-slate-500">Add your first publication and it will appear on the public timeline once published.</p>
+            </div>
+          ) : (
+            publicationYears.map(({ year, items }) => (
+              <section
+                key={year}
+                aria-label={`Publications from ${year}`}
+                className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
+              >
+                <div className="grid gap-5 p-4 sm:grid-cols-[13rem_1fr] sm:p-5">
+                  <YearPhoto
+                    year={year}
+                    src={yearImages[String(year)] ?? ''}
+                    onChange={(url) => onYearImage?.(year, url)}
+                    onUpload={onUpload}
+                    disabled={disabled || !onYearImage}
+                  />
+
+                  <div className="min-w-0">
+                    <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                      <div className="flex items-baseline gap-3">
+                        <h3 className="font-display text-3xl font-extrabold tracking-tight text-slate-900">{year}</h3>
+                        <span className="rounded-full bg-indigo-50 px-2.5 py-0.5 font-mono text-xs font-bold text-indigo-700">
+                          {items.length} {items.length === 1 ? 'paper' : 'papers'}
+                        </span>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        disabled={disabled}
+                        onClick={() => onNew({ year })}
+                      >
+                        <Plus className="size-3.5" />
+                        Add paper in {year}
+                      </Button>
+                    </div>
+                    <ul className="space-y-2">
+                      {items.map((record, index) => renderRecordItem(record, index, items.length))}
+                    </ul>
+                  </div>
+                </div>
+              </section>
+            ))
+          )}
+        </div>
       ) : (
         /* ── STANDARD COLLECTION VIEW FOR NON-PROJECTS ── */
         <div className="space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="text-lg font-semibold text-slate-900">
-                {singular}s
+              <h2 className="text-xl font-bold tracking-tight text-slate-900">
+                {COLLECTION_LABELS[collection]}
               </h2>
               <p className="text-sm text-slate-600">
                 {records.length} {records.length === 1 ? 'entry' : 'entries'} · use the
                 arrows to reorder
               </p>
             </div>
-            <Button type="button" onClick={() => onNew()} disabled={disabled}>
+            <Button type="button" className="shadow-sm" onClick={() => onNew()} disabled={disabled}>
               <Plus className="size-4" />
               New {singular.toLowerCase()}
             </Button>
           </div>
 
           {records.length === 0 ? (
-            <div className="rounded-lg border border-dashed border-slate-300 p-10 text-center">
-              <p className="text-sm text-slate-600">
-                No {singular.toLowerCase()} entries yet.
+            <div className="rounded-2xl border border-dashed border-slate-300 bg-white/60 p-12 text-center">
+              <p className="text-sm font-medium text-slate-700">
+                A blank page, full of possibilities ✨
               </p>
+              <p className="mt-1 text-xs text-slate-500">Add your first {singular.toLowerCase()} and it will appear on the public site once published.</p>
               <Button type="button" variant="outline" className="mt-3" onClick={() => onNew()} disabled={disabled}>
                 <Plus className="size-4" />
-                Add the first one
+                Add the first {singular.toLowerCase()}
               </Button>
             </div>
           ) : (

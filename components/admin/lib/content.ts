@@ -17,6 +17,15 @@ export type FieldKind =
   | 'url'
   | 'select';
 
+/** Fixed set of people roles; each becomes a section on the public People page. */
+export const TEAM_ROLES = [
+  'Principal Investigator',
+  'Project Staff',
+  'Research Scholar',
+  'Masters Student',
+  'Bachelors Students',
+] as const;
+
 export interface FieldDef {
   key: string;
   label: string;
@@ -25,6 +34,8 @@ export interface FieldDef {
   help?: string;
   rows?: number;
   options?: { value: string; label: string }[];
+  /** Must be filled in before the record can be saved. */
+  required?: boolean;
 }
 
 /** Field order is chosen to match how each record reads on the public site. */
@@ -34,19 +45,21 @@ export const RECORD_FIELDS: Record<Collection, FieldDef[]> = {
     { key: 'authors', label: 'Authors', kind: 'text', placeholder: 'Comma-separated author list' },
     { key: 'year', label: 'Year', kind: 'number', placeholder: '2026' },
     { key: 'venue', label: 'Venue', kind: 'text', placeholder: 'Journal or conference' },
-    {
-      key: 'image',
-      label: 'Year photo (optional)',
-      kind: 'image',
-      help: 'Shown beside the year of this paper on the Publications timeline. If several papers from the same year have a photo, the first one is used.',
-    },
     { key: 'link', label: 'Link', kind: 'url', placeholder: 'https://…' },
     { key: 'tags', label: 'Tags', kind: 'tags' },
   ],
   team: [
-    { key: 'name', label: 'Name', kind: 'text', placeholder: 'Full name' },
-    { key: 'role', label: 'Role', kind: 'text', placeholder: 'e.g. Principal Investigator' },
-    { key: 'position', label: 'Position', kind: 'text', placeholder: 'e.g. Assistant Professor, Dept. of CSE' },
+    { key: 'name', label: 'Name', kind: 'text', placeholder: 'Full name', required: true },
+    {
+      key: 'role',
+      label: 'Role',
+      kind: 'select',
+      required: true,
+      placeholder: 'Select a role…',
+      options: TEAM_ROLES.map((role) => ({ value: role, label: role })),
+      help: 'Decides which section of the People page this person appears in.',
+    },
+    { key: 'position', label: 'Position', kind: 'text', placeholder: 'e.g. Assistant Professor, Dept. of CSE', required: true },
     {
       key: 'tagline',
       label: 'Short tag (shown on the People page photo)',
@@ -223,6 +236,21 @@ export function moveRecord(
   const list = [...listOf(draft, collection)];
   const index = list.findIndex((item) => item.id === id);
   if (index < 0) return draft;
+
+  if (collection === 'publications') {
+    // Reorder within the same year only (papers are grouped by year in the admin)
+    const year = list[index].year;
+    let target = -1;
+    for (let i = index + direction; i >= 0 && i < list.length; i += direction) {
+      if (list[i].year === year) {
+        target = i;
+        break;
+      }
+    }
+    if (target < 0) return draft;
+    [list[index], list[target]] = [list[target], list[index]];
+    return { ...draft, [collection]: list } as Content;
+  }
 
   if (collection === 'projects') {
     const curCat =

@@ -53,8 +53,8 @@ jobs:
         run: |
           set -euo pipefail
           if [ -z "${DEPLOY_SECRET:-}" ]; then
-            echo "::error::DEPLOY_SECRET repository secret is not set"
-            exit 1
+            echo "::notice::DEPLOY_SECRET is not set, so the VPS deploy is skipped (the site is deployed by another host, e.g. Vercel)."
+            exit 0
           fi
           payload=$(printf '{"sha":"%s","repository":"%s","branch":"main"}' "$SHA" "$REPO")
           code=$(curl -sS -o /tmp/deploy-trigger.json -w '%{http_code}' --max-time 30 \
@@ -77,6 +77,10 @@ jobs:
           SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
+          if [ -z "${DEPLOY_SECRET:-}" ]; then
+            echo "No DEPLOY_SECRET: nothing to wait for."
+            exit 0
+          fi
           # Local VPS builds typically finish within ~2 minutes; poll for up to
           # 5 minutes so CI reflects the real live revision rather than merely
           # accepting the trigger.

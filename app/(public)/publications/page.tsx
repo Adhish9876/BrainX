@@ -12,14 +12,14 @@ export const metadata: Metadata = {
 };
 
 export default function PublicationsPage() {
-  const { publications } = getContent();
+  const { publications, site } = getContent();
 
   return (
     <div className="relative isolate min-h-screen bg-white">
       {/* Main Apple-style Shell Container */}
       <main id="main" className="shell relative z-10 pt-10 sm:pt-12 md:pt-14 pb-20 md:pb-28">
         {publications.length > 0 ? (
-          <PublicationsTimeline publications={publications} />
+          <PublicationsTimeline publications={publications} yearImages={site.publicationYearImages} />
         ) : (
           <EmptyState
             icon={<BookOpen className="h-5 w-5" aria-hidden />}

@@ -8,6 +8,7 @@ import {
   FlaskConical,
   FolderKanban,
   Images,
+  LayoutDashboard,
   Loader2,
   LogOut,
   Newspaper,
@@ -55,11 +56,14 @@ import { ChangesBar } from './changes-bar';
 import { CollectionSection } from './collection-section';
 import { ConfirmDialog } from './confirm-dialog';
 import { RecordEditor } from './record-editor';
+import { Overview, SECTION_TINT } from './overview';
 import { SiteSettingsForm } from './site-settings-form';
+import { motion } from 'motion/react';
 
-type SectionKey = 'site' | Collection;
+type SectionKey = 'overview' | 'site' | Collection;
 
 const SECTION_ICONS: Record<SectionKey, React.ComponentType<{ className?: string }>> = {
+  overview: LayoutDashboard,
   site: Settings,
   publications: FileText,
   team: Users,
@@ -70,9 +74,10 @@ const SECTION_ICONS: Record<SectionKey, React.ComponentType<{ className?: string
   pictures: Images,
 };
 
-const SECTION_ORDER: SectionKey[] = ['site', ...COLLECTIONS];
+const SECTION_ORDER: SectionKey[] = ['overview', 'site', ...COLLECTIONS];
 
 function sectionLabel(section: SectionKey): string {
+  if (section === 'overview') return 'Overview';
   return section === 'site' ? 'Site settings' : COLLECTION_LABELS[section];
 }
 
@@ -108,7 +113,7 @@ function ContentManager({ initial, onLogout }: ContentManagerProps) {
     () => storedDraft !== null && storedDraft.baseSha !== initial.sha,
   );
 
-  const [section, setSection] = React.useState<SectionKey>('site');
+  const [section, setSection] = React.useState<SectionKey>('overview');
   const [editing, setEditing] = React.useState<EditingState | null>(null);
   const [publishing, setPublishing] = React.useState(false);
   const [uploading, setUploading] = React.useState(0);
@@ -220,9 +225,11 @@ function ContentManager({ initial, onLogout }: ContentManagerProps) {
         setPublishState({
           kind: 'error',
           message:
-            error instanceof ApiError
-              ? 'The server rejected the publish request. Your draft is safe — fix the issue and try again.'
-              : 'Could not reach the server. Your draft is safe — try again.',
+            error instanceof ApiError && error.code === 'github_error' && (error.status === 403 || error.status === 401)
+              ? 'GitHub refused the commit: the access token (GITHUB_PAT) is not allowed to write to the repository. Give the token “Contents: Read and write” access to this repo, restart the server, and publish again. Your draft is safe.'
+              : error instanceof ApiError
+                ? 'The server rejected the publish request. Your draft is safe — fix the issue and try again.'
+                : 'Could not reach the server. Your draft is safe — try again.',
         });
       }
     } finally {
@@ -274,16 +281,17 @@ function ContentManager({ initial, onLogout }: ContentManagerProps) {
   const activeSection = section;
 
   return (
-    <div className="min-h-dvh bg-slate-50">
-      <header className="sticky top-0 z-30 border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
-          <div className="flex items-center gap-2.5">
-            <div className="flex size-9 items-center justify-center rounded-lg bg-navy-700 text-sm font-semibold text-white">
-              BX
-            </div>
+    <div className="min-h-dvh bg-[#f3f4f8]">
+      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/85 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
+          <div className="flex items-center gap-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/brainx_lab_logo.png" alt="" className="h-10 w-auto shrink-0 object-contain" />
             <div className="leading-tight">
-              <p className="text-sm font-semibold text-slate-900">BrainX Lab</p>
-              <p className="text-xs text-slate-600">Content admin</p>
+              <p className="text-[0.95rem] font-bold tracking-tight text-slate-900">BrainX Lab</p>
+              <p className="font-mono text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                Content admin
+              </p>
             </div>
           </div>
 
@@ -294,6 +302,15 @@ function ContentManager({ initial, onLogout }: ContentManagerProps) {
                 Uploading…
               </Badge>
             ) : null}
+            <a
+              href="/"
+              target="_blank"
+              rel="noreferrer"
+              className="hidden items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 sm:inline-flex"
+            >
+              View site
+              <span aria-hidden="true">↗</span>
+            </a>
             <Button type="button" variant="outline" size="sm" disabled={busy} onClick={requestLogout}>
               <LogOut className="size-4" />
               Sign out
@@ -302,31 +319,57 @@ function ContentManager({ initial, onLogout }: ContentManagerProps) {
         </div>
       </header>
 
-      <div className="mx-auto flex max-w-6xl gap-6 px-4 py-6 sm:px-6">
-        <aside className="hidden w-56 shrink-0 lg:block">
-          <nav className="sticky top-20 space-y-1" aria-label="Admin sections">
-            {SECTION_ORDER.map((key) => {
-              const Icon = SECTION_ICONS[key];
-              const active = key === activeSection;
-              return (
-                <button
-                  key={key}
-                  type="button"
-                  aria-current={active ? 'page' : undefined}
-                  onClick={() => setSection(key)}
-                  className={cn(
-                    'flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-700 focus-visible:ring-offset-2',
-                    active
-                      ? 'bg-navy-700 text-white'
-                      : 'text-slate-700 hover:bg-slate-100',
-                  )}
-                >
-                  <Icon className="size-4" />
-                  {sectionLabel(key)}
-                </button>
-              );
-            })}
-          </nav>
+      <div className="mx-auto flex max-w-7xl gap-8 px-4 py-8 sm:px-6">
+        <aside className="hidden w-64 shrink-0 lg:block">
+          <div className="sticky top-24 space-y-3">
+            <nav
+              className="rounded-2xl border border-slate-200/80 bg-white p-2 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(15,23,42,0.12)]"
+              aria-label="Admin sections"
+            >
+              {SECTION_ORDER.map((key) => {
+                const Icon = SECTION_ICONS[key];
+                const active = key === activeSection;
+                const count = key === 'site' || key === 'overview' ? null : recordsOf(draft, key).length;
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    aria-current={active ? 'page' : undefined}
+                    onClick={() => setSection(key)}
+                    className={cn(
+                      'group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-700',
+                      active
+                        ? 'bg-navy-700 text-white shadow-sm'
+                        : 'text-slate-700 hover:bg-slate-100',
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        'grid size-8 shrink-0 place-items-center rounded-lg transition-colors',
+                        active ? 'bg-white/15 text-white' : SECTION_TINT[key].tile,
+                      )}
+                    >
+                      <Icon className="size-4" />
+                    </span>
+                    <span className="flex-1">{sectionLabel(key)}</span>
+                    {count !== null ? (
+                      <span
+                        className={cn(
+                          'rounded-full px-2 py-0.5 font-mono text-[0.68rem] font-bold',
+                          active ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500',
+                        )}
+                      >
+                        {count}
+                      </span>
+                    ) : null}
+                  </button>
+                );
+              })}
+            </nav>
+            <p className="px-2 text-xs leading-relaxed text-slate-500">
+              Edits stay in this browser until you publish. Publishing commits them to GitHub.
+            </p>
+          </div>
         </aside>
 
         <main className="min-w-0 flex-1 pb-32">
@@ -361,7 +404,7 @@ function ContentManager({ initial, onLogout }: ContentManagerProps) {
           {publishState.kind === 'success' ? (
             <Alert variant="success" className="mb-4">
               <CheckCircle2 />
-              <AlertTitle>Changes committed</AlertTitle>
+              <AlertTitle>Published! 🎉 Changes committed</AlertTitle>
               <AlertDescription>
                 <p>
                   Your content was committed{shortSha(publishState.result.sha)}. The
@@ -448,15 +491,35 @@ function ContentManager({ initial, onLogout }: ContentManagerProps) {
             </Alert>
           ) : null}
 
-          {activeSection === 'site' ? (
+          <motion.div
+            key={activeSection}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          >
+          {activeSection === 'overview' ? (
+            <Overview
+              content={draft}
+              changeCount={changes.length}
+              onOpen={(target) => setSection(target)}
+              onNew={(collection) => {
+                setSection(collection);
+                openNew(collection);
+              }}
+            />
+          ) : activeSection === 'site' ? (
             <section aria-label="Site settings" className="space-y-4">
-              <div>
-                <h2 className="text-lg font-semibold text-slate-900">Site settings</h2>
-                <p className="text-sm text-slate-600">
-                  Lab identity and contact details shown across the public site.
-                </p>
+              <div className="flex items-center gap-3">
+                <span className="grid size-10 place-items-center rounded-xl bg-navy-700 text-white shadow-sm">
+                  <Settings className="size-5" />
+                </span>
+                <div>
+                  <h2 className="text-xl font-bold tracking-tight text-slate-900">Site settings</h2>
+                  <p className="text-sm text-slate-600">
+                    Lab identity, contact details and home-page content shown across the public site.
+                  </p>
+                </div>
               </div>
-              <Separator />
               <SiteSettingsForm
                 site={draft.site}
                 onChange={(patch) => setDraft((prev) => updateSite(prev, patch))}
@@ -476,9 +539,20 @@ function ContentManager({ initial, onLogout }: ContentManagerProps) {
                   setDraft((prev) => moveRecord(prev, activeSection, id, direction))
                 }
                 disabled={busy}
+                yearImages={draft.site.publicationYearImages ?? {}}
+                onYearImage={(year, url) =>
+                  setDraft((prev) => {
+                    const next = { ...(prev.site.publicationYearImages ?? {}) };
+                    if (url) next[String(year)] = url;
+                    else delete next[String(year)];
+                    return updateSite(prev, { publicationYearImages: next });
+                  })
+                }
+                onUpload={handleUpload}
               />
             </section>
           )}
+          </motion.div>
         </main>
       </div>
 
