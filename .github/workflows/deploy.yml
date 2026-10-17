@@ -41,6 +41,9 @@ jobs:
   deploy:
     needs: validate
     name: Trigger VPS deploy
+    # Only for the old VPS hosting. Vercel deploys by itself on every push, so this stays off
+    # unless the repository variable DEPLOY_VPS is set to 'true'.
+    if: ${{ vars.DEPLOY_VPS == 'true' }}
     runs-on: ubuntu-latest
     env:
       DEPLOY_URL: https://brainx.zapdos.me/__deploy
