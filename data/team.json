@@ -19,28 +19,28 @@
     "name": "Yogeshwari R",
     "role": "Project Staff",
     "position": "Junior Research Fellow (JRF)",
+    "tagline": "JRF",
     "description": "Project Title: Design and Development of an Immersive Bio-feedback system for Anxiety and Affective Disorders (Funding agency: ANRF PMECRG), August 2025–present. M.E Software Engineering (2023–2025), Anna University (CEG Campus).",
     "image": "",
     "link": "https://www.linkedin.com/in/yogeshwari-rajmohan-46a954204",
     "tags": [
       "Biofeedback",
       "Affective Disorders"
-    ],
-    "tagline": "JRF"
+    ]
   },
   {
     "id": "yogeshwari-r-research-scholar",
     "name": "Yogeshwari R",
     "role": "Research Scholar",
     "position": "Ph.D. — Affective Computing, EEG Signal Processing",
+    "tagline": "Ph.D. Scholar",
     "description": "Ph.D. research scholar (January 2026–present) working on affective computing and EEG signal processing. M.E Software Engineering (2023–2025), Anna University (CEG Campus).",
     "image": "",
     "link": "https://www.linkedin.com/in/yogeshwari-rajmohan-46a954204",
     "tags": [
       "Affective Computing",
       "EEG Signal Processing"
-    ],
-    "tagline": "Ph.D. Scholar"
+    ]
   },
   {
     "id": "nidhish-kumar-m",
@@ -122,6 +122,17 @@
     "description": "B.Tech student in Smart Manufacturing (2024–2028).",
     "image": "",
     "link": "https://www.linkedin.com/in/suvanesh-baskaran-237b5935a/",
+    "tags": []
+  },
+  {
+    "id": "67c7b155-d3f5-4ec2-934e-ee69b1b085d6",
+    "name": "leoooooo",
+    "role": "",
+    "position": "",
+    "tagline": "",
+    "description": "",
+    "image": "",
+    "link": "",
     "tags": []
   }
 ]

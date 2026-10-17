@@ -7,7 +7,8 @@
       "Placeholder",
       "BCI",
       "EEG"
-    ]
+    ],
+    "image": ""
   },
   {
     "id": "placeholder-affective",
@@ -17,7 +18,8 @@
       "Placeholder",
       "Affective Computing",
       "Machine Learning"
-    ]
+    ],
+    "image": ""
   },
   {
     "id": "placeholder-biofeedback",
@@ -27,6 +29,7 @@
       "Placeholder",
       "Biofeedback",
       "VR"
-    ]
+    ],
+    "image": ""
   }
 ]
