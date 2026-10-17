@@ -37,15 +37,6 @@ export default function HomePage() {
 
   return (
     <MotionProvider>
-      {/* Reload while scrolled down: the browser restores the scroll position after first paint, so the
-          "Pioneering…" section would flash in its parked-below state. Remember the scroll position and
-          pre-place the section before the first paint. */}
-      <style>{`html.bx-restored #who-we-are > div { transform: none !important; }`}</style>
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `(function(){try{var d=document.documentElement;addEventListener('pagehide',function(){sessionStorage.setItem('bx-home-sy',String(window.scrollY))});var n=performance.getEntriesByType('navigation')[0];var r=n&&(n.type==='reload'||n.type==='back_forward');if(r&&Number(sessionStorage.getItem('bx-home-sy'))>50)d.classList.add('bx-restored')}catch(e){}})()`,
-        }}
-      />
       <div className="relative -mt-22 md:-mt-24">
         <span id="hero-top" aria-hidden className="pointer-events-none absolute left-0 top-6 h-px w-px" />
         <section

@@ -89,18 +89,18 @@ export default function PublicationsTimeline({
           initial={{ opacity: 0, y: 25 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="mx-auto max-w-3xl text-center"
+          className="mx-auto max-w-4xl text-center"
         >
-          <h1 className="font-display text-3xl font-bold tracking-tight text-[#1d1d1f] sm:text-4xl lg:text-5xl">
+          <h1 className="font-display text-4xl font-extrabold tracking-tight text-[#1d1d1f] sm:text-5xl lg:text-6xl">
             The Journey That Shaped Us
           </h1>
 
-          <p className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
+          <p className="mt-5 text-lg leading-relaxed text-slate-700 sm:text-xl">
             From foundational biosignal processing to cutting-edge neural decoding and assistive BCIs,
             our publications reflect continuous inquiry, clinical persistence, and academic growth.
           </p>
 
-          <p className="mt-2 text-xs font-mono font-medium uppercase tracking-wider text-slate-400">
+          <p className="mt-3 text-sm font-mono font-medium uppercase tracking-wider text-slate-500">
             {publications.length} {publications.length === 1 ? 'publication record' : 'publication records'} · grouped by year
           </p>
         </motion.div>

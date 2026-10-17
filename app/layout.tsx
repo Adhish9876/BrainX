@@ -37,6 +37,18 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={`${geist.variable} ${geistMono.variable} ${instrument.variable}`}>
+      <head>
+        {/* Home page only: when it is reloaded (or reached with Back) while scrolled down, the browser restores the
+            scroll position after first paint. Remember it, and pre-place the "Pioneering…" section so it does not
+            flash in its parked state. Lives here (not in a page component) because React does not allow <script>
+            tags inside components. */}
+        <style>{`html.bx-restored #who-we-are > div { transform: none !important; }`}</style>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var d=document.documentElement;if(location.pathname==='/'){addEventListener('pagehide',function(){sessionStorage.setItem('bx-home-sy',String(window.scrollY))});var n=performance.getEntriesByType('navigation')[0];var r=n&&(n.type==='reload'||n.type==='back_forward');if(r&&Number(sessionStorage.getItem('bx-home-sy'))>50)d.classList.add('bx-restored')}}catch(e){}})()`,
+          }}
+        />
+      </head>
       <body className="min-h-dvh bg-paper text-ink antialiased">{children}</body>
     </html>
   );

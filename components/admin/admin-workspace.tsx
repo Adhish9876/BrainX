@@ -56,7 +56,7 @@ import { ChangesBar } from './changes-bar';
 import { CollectionSection } from './collection-section';
 import { ConfirmDialog } from './confirm-dialog';
 import { RecordEditor } from './record-editor';
-import { Overview, SECTION_TINT } from './overview';
+import { Overview } from './overview';
 import { SiteSettingsForm } from './site-settings-form';
 import { motion } from 'motion/react';
 
@@ -281,98 +281,92 @@ function ContentManager({ initial, onLogout }: ContentManagerProps) {
   const activeSection = section;
 
   return (
-    <div className="min-h-dvh bg-[#f3f4f8]">
-      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/85 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
-          <div className="flex items-center gap-3">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/brainx_lab_logo.png" alt="" className="h-10 w-auto shrink-0 object-contain" />
-            <div className="leading-tight">
-              <p className="text-[0.95rem] font-bold tracking-tight text-slate-900">BrainX Lab</p>
-              <p className="font-mono text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-slate-500">
-                Content admin
-              </p>
-            </div>
+    <div className="min-h-dvh bg-[#f4f5f7] text-slate-900 lg:flex">
+      {/* ── Sidebar ───────────────────────────────────────────────────── */}
+      <aside className="hidden w-72 shrink-0 flex-col bg-[#0e1a33] text-white lg:flex lg:sticky lg:top-0 lg:h-dvh">
+        <div className="flex items-center gap-3 border-b border-white/10 px-6 py-6">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brainx_lab_logo_solid.png" alt="" className="h-11 w-auto shrink-0 object-contain" />
+          <div className="leading-tight">
+            <p className="text-lg font-semibold tracking-tight">BrainX Lab</p>
+            <p className="text-sm text-white/60">Website admin</p>
           </div>
+        </div>
 
+        <nav className="flex-1 overflow-y-auto px-3 py-5" aria-label="Admin sections">
+          <p className="px-3 pb-2 text-xs font-semibold uppercase tracking-wider text-white/45">Manage</p>
+          <div className="space-y-0.5">
+            {SECTION_ORDER.map((key) => {
+              const Icon = SECTION_ICONS[key];
+              const active = key === activeSection;
+              const count = key === 'site' || key === 'overview' ? null : recordsOf(draft, key).length;
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  aria-current={active ? 'page' : undefined}
+                  onClick={() => setSection(key)}
+                  className={cn(
+                    'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-[0.95rem] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70',
+                    active
+                      ? 'bg-white/12 font-semibold text-white'
+                      : 'font-medium text-white/75 hover:bg-white/8 hover:text-white',
+                  )}
+                >
+                  <Icon className={cn('size-[1.15rem] shrink-0', active ? 'text-white' : 'text-white/55')} />
+                  <span className="flex-1">{sectionLabel(key)}</span>
+                  {count !== null ? (
+                    <span className={cn('rounded-md px-2 py-0.5 text-xs font-semibold tabular-nums', active ? 'bg-white/20 text-white' : 'bg-white/10 text-white/70')}>
+                      {count}
+                    </span>
+                  ) : null}
+                </button>
+              );
+            })}
+          </div>
+        </nav>
+
+        <div className="space-y-1 border-t border-white/10 px-3 py-4">
+          <a
+            href="/"
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center justify-between rounded-lg px-3 py-2.5 text-[0.95rem] font-medium text-white/75 transition-colors hover:bg-white/8 hover:text-white"
+          >
+            View website
+            <span aria-hidden="true">↗</span>
+          </a>
+          <button
+            type="button"
+            disabled={busy}
+            onClick={requestLogout}
+            className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-[0.95rem] font-medium text-white/75 transition-colors hover:bg-white/8 hover:text-white disabled:opacity-50"
+          >
+            <LogOut className="size-4" />
+            Sign out
+          </button>
+        </div>
+      </aside>
+
+      <div className="min-w-0 flex-1">
+        {/* Top bar (mobile: brand + sign out; desktop: upload status only) */}
+        <header className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-slate-200 bg-white px-4 py-3 sm:px-8 lg:hidden">
+          <div className="flex items-center gap-2.5">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/brainx_lab_logo.png" alt="" className="h-9 w-auto shrink-0 object-contain" />
+            <p className="text-base font-semibold">BrainX Lab admin</p>
+          </div>
           <div className="flex items-center gap-2">
-            {uploadInFlight ? (
-              <Badge variant="secondary" className="hidden items-center gap-1 sm:inline-flex">
-                <Loader2 className="size-3 animate-spin" />
-                Uploading…
-              </Badge>
-            ) : null}
-            <a
-              href="/"
-              target="_blank"
-              rel="noreferrer"
-              className="hidden items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 sm:inline-flex"
-            >
-              View site
-              <span aria-hidden="true">↗</span>
-            </a>
+            {uploadInFlight ? <Loader2 className="size-4 animate-spin text-slate-500" /> : null}
             <Button type="button" variant="outline" size="sm" disabled={busy} onClick={requestLogout}>
               <LogOut className="size-4" />
               Sign out
             </Button>
           </div>
-        </div>
-      </header>
+        </header>
 
-      <div className="mx-auto flex max-w-7xl gap-8 px-4 py-8 sm:px-6">
-        <aside className="hidden w-64 shrink-0 lg:block">
-          <div className="sticky top-24 space-y-3">
-            <nav
-              className="rounded-2xl border border-slate-200/80 bg-white p-2 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(15,23,42,0.12)]"
-              aria-label="Admin sections"
-            >
-              {SECTION_ORDER.map((key) => {
-                const Icon = SECTION_ICONS[key];
-                const active = key === activeSection;
-                const count = key === 'site' || key === 'overview' ? null : recordsOf(draft, key).length;
-                return (
-                  <button
-                    key={key}
-                    type="button"
-                    aria-current={active ? 'page' : undefined}
-                    onClick={() => setSection(key)}
-                    className={cn(
-                      'group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-700',
-                      active
-                        ? 'bg-navy-700 text-white shadow-sm'
-                        : 'text-slate-700 hover:bg-slate-100',
-                    )}
-                  >
-                    <span
-                      className={cn(
-                        'grid size-8 shrink-0 place-items-center rounded-lg transition-colors',
-                        active ? 'bg-white/15 text-white' : SECTION_TINT[key].tile,
-                      )}
-                    >
-                      <Icon className="size-4" />
-                    </span>
-                    <span className="flex-1">{sectionLabel(key)}</span>
-                    {count !== null ? (
-                      <span
-                        className={cn(
-                          'rounded-full px-2 py-0.5 font-mono text-[0.68rem] font-bold',
-                          active ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500',
-                        )}
-                      >
-                        {count}
-                      </span>
-                    ) : null}
-                  </button>
-                );
-              })}
-            </nav>
-            <p className="px-2 text-xs leading-relaxed text-slate-500">
-              Edits stay in this browser until you publish. Publishing commits them to GitHub.
-            </p>
-          </div>
-        </aside>
-
-        <main className="min-w-0 flex-1 pb-32">
+        <div className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-8 lg:py-10">
+        <main className="min-w-0 pb-32">
           {draftStorageUnavailable ? <Alert variant="destructive" className="mb-4"><AlertTitle>Draft persistence unavailable</AlertTitle><AlertDescription>This browser could not save your draft. Keep this tab open until you publish, or enable browser storage before refreshing.</AlertDescription></Alert> : null}
           {/* Mobile section navigation */}
           <div className="-mx-1 mb-4 overflow-x-auto pb-1 lg:hidden">
@@ -489,16 +483,11 @@ function ContentManager({ initial, onLogout }: ContentManagerProps) {
             />
           ) : activeSection === 'site' ? (
             <section aria-label="Site settings" className="space-y-4">
-              <div className="flex items-center gap-3">
-                <span className="grid size-10 place-items-center rounded-xl bg-navy-700 text-white shadow-sm">
-                  <Settings className="size-5" />
-                </span>
-                <div>
-                  <h2 className="text-xl font-bold tracking-tight text-slate-900">Site settings</h2>
-                  <p className="text-sm text-slate-600">
-                    Lab identity, contact details and home-page content shown across the public site.
-                  </p>
-                </div>
+              <div>
+                <h2 className="text-3xl font-semibold tracking-tight text-slate-900">Site settings</h2>
+                <p className="mt-1 text-base text-slate-600">
+                  Lab identity, contact details and home-page content shown across the public site.
+                </p>
               </div>
               <SiteSettingsForm
                 site={draft.site}
@@ -534,6 +523,7 @@ function ContentManager({ initial, onLogout }: ContentManagerProps) {
           )}
           </motion.div>
         </main>
+        </div>
       </div>
 
       {editing ? (
@@ -617,13 +607,13 @@ function PublishSuccess() {
   return (
     <Alert variant="success" className="mb-4">
       <CheckCircle2 />
-      <AlertTitle>{done ? 'The website is updated ✅' : 'Success! 🎉 Your changes are saved'}</AlertTitle>
+      <AlertTitle>{done ? 'The website is updated' : 'Changes published'}</AlertTitle>
       <AlertDescription>
         {done ? (
           <p>Your changes are now live on the website. Refresh the site to see them.</p>
         ) : (
           <>
-            <p>The website is updating now and will show your changes in about a minute.</p>
+            <p>The website is updating and will show your changes in about a minute.</p>
             <div className="mt-2 h-1.5 w-full max-w-xs overflow-hidden rounded-full bg-emerald-200/70" aria-hidden="true">
               <div
                 className="h-full rounded-full bg-emerald-600 transition-[width] duration-1000 ease-linear"

@@ -287,6 +287,7 @@ export default function WhatWeDo() {
                           src="/assets/bubble-clean.png"
                           alt="Thought Bubble"
                           fill
+                          sizes="300px"
                           className="object-contain"
                           priority
                         />
@@ -322,6 +323,7 @@ export default function WhatWeDo() {
                       src="/assets/main-Photoroom.png"
                       alt="Brain Core"
                       fill
+                      sizes="(min-width:1024px) 20vw, 60vw"
                       className="object-contain"
                       priority
                     />
@@ -398,6 +400,7 @@ export default function WhatWeDo() {
                     src="/assets/main-Photoroom.png"
                     alt="Brain Core"
                     fill
+                    sizes="(min-width:1024px) 20vw, 60vw"
                     className="object-contain"
                     priority
                   />
@@ -421,6 +424,7 @@ export default function WhatWeDo() {
                           src={pillar.image}
                           alt={pillar.title}
                           fill
+                          sizes="(min-width:1024px) 22vw, 60vw"
                           className="object-contain"
                         />
                       </div>
@@ -481,6 +485,7 @@ function NodeItem({
             src={pillar.image}
             alt={pillar.title}
             fill
+            sizes="(min-width:1024px) 22vw, 60vw"
             className="object-contain transition-opacity duration-200 group-hover:opacity-95"
           />
         </div>

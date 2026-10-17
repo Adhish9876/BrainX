@@ -24,6 +24,7 @@ export const TEAM_ROLES = [
   'Research Scholar',
   'Masters Student',
   'Bachelors Students',
+  'Alumni',
 ] as const;
 
 export interface FieldDef {

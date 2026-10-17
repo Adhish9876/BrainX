@@ -60,19 +60,19 @@ export default function SiteHeader({ site }: { site: Site }) {
         <Link
           href="/"
           aria-label={`${site.name} home`}
-          className="flex shrink-0 items-center gap-3.5 focus-visible:outline-offset-4"
+          className="flex shrink-0 items-center gap-0.5 focus-visible:outline-offset-4 md:gap-1"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/brainx_lab_logo.png"
             alt=""
-            className="h-14 w-auto shrink-0 object-contain md:h-16"
+            className="h-[4.25rem] w-auto shrink-0 object-contain md:h-20"
           />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/iiit_header.png"
             alt="IIITDM Kancheepuram"
-            className="h-10 w-auto shrink-0 object-contain md:h-12"
+            className="h-7 w-auto shrink-0 translate-y-1.5 object-contain md:h-9 md:translate-y-2"
           />
           <span className="sr-only">{site.name}</span>
         </Link>

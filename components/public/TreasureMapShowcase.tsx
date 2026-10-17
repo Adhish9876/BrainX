@@ -920,7 +920,7 @@ export default function TreasureMapShowcase({
   return (
     <div className="relative w-full">
       {/* ── 1. INITIAL SCROLL-REVEAL HERO: ONLY "PROJECTS" AT REST, EXPANDS TO FULL BLEED ── */}
-      <section className="relative w-full">
+      <section className="bx-fade-in relative w-full">
         <ScrollExpand
           src="/project_newbg.png"
           alt="BrainX Projects Background"
@@ -965,7 +965,7 @@ export default function TreasureMapShowcase({
 
             {/* The Two Domain Selection Options */}
             <Reveal delay={0.5} y={28} className="mt-8 flex w-full justify-center">
-            <div className="flex flex-col sm:flex-row items-stretch justify-center gap-4 sm:gap-6 w-full max-w-2xl pointer-events-auto">
+            <div className="flex flex-col sm:flex-row items-stretch justify-center gap-4 sm:gap-6 w-full max-w-[42rem] pointer-events-auto">
               {(
                 [
                   {
@@ -988,7 +988,7 @@ export default function TreasureMapShowcase({
                     key={key}
                     type="button"
                     onClick={() => handleSelectDomain(key)}
-                    className={`group relative flex flex-1 flex-col items-start overflow-hidden rounded-3xl border p-5 sm:p-6 text-left text-white backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:bg-slate-900/45 focus:outline-none focus-visible:ring-2 focus-visible:ring-white ${
+                    className={`group relative flex flex-1 flex-col items-start overflow-hidden rounded-3xl border p-5 sm:min-w-[17.5rem] sm:p-7 text-left text-white backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:bg-slate-900/45 focus:outline-none focus-visible:ring-2 focus-visible:ring-white ${
                       active ? `bg-slate-900/45 ring-2 ${activeRing}` : 'border-white/30 bg-slate-900/30'
                     } shadow-[0_20px_50px_-15px_rgba(15,23,42,0.55)]`}
                   >
@@ -1011,7 +1011,7 @@ export default function TreasureMapShowcase({
                       </span>
                     </div>
 
-                    <h3 className="relative mt-6 font-display text-2xl font-bold tracking-tight text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.3)]">
+                    <h3 className="relative mt-7 whitespace-nowrap font-display text-[1.35rem] sm:text-2xl font-bold tracking-tight text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.3)]">
                       {title}
                     </h3>
                   </button>

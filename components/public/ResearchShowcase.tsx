@@ -515,7 +515,7 @@ export default function ResearchShowcase({ research }: { research: Research[] })
         <div className="shell pb-16 pt-8 sm:pt-12 md:pb-20 md:pt-14">
           <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-12">
             {/* Left: heading + mission */}
-            <div className="flex flex-col justify-center lg:col-span-5">
+            <div className="flex flex-col justify-center lg:col-span-4">
               <Reveal>
                 <h1
                   id="research-hero-heading"
@@ -543,7 +543,7 @@ export default function ResearchShowcase({ research }: { research: Research[] })
             </div>
 
             {/* Right: diagram carousel */}
-            <Reveal delay={0.15} className="lg:col-span-7">
+            <Reveal delay={0.15} className="lg:col-span-8">
               <div
                 className="relative overflow-hidden rounded-[2rem] border border-white/70 bg-white/80 p-4 shadow-[0_2px_4px_rgba(11,16,32,0.04),0_36px_80px_-30px_rgba(11,16,32,0.35)] backdrop-blur-xl sm:p-5"
                 onMouseEnter={() => setPaused(true)}
@@ -559,7 +559,7 @@ export default function ResearchShowcase({ research }: { research: Research[] })
                   </span>
                 </div>
 
-                <div className="relative mx-auto flex aspect-[16/8] min-h-[200px] w-full items-center justify-center overflow-hidden rounded-2xl border border-slate-200/70 bg-gradient-to-br from-slate-50 to-white p-2 sm:min-h-[260px]">
+                <div className="relative mx-auto flex aspect-[16/8.2] min-h-[200px] w-full items-center justify-center overflow-hidden rounded-2xl border border-slate-200/70 bg-gradient-to-br from-slate-50 to-white p-2 sm:min-h-[260px]">
                   <AnimatePresence mode="wait" initial={false}>
                     <motion.div
                       key={currentSlide?.id}
@@ -633,7 +633,7 @@ export default function ResearchShowcase({ research }: { research: Research[] })
       </section>
 
       {/* ── 2. CORE RESEARCH DOMAINS: editorial rows, alternating sides ───── */}
-      <section aria-labelledby="core-themes-heading" className="shell scroll-mt-28 pb-16 md:pb-20">
+      <section aria-labelledby="core-themes-heading" className="shell scroll-mt-28 pb-16 pt-14 md:pb-20 md:pt-20">
         <Reveal>
           <div className="flex items-end justify-between gap-4 border-b border-slate-300/80 pb-5">
             <h2

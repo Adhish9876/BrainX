@@ -205,29 +205,30 @@ export function CollectionSection({
     return (
       <li
         key={id}
-        className="group flex items-center gap-4 rounded-2xl border border-slate-200/80 bg-white p-3 pr-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-px hover:border-slate-300 hover:shadow-[0_10px_24px_-14px_rgba(15,23,42,0.25)]"
-      >
-        <span className="hidden w-6 shrink-0 text-right font-mono text-xs font-bold text-slate-300 sm:block">
-          {String(index + 1).padStart(2, '0')}
+        className="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition-colors hover:border-slate-300">
+        <span className="hidden w-6 shrink-0 text-right font-mono text-xs tabular-nums text-slate-400 sm:block">
+          {index + 1}
         </span>
 
-        <div className="grid size-14 shrink-0 place-items-center overflow-hidden rounded-xl border border-slate-200 bg-gradient-to-br from-slate-50 to-slate-100">
-          {thumb ? (
-            <RecordThumb src={thumb} />
-          ) : (
-            <span className="font-display text-lg font-bold text-slate-400">
-              {label.trim().charAt(0).toUpperCase() || '·'}
-            </span>
-          )}
-        </div>
+        {collection !== 'publications' && collection !== 'news' ? (
+          <div className="grid size-14 shrink-0 place-items-center overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
+            {thumb ? (
+              <RecordThumb src={thumb} />
+            ) : (
+              <span className="text-base font-semibold text-slate-400">
+                {label.replace(/^(dr|prof)\.?\s+/i, '').trim().slice(0, 1).toUpperCase()}
+              </span>
+            )}
+          </div>
+        ) : null}
 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="truncate font-semibold text-slate-900">{label}</p>
+            <p className="truncate text-base font-semibold text-slate-900">{label}</p>
             {categoryBadge}
           </div>
           {detail ? (
-            <p className="mt-0.5 line-clamp-1 text-sm text-slate-500">{detail}</p>
+            <p className="mt-0.5 line-clamp-1 text-[0.95rem] text-slate-600">{detail}</p>
           ) : null}
         </div>
 
@@ -289,7 +290,7 @@ export function CollectionSection({
           {/* Top header bar & category filter tabs */}
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h2 className="text-xl font-bold tracking-tight text-slate-900">
+              <h2 className="text-3xl font-semibold tracking-tight text-slate-900">
                 Projects
               </h2>
               <p className="text-sm text-slate-600">
@@ -468,21 +469,21 @@ export function CollectionSection({
         <div className="space-y-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="text-xl font-bold tracking-tight text-slate-900">Publications</h2>
+              <h2 className="text-3xl font-semibold tracking-tight text-slate-900">Publications</h2>
               <p className="text-sm text-slate-600">
                 {records.length} {records.length === 1 ? 'paper' : 'papers'} across {publicationYears.length}{' '}
                 {publicationYears.length === 1 ? 'year' : 'years'} · one photo per year appears on the timeline
               </p>
             </div>
-            <Button type="button" className="shadow-sm" onClick={() => onNew()} disabled={disabled}>
+            <Button type="button" onClick={() => onNew()} disabled={disabled}>
               <Plus className="size-4" />
               New publication
             </Button>
           </div>
 
           {publicationYears.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-slate-300 bg-white/60 p-12 text-center">
-              <p className="text-sm font-medium text-slate-700">A blank page, full of possibilities ✨</p>
+            <div className="rounded-lg border border-dashed border-slate-300 bg-white p-12 text-center">
+              <p className="text-sm font-medium text-slate-700">Nothing here yet</p>
               <p className="mt-1 text-xs text-slate-500">Add your first publication and it will appear on the public timeline once published.</p>
             </div>
           ) : (
@@ -490,7 +491,7 @@ export function CollectionSection({
               <section
                 key={year}
                 aria-label={`Publications from ${year}`}
-                className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
+                className="overflow-hidden rounded-lg border border-slate-200 bg-white"
               >
                 <div className="grid gap-5 p-4 sm:grid-cols-[13rem_1fr] sm:p-5">
                   <YearPhoto
@@ -504,8 +505,8 @@ export function CollectionSection({
                   <div className="min-w-0">
                     <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-baseline gap-3">
-                        <h3 className="font-display text-3xl font-extrabold tracking-tight text-slate-900">{year}</h3>
-                        <span className="rounded-full bg-indigo-50 px-2.5 py-0.5 font-mono text-xs font-bold text-indigo-700">
+                        <h3 className="text-2xl font-semibold tracking-tight text-slate-900">{year}</h3>
+                        <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600">
                           {items.length} {items.length === 1 ? 'paper' : 'papers'}
                         </span>
                       </div>
@@ -534,24 +535,23 @@ export function CollectionSection({
         <div className="space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="text-xl font-bold tracking-tight text-slate-900">
+              <h2 className="text-3xl font-semibold tracking-tight text-slate-900">
                 {COLLECTION_LABELS[collection]}
               </h2>
-              <p className="text-sm text-slate-600">
-                {records.length} {records.length === 1 ? 'entry' : 'entries'} · use the
-                arrows to reorder
+              <p className="mt-1 text-base text-slate-600">
+                {records.length} {records.length === 1 ? 'entry' : 'entries'} · use the arrows to change the order
               </p>
             </div>
-            <Button type="button" className="shadow-sm" onClick={() => onNew()} disabled={disabled}>
+            <Button type="button" onClick={() => onNew()} disabled={disabled}>
               <Plus className="size-4" />
               New {singular.toLowerCase()}
             </Button>
           </div>
 
           {records.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-slate-300 bg-white/60 p-12 text-center">
+            <div className="rounded-lg border border-dashed border-slate-300 bg-white p-12 text-center">
               <p className="text-sm font-medium text-slate-700">
-                A blank page, full of possibilities ✨
+                Nothing here yet
               </p>
               <p className="mt-1 text-xs text-slate-500">Add your first {singular.toLowerCase()} and it will appear on the public site once published.</p>
               <Button type="button" variant="outline" className="mt-3" onClick={() => onNew()} disabled={disabled}>
