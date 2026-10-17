@@ -1,16 +1,14 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
-import { Geist, Geist_Mono, Instrument_Serif } from 'next/font/google';
+import { Geist, Geist_Mono, Lora } from 'next/font/google';
 import './globals.css';
 import { getContent } from '@/lib/content';
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-geist', display: 'swap' });
 const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono', display: 'swap' });
-const instrument = Instrument_Serif({
+const lora = Lora({
   subsets: ['latin'],
-  weight: '400',
-  style: ['normal', 'italic'],
-  variable: '--font-instrument',
+  variable: '--font-serif',
   display: 'swap',
 });
 
@@ -36,7 +34,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={`${geist.variable} ${geistMono.variable} ${instrument.variable}`}>
+    <html lang="en" className={`${geist.variable} ${geistMono.variable} ${lora.variable}`}>
       <head>
         {/* Home page only: when it is reloaded (or reached with Back) while scrolled down, the browser restores the
             scroll position after first paint. Remember it, and pre-place the "Pioneering…" section so it does not

@@ -189,7 +189,8 @@ function MapWaypointPin({
   onSelect: () => void;
 }) {
   const shortTitle = getProjectShortTitle(project);
-  const isLeft = waypoint.x < 51;
+  // Alternate label placement on either side of the path to avoid overlaps
+  const isLeft = index % 2 === 0;
   // The first waypoint sits at the very top edge of the map, so nudge its pill down to avoid clipping
   const isNearTop = waypoint.y < 5;
 

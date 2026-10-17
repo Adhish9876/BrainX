@@ -1,1 +1,96 @@
-[]
+[
+  {
+    "id": "proj-inhouse-01",
+    "category": "inhouse",
+    "title": "NeuroFeedback: Closed-Loop EEG Biofeedback System",
+    "description": "Design and implementation of an end-to-end 32-channel EEG biofeedback platform for affective regulation and cognitive workload monitoring. Funded by ANRF PMECRG, the system integrates real-time spectral band decomposition with immersive VR feedback for anxiety and attention training.",
+    "image": "/partner-brain-products-product.jpg",
+    "images": [
+      "/partner-brain-products-product.jpg",
+      "/media/pictures/demo_pic/photo-02.webp",
+      "/Board.png"
+    ],
+    "members": [
+      "Dr. Kannadasan K",
+      "Yogeshwari R"
+    ],
+    "tags": [
+      "EEG Acquisition",
+      "Neurofeedback",
+      "Affective Computing",
+      "VR"
+    ],
+    "link": "/projects"
+  },
+  {
+    "id": "proj-inhouse-02",
+    "category": "inhouse",
+    "title": "DeepDecoders: Subject-Independent Neural Translation",
+    "description": "A deep learning framework for robust, cross-subject neural signal decoding. Uses contrastive representation learning and transformer-based attention over EEG spatio-temporal dynamics to decode motor imagery and imagined speech with minimal per-subject calibration.",
+    "image": "/partner-axxonet-product.png",
+    "images": [
+      "/partner-axxonet-product.png",
+      "/2stage.png",
+      "/media/pictures/demo_pic/photo-05.webp"
+    ],
+    "members": [
+      "Dr. Kannadasan K",
+      "Nidhish Kumar M"
+    ],
+    "tags": [
+      "Deep Learning",
+      "Signal Processing",
+      "Motor Imagery",
+      "Transformers"
+    ],
+    "link": "/projects"
+  },
+  {
+    "id": "proj-student-01",
+    "category": "students",
+    "title": "BlinkDrive: Assistive Wheelchair BCI Navigation",
+    "description": "A low-cost, portable brain-computer interface enabling individuals with severe motor disabilities to navigate robotic wheelchairs. Combines SSVEP optical cues and eye-blink artifact classification with ultrasonic collision-avoidance microcontrollers.",
+    "image": "/media/pictures/demo_pic/photo-04.webp",
+    "images": [
+      "/media/pictures/demo_pic/photo-04.webp",
+      "/Board.png",
+      "/media/pictures/demo_pic/photo-03.webp"
+    ],
+    "members": [
+      "Adhishwar G",
+      "Shashank G",
+      "K B Sakthi Uma Maheswari"
+    ],
+    "tags": [
+      "SSVEP",
+      "Assistive Tech",
+      "Robotics",
+      "Embedded BCI"
+    ],
+    "link": "/projects"
+  },
+  {
+    "id": "proj-student-02",
+    "category": "students",
+    "title": "MindMelody: Brainwave-Modulated Generative Audio",
+    "description": "An interactive neuro-acoustic prototype that translates real-time theta/beta band ratios into generative ambient soundscapes. Built by undergraduate researchers to study acoustic biofeedback for focus enhancement and stress reduction in student workspaces.",
+    "image": "/media/pictures/demo_pic/photo-01.webp",
+    "images": [
+      "/media/pictures/demo_pic/photo-01.webp",
+      "/3rdstage.png",
+      "/media/pictures/demo_pic/photo-06.webp"
+    ],
+    "members": [
+      "Ananthapadmanabhan S",
+      "Athidathan K",
+      "AP Hamesh"
+    ],
+    "tags": [
+      "Biofeedback",
+      "Generative Audio",
+      "HCI",
+      "Cognitive Health"
+    ],
+    "link": "/projects"
+  }
+]

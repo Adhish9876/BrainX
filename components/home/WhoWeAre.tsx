@@ -185,20 +185,20 @@ export default function WhoWeAre({
           {/* LEFT COLUMN: Apple Typography & Research Mission */}
           <div className="lg:col-span-7 xl:col-span-7 pt-0">
             <div>
+              <p className="font-mono text-[0.72rem] font-bold uppercase tracking-[0.2em] text-[#0066cc] mb-3">
+                About BrainX Lab
+              </p>
               <h2
                 id="who-heading"
-                className="font-display text-[1.75rem] sm:text-[2.5rem] lg:text-[3.2rem] font-semibold tracking-[-0.035em] text-[#1d1d1f] leading-[1.1]"
+                className="font-serif text-[2.2rem] sm:text-[3.1rem] lg:text-[3.65rem] font-bold tracking-tight text-[#111827] leading-[1.14]"
               >
-                Pioneering brain–computer interfaces and neural engineering.
+                Building brain–computer interfaces for the real world.
               </h2>
             </div>
 
             <div>
-              <p className="mt-4 text-[1.05rem] sm:text-[1.12rem] lg:text-[1.18rem] font-sans font-normal leading-[1.55] tracking-[-0.015em] text-[#333333] max-w-xl">
-                Led by {principal?.name ?? 'Dr. Kannadasan K'} at {site.institution},{' '}
-                <strong className="font-semibold text-[#1d1d1f]">BrainX Lab</strong> develops
-                non-invasive neural decoders and closed-loop biosignal interfaces for
-                cognitive enhancement, affective computing, and assistive communication.
+              <p className="mt-4 text-[1.02rem] sm:text-[1.1rem] lg:text-[1.14rem] font-sans font-normal leading-[1.65] text-slate-700 max-w-xl">
+                BrainX Lab is an academic research group at {site.institution}, led by {principal?.name ?? 'Dr. Kannadasan K'}. We work on EEG signal processing, neural decoding, and affective computing — designing practical systems that assist communication, track cognitive health, and bridge human intent with intelligent computing.
               </p>
             </div>
 
