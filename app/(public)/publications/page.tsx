@@ -17,7 +17,7 @@ export default function PublicationsPage() {
   return (
     <div className="relative isolate min-h-screen bg-white">
       {/* Main Apple-style Shell Container */}
-      <main id="main" className="shell relative z-10 pt-10 sm:pt-12 md:pt-14 pb-20 md:pb-28">
+      <main id="main" className="shell relative z-10 pt-10 sm:pt-12 md:pt-14 pb-20 md:pb-28 !px-2.5 xs:!px-4 sm:!px-6 md:!px-10">
         {publications.length > 0 ? (
           <PublicationsTimeline publications={publications} yearImages={site.publicationYearImages} />
         ) : (

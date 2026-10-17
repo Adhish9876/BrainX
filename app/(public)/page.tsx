@@ -37,7 +37,7 @@ export default function HomePage() {
 
   return (
     <MotionProvider>
-      <div className="relative -mt-22 md:-mt-24">
+      <div className="relative -mt-16 sm:-mt-20 md:-mt-24">
         <span id="hero-top" aria-hidden className="pointer-events-none absolute left-0 top-6 h-px w-px" />
         <section
           id="hero"

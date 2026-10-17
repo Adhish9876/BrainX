@@ -147,7 +147,7 @@ export default function Gallery({ groups }: { groups: PictureGroup[] }) {
               const thumbIndex = group.images.indexOf(group.thumbnail);
               setView({ groupId: group.id, image: Math.max(0, thumbIndex) });
             }}
-            className="group w-[86vw] shrink-0 snap-start text-left focus:outline-none sm:w-[560px] lg:w-[680px] cursor-pointer"
+            className="group w-[82vw] shrink-0 snap-start text-left focus:outline-none sm:w-[560px] lg:w-[680px] cursor-pointer"
           >
             <span className="relative block aspect-[16/11] w-full overflow-hidden rounded-[1.75rem] border border-slate-200/80 bg-slate-100 shadow-[0_2px_4px_rgba(11,16,32,0.04),0_24px_50px_-24px_rgba(11,16,32,0.35)] transition-shadow duration-500 group-hover:shadow-[0_2px_4px_rgba(11,16,32,0.05),0_34px_64px_-24px_rgba(11,16,32,0.45)] group-focus-visible:ring-2 group-focus-visible:ring-navy-600 group-focus-visible:ring-offset-2">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -291,7 +291,7 @@ export default function Gallery({ groups }: { groups: PictureGroup[] }) {
                       onClick={() => setView({ groupId: currentGroup.id, image: i })}
                       aria-label={`Show photo ${i + 1}`}
                       aria-current={view?.image === i}
-                      className={`block h-14 w-20 overflow-hidden rounded-lg border-2 transition-all cursor-pointer ${
+                      className={`block h-10 w-14 sm:h-14 sm:w-20 overflow-hidden rounded-lg border-2 transition-all cursor-pointer ${
                         view?.image === i
                           ? 'border-white opacity-100'
                           : 'border-transparent opacity-50 hover:opacity-90'

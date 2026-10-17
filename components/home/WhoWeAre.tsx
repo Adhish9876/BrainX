@@ -176,7 +176,7 @@ export default function WhoWeAre({
         initial="hidden"
         animate={hasScrolled ? 'visible' : 'hidden'}
         variants={pullUp}
-        className="w-full px-5 sm:px-8 md:px-12 lg:pl-[max(3rem,calc((100vw-76rem)/2))] lg:pr-8 xl:pr-14 2xl:pr-18 will-change-transform"
+        className="w-full px-4 sm:px-8 md:px-12 lg:pl-[max(3rem,calc((100vw-76rem)/2))] lg:pr-8 xl:pr-14 2xl:pr-18 will-change-transform"
       >
         <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-12 lg:gap-14 xl:gap-20">
           
@@ -185,7 +185,7 @@ export default function WhoWeAre({
             <div>
               <h2
                 id="who-heading"
-                className="font-display text-[2.1rem] sm:text-[2.7rem] lg:text-[3.2rem] font-semibold tracking-[-0.035em] text-[#1d1d1f] leading-[1.08]"
+                className="font-display text-[1.75rem] sm:text-[2.5rem] lg:text-[3.2rem] font-semibold tracking-[-0.035em] text-[#1d1d1f] leading-[1.1]"
               >
                 Pioneering brain–computer interfaces and neural engineering.
               </h2>
@@ -205,7 +205,7 @@ export default function WhoWeAre({
             </div>
 
             {stats.length > 0 ? (
-              <dl className="mt-4 flex max-w-xl flex-wrap gap-x-12 gap-y-4 border-t border-slate-300/70 pt-4">
+              <dl className="mt-4 hidden md:flex max-w-xl flex-wrap gap-x-8 sm:gap-x-12 gap-y-4 border-t border-slate-300/70 pt-4">
                 {stats.map((stat) => (
                   <div key={stat.label}>
                     <dt className="font-mono text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-slate-500">
@@ -236,7 +236,7 @@ export default function WhoWeAre({
           <div className="lg:col-span-5 xl:col-span-5 lg:ml-auto w-full max-w-md lg:max-w-[27.5rem] xl:max-w-[29rem]">
 
             <div className="relative">
-            <div className="relative flex flex-col rounded-[22px] border border-white/90 bg-[linear-gradient(180deg,#e9ebf0_0%,#f1f2f6_100%)] shadow-[inset_0_3px_8px_rgba(11,16,32,0.16),inset_0_1px_2px_rgba(11,16,32,0.12),inset_0_-1px_0_rgba(255,255,255,0.9),0_1px_0_rgba(255,255,255,0.95)] min-h-[580px] lg:min-h-[630px] overflow-hidden">
+            <div className="relative flex flex-col rounded-[22px] border border-white/90 bg-[linear-gradient(180deg,#e9ebf0_0%,#f1f2f6_100%)] shadow-[inset_0_3px_8px_rgba(11,16,32,0.16),inset_0_1px_2px_rgba(11,16,32,0.12),inset_0_-1px_0_rgba(255,255,255,0.9),0_1px_0_rgba(255,255,255,0.95)] min-h-[480px] sm:min-h-[540px] lg:min-h-[630px] overflow-hidden">
                 
                 {/* Apple Frosted Sub-header with Capsule Pill Switcher */}
                 <div className="flex items-center justify-between border-b border-[#dcdee4] px-5 py-3.5 bg-transparent shadow-[0_1px_0_rgba(255,255,255,0.8)] relative z-10">

@@ -19,7 +19,7 @@ export default function PageHeader({
       <div className="shell pt-5 pb-7 md:pt-6 md:pb-8">
         {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
         <h1
-          className={`${eyebrow ? 'mt-5 ' : ''}max-w-4xl font-display text-4xl leading-[1.05] tracking-tight text-ink md:text-[3.25rem]`}
+          className={`${eyebrow ? 'mt-4 sm:mt-5 ' : ''}max-w-4xl font-display text-2xl sm:text-4xl leading-[1.08] tracking-tight text-ink md:text-[3.25rem]`}
         >
           {title}
         </h1>

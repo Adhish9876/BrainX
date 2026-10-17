@@ -41,7 +41,7 @@ export default function NewsList({ news }: { news: News[] }) {
 
               <h3
                 className={`font-display font-bold leading-[1.15] tracking-tight text-[#1d1d1f] ${
-                  featured ? 'text-3xl sm:text-4xl' : 'text-xl sm:text-2xl'
+                  featured ? 'text-2xl sm:text-4xl' : 'text-lg sm:text-2xl'
                 }`}
               >
                 <span className="bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_2px] bg-[position:0_100%] bg-no-repeat transition-[background-size] duration-500 group-hover:bg-[length:100%_2px]">
@@ -57,8 +57,8 @@ export default function NewsList({ news }: { news: News[] }) {
 
               {item.description ? (
                 <p
-                  className={`mt-3 max-w-3xl leading-relaxed text-[#424245] ${
-                    featured ? 'text-base sm:text-lg' : 'text-[0.95rem]'
+                  className={`mt-2.5 sm:mt-3 max-w-3xl leading-relaxed text-[#424245] ${
+                    featured ? 'text-sm sm:text-lg' : 'text-xs sm:text-[0.95rem]'
                   }`}
                 >
                   {item.description}
@@ -76,12 +76,12 @@ export default function NewsList({ news }: { news: News[] }) {
                   href={item.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group grid gap-3 py-8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-600 md:grid-cols-12 md:gap-8 md:py-10"
+                  className="group grid gap-2 sm:gap-3 py-5 sm:py-8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-600 md:grid-cols-12 md:gap-8 md:py-10"
                 >
                   {body}
                 </a>
               ) : (
-                <div className="group grid gap-3 py-8 md:grid-cols-12 md:gap-8 md:py-10">{body}</div>
+                <div className="group grid gap-2 sm:gap-3 py-5 sm:py-8 md:grid-cols-12 md:gap-8 md:py-10">{body}</div>
               )}
             </Reveal>
           </li>

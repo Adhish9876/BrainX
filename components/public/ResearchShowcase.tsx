@@ -497,7 +497,7 @@ export default function ResearchShowcase({ research }: { research: Research[] })
       {/* ── 1. HERO: mission statement + live diagram carousel ───────────── */}
       <section
         aria-labelledby="research-hero-heading"
-        className="relative isolate -mt-22 overflow-hidden pt-22 md:-mt-24 md:pt-24"
+        className="relative isolate -mt-16 overflow-hidden pt-16 sm:-mt-20 sm:pt-20 md:-mt-24 md:pt-24"
       >
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 select-none">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -519,7 +519,7 @@ export default function ResearchShowcase({ research }: { research: Research[] })
               <Reveal>
                 <h1
                   id="research-hero-heading"
-                  className="font-display text-5xl font-extrabold leading-[1.02] tracking-tight text-[#1d1d1f] sm:text-6xl lg:text-7xl"
+                  className="font-display text-3xl font-extrabold leading-[1.05] tracking-tight text-[#1d1d1f] sm:text-5xl lg:text-7xl"
                 >
                   Research.
                 </h1>
@@ -682,7 +682,7 @@ export default function ResearchShowcase({ research }: { research: Research[] })
                       >
                         {String(index + 1).padStart(2, '0')}
                       </span>
-                      <h3 className="relative font-display text-3xl font-extrabold leading-[1.08] tracking-tight text-[#1d1d1f] sm:text-4xl">
+                      <h3 className="relative font-display text-2xl font-extrabold leading-[1.1] tracking-tight text-[#1d1d1f] sm:text-3xl md:text-4xl">
                         {item.title}
                       </h3>
                       <p className="relative mt-5 max-w-xl text-base leading-relaxed text-[#424245]">

@@ -38,11 +38,11 @@ const OPEN_WIDTH_REM: Record<CardSize, number> = { xl: 78, lg: 68, md: 58, sm: 5
 
 /** Photo-card width and type scale for each level of the team hierarchy. */
 const SIZES: Record<CardSize, { base: string; initials: string; name: string; sub: string; pad: string; button: string }> = {
-  xl: { base: '26rem', initials: 'text-9xl', name: 'text-3xl', sub: 'text-base', pad: 'p-7', button: 'px-5 py-2.5 text-sm' },
-  lg: { base: '20rem', initials: 'text-8xl', name: 'text-[1.4rem]', sub: 'text-[0.86rem]', pad: 'p-5', button: 'px-4 py-2 text-xs' },
-  md: { base: '16.5rem', initials: 'text-6xl', name: 'text-lg', sub: 'text-[0.78rem]', pad: 'p-4', button: 'px-3.5 py-1.5 text-xs' },
-  sm: { base: '13.5rem', initials: 'text-5xl', name: 'text-base', sub: 'text-[0.72rem]', pad: 'p-3.5', button: 'px-3 py-1.5 text-[0.7rem]' },
-  xs: { base: '11.5rem', initials: 'text-4xl', name: 'text-[0.95rem]', sub: 'text-[0.68rem]', pad: 'p-3', button: 'px-2.5 py-1 text-[0.65rem]' },
+  xl: { base: '26rem', initials: 'text-7xl sm:text-9xl', name: 'text-2xl sm:text-3xl', sub: 'text-sm sm:text-base', pad: 'p-5 sm:p-7', button: 'px-4 py-2 text-xs sm:px-5 sm:py-2.5 sm:text-sm' },
+  lg: { base: '20rem', initials: 'text-6xl sm:text-8xl', name: 'text-xl sm:text-[1.4rem]', sub: 'text-xs sm:text-[0.86rem]', pad: 'p-4 sm:p-5', button: 'px-3.5 py-1.5 text-xs sm:px-4 sm:py-2' },
+  md: { base: '16.5rem', initials: 'text-5xl sm:text-6xl', name: 'text-base sm:text-lg', sub: 'text-xs sm:text-[0.78rem]', pad: 'p-3.5 sm:p-4', button: 'px-3 py-1.5 text-xs sm:px-3.5 sm:py-1.5' },
+  sm: { base: '13.5rem', initials: 'text-4xl sm:text-5xl', name: 'text-sm sm:text-base', sub: 'text-[0.7rem] sm:text-[0.72rem]', pad: 'p-3 sm:p-3.5', button: 'px-2.5 py-1 text-[0.68rem] sm:px-3 sm:py-1.5 sm:text-[0.7rem]' },
+  xs: { base: '11.5rem', initials: 'text-3xl sm:text-4xl', name: 'text-[0.85rem] sm:text-[0.95rem]', sub: 'text-[0.65rem] sm:text-[0.68rem]', pad: 'p-2.5 sm:p-3', button: 'px-2 py-1 text-[0.62rem] sm:px-2.5 sm:py-1 sm:text-[0.65rem]' },
 };
 
 function PersonCard({
@@ -64,7 +64,7 @@ function PersonCard({
   const hasBio = Boolean(member.description);
 
   // Collapsed / expanded widths; the portrait column keeps its size, the bio opens to its side
-  const base = scale.base;
+  const base = `min(calc(100vw - 3rem), ${scale.base})`;
   const expanded = `min(92vw, ${OPEN_WIDTH_REM[size]}rem)`;
 
   return (

@@ -181,7 +181,7 @@ export default function WhatWeDo() {
       ref={containerRef}
       id="what-we-do"
       aria-labelledby="what-heading"
-      className="relative isolate bg-white lg:bg-[#0b1020] min-h-[92svh] flex flex-col justify-center items-center py-6 md:py-10 border-t border-ink/10 lg:border-white/10 overflow-hidden"
+      className="relative isolate bg-white lg:bg-[#0b1020] min-h-0 lg:min-h-[92svh] flex flex-col justify-center items-center py-8 lg:py-10 border-t border-ink/10 lg:border-white/10 overflow-hidden"
     >
       {/* Soft brand-coloured light behind the board (desktop only) */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 hidden overflow-hidden lg:block">
@@ -392,10 +392,10 @@ export default function WhatWeDo() {
             />
           </div>
 
-          <div className="mt-6 space-y-7">
+          <div className="mt-4 space-y-5 sm:mt-6 sm:space-y-7">
             <Reveal>
               <div className="flex flex-col items-center text-center">
-                <div className="relative w-56 h-44">
+                <div className="relative w-40 h-32 sm:w-56 sm:h-44">
                   <Image
                     src="/assets/main-Photoroom.png"
                     alt="Brain Core"
@@ -405,21 +405,21 @@ export default function WhatWeDo() {
                     priority
                   />
                 </div>
-                <p className="mt-2 font-mono text-xs uppercase tracking-wider text-muted">
+                <p className="mt-1 font-mono text-[0.7rem] sm:text-xs uppercase tracking-wider text-muted">
                   Neural Processing Core
                 </p>
               </div>
             </Reveal>
 
-            <div className="grid gap-5 sm:grid-cols-2">
+            <div className="grid gap-3.5 sm:gap-5 sm:grid-cols-2">
               {PILLARS.map((pillar, i) => (
                 <Reveal key={pillar.id} delay={i * 0.08}>
                   <Link
                     href="/research"
-                    className="group block rounded-2xl border border-ink/10 bg-white/90 p-5 shadow-xs transition-all hover:border-ink/30 hover:shadow-md"
+                    className="group block rounded-2xl border border-ink/10 bg-white/90 p-3.5 sm:p-5 shadow-xs transition-all hover:border-ink/30 hover:shadow-md"
                   >
-                    <div className="flex items-center gap-4">
-                      <div className="relative h-20 w-28 shrink-0">
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <div className="relative h-14 w-20 sm:h-20 sm:w-28 shrink-0">
                         <Image
                           src={pillar.image}
                           alt={pillar.title}
@@ -432,13 +432,13 @@ export default function WhatWeDo() {
                         <span className="font-mono text-[0.62rem] font-semibold text-muted uppercase">
                           Domain {pillar.number}
                         </span>
-                        <h3 className="mt-0.5 text-sm font-semibold text-ink group-hover:text-navy-700">
+                        <h3 className="mt-0.5 text-xs sm:text-sm font-semibold text-ink group-hover:text-navy-700">
                           {pillar.title}
                         </h3>
                         <ArrowUpRight weight="bold" className="mt-1 h-3.5 w-3.5 text-ink/30" />
                       </div>
                     </div>
-                    <p className="mt-3 text-xs leading-relaxed text-muted">
+                    <p className="mt-2.5 text-xs leading-relaxed text-muted line-clamp-2 sm:line-clamp-none">
                       {pillar.shortSummary}
                     </p>
                   </Link>

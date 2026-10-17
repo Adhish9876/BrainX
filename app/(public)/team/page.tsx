@@ -86,7 +86,7 @@ export default function TeamPage() {
   return (
     <div className="relative isolate bg-white">
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
-      <section className="relative isolate -mt-22 overflow-hidden pt-22 md:-mt-24 md:pt-24">
+      <section className="relative isolate -mt-16 overflow-hidden pt-16 sm:-mt-20 sm:pt-20 md:-mt-24 md:pt-24">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 select-none">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -100,7 +100,7 @@ export default function TeamPage() {
 
         <div className="shell pb-4 pt-2 sm:pb-5 sm:pt-4 md:pb-6 md:pt-5">
           <Reveal>
-            <h1 className="max-w-4xl font-display text-5xl font-extrabold leading-[1.02] tracking-tight text-[#1d1d1f] sm:text-6xl lg:text-7xl">
+            <h1 className="max-w-4xl font-display text-3xl font-extrabold leading-[1.05] tracking-tight text-[#1d1d1f] sm:text-5xl lg:text-7xl">
               The people behind the brain research.
             </h1>
           </Reveal>

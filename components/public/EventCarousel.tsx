@@ -89,7 +89,7 @@ export default function EventCarousel({ events }: { events: Event[] }) {
         ref={scrollerRef}
         onScroll={update}
         style={{ scrollbarWidth: 'none' }}
-        className="flex snap-x snap-mandatory items-start gap-8 overflow-x-auto pb-6 [&::-webkit-scrollbar]:hidden"
+        className="flex snap-x snap-mandatory items-start gap-5 sm:gap-8 overflow-x-auto pb-6 [&::-webkit-scrollbar]:hidden"
       >
         {sorted.map((event, index) => {
           const parts = dateParts(event.date);
@@ -98,7 +98,7 @@ export default function EventCarousel({ events }: { events: Event[] }) {
             <article
               key={event.id}
               data-slide
-              className="w-[88vw] shrink-0 snap-start sm:w-[34rem] lg:w-[40rem]"
+              className="w-[82vw] shrink-0 snap-start sm:w-[34rem] lg:w-[40rem]"
             >
               <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[1.75rem] border border-slate-200/80 bg-gradient-to-br from-sky-100 via-orange-50 to-white shadow-[0_2px_4px_rgba(11,16,32,0.04),0_24px_50px_-26px_rgba(11,16,32,0.35)]">
                 {event.image ? (

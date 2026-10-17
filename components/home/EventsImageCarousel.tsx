@@ -138,7 +138,7 @@ export default function EventsImageCarousel({ events }: { events: Event[] }) {
             <ChevronRight className="h-5 w-5" />
           </button>
 
-          <div className="mt-6 flex items-center gap-1.5" role="tablist" aria-label="Event photos">
+          <div className="mt-6 hidden md:flex items-center gap-1.5" role="tablist" aria-label="Event photos">
             {slides.map((s, i) => (
               <button
                 key={s.id}

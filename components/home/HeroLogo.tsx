@@ -53,7 +53,7 @@ export default function HeroLogo({ src, alt }: { src: string; alt: string }) {
         </Link>
 
         {/* Fixed-width & fixed-height slot so typing/deleting never shifts the logo */}
-        <div className="flex h-[5.5rem] w-[19rem] shrink-0 items-center justify-center text-center sm:w-[22rem] lg:h-[9.5rem] lg:w-[22rem] lg:justify-start lg:text-left xl:w-[26rem]">
+        <div className="flex h-[5.5rem] w-[min(100%,18.5rem)] shrink-0 items-center justify-center text-center sm:w-[22rem] lg:h-[9.5rem] lg:w-[22rem] lg:justify-start lg:text-left xl:w-[26rem]">
           <TextType
             as="p"
             text={[
@@ -67,7 +67,7 @@ export default function HeroLogo({ src, alt }: { src: string; alt: string }) {
             showCursor={true}
             cursorCharacter="|"
             cursorClassName="text-white font-normal"
-            className="font-display text-[clamp(1.3rem,2.2vw,2.5rem)] font-bold leading-[1.15] tracking-[-0.02em] text-white [text-shadow:0_2px_18px_rgba(0,0,0,0.75),0_1px_3px_rgba(0,0,0,0.5)]"
+            className="font-display text-[clamp(1.15rem,2.2vw,2.5rem)] font-bold leading-[1.15] tracking-[-0.02em] text-white [text-shadow:0_2px_18px_rgba(0,0,0,0.75),0_1px_3px_rgba(0,0,0,0.5)]"
           />
         </div>
       </div>

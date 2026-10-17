@@ -234,7 +234,7 @@ function MapWaypointPin({
           }`}
         >
           <div
-            className={`flex items-center rounded-full px-2.5 py-1 font-mono text-[10px] sm:text-[11px] font-bold tracking-tight shadow-md transition-all duration-200 max-w-[130px] sm:max-w-[190px] ${
+            className={`flex items-center rounded-full px-2 py-0.5 sm:px-2.5 sm:py-1 font-mono text-[9px] sm:text-[11px] font-bold tracking-tight shadow-md transition-all duration-200 max-w-[96px] xs:max-w-[120px] sm:max-w-[190px] ${
               isSelected
                 ? 'bg-[#2b1708] text-[#fffcf5] border border-[#a16238] shadow-[0_4px_16px_rgba(43,23,8,0.45)] scale-105'
                 : 'bg-[#fffdfa]/95 text-[#3d2312] border border-[#cfba9e]/80 hover:bg-[#fff9ef] hover:border-[#8c532b] hover:text-[#1c0e05] hover:scale-105'
@@ -281,7 +281,7 @@ function ProjectPhotoCarousel({
 
   return (
     <div
-      className={`group/carousel relative w-full flex-1 min-h-[180px] overflow-hidden rounded-2xl border border-white/15 shadow-md bg-[#20150d] ${
+      className={`group/carousel relative w-full flex-1 min-h-[235px] xs:min-h-[265px] sm:min-h-[300px] lg:min-h-[180px] overflow-hidden rounded-2xl border border-white/15 shadow-md bg-[#20150d] ${
         onExpand ? (expanded ? 'cursor-zoom-out' : 'cursor-zoom-in') : ''
       }`}
       onClick={(e) => {
@@ -373,7 +373,7 @@ function ProjectPhotoCarousel({
       )}
 
       <div className="pointer-events-none absolute inset-x-0 bottom-0 p-4 sm:p-5 text-white">
-        <h2 className="font-display text-lg sm:text-xl lg:text-2xl font-extrabold text-white leading-tight drop-shadow-md">
+        <h2 className="font-display text-xl sm:text-2xl font-extrabold text-white leading-tight drop-shadow-md">
           {project.title}
         </h2>
       </div>
@@ -413,22 +413,22 @@ function ProjectDetailPanel({
   const contributors = Array.isArray(project.members) ? project.members : [];
 
   return (
-    <div className="flex flex-col rounded-3xl border border-white/15 bg-black/40 backdrop-blur-xl p-5 sm:p-6 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.75)] h-full overflow-hidden">
+    <div className="flex flex-col rounded-2xl sm:rounded-3xl border border-white/15 bg-black/40 backdrop-blur-xl p-4 sm:p-6 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.75)] h-full overflow-hidden">
       {/* Photo carousel with caption (title) directly on the image - fills upper section */}
       <ProjectPhotoCarousel key={project.id} project={project} onExpand={onExpand} expanded={expanded} />
 
       {/* Project Description */}
-      <p className="mt-3.5 text-xs sm:text-sm text-white/85 leading-relaxed line-clamp-3 shrink-0">
+      <p className="mt-3.5 sm:mt-4 text-xs sm:text-sm text-white/90 leading-relaxed line-clamp-3 shrink-0">
         {project.description}
       </p>
 
       {/* Tags */}
       {project.tags && project.tags.length > 0 && (
-        <div className="mt-2.5 flex max-h-[26px] shrink-0 flex-wrap gap-1.5 overflow-hidden">
+        <div className="mt-2 sm:mt-2.5 flex max-h-[26px] shrink-0 flex-wrap gap-1.5 overflow-hidden">
           {project.tags.map((tag) => (
             <span
               key={tag}
-              className="rounded-full border border-white/20 bg-white/10 px-2.5 py-0.5 font-mono text-[10px] font-bold text-white/90"
+              className="rounded-full border border-white/20 bg-white/10 px-2 sm:px-2.5 py-0.5 font-mono text-[9px] sm:text-[10px] font-bold text-white/90"
             >
               {tag}
             </span>
@@ -438,8 +438,8 @@ function ProjectDetailPanel({
 
       {/* Team members, project link and next stop */}
       {(contributors.length > 0 || project.link || onNext) && (
-        <div className="mt-3 flex shrink-0 items-center justify-between gap-3 border-t border-white/15 pt-3">
-          <div className="flex items-center -space-x-3 py-1 pl-1 transition-all duration-300 hover:space-x-1">
+        <div className="mt-3 flex shrink-0 flex-wrap items-center justify-between gap-2.5 sm:gap-3 border-t border-white/15 pt-2.5 sm:pt-3">
+          <div className="flex items-center -space-x-2 sm:-space-x-3 py-0.5 sm:py-1 pl-1 transition-all duration-300 hover:space-x-1">
             {contributors.map((memberName, idx) => {
               const matched = findTeamMember(memberName, team);
               const avatarColor = AVATAR_COLORS[idx % AVATAR_COLORS.length];
@@ -454,11 +454,11 @@ function ProjectDetailPanel({
                     <img
                       src={matched.image}
                       alt={memberName}
-                      className="h-10 w-10 sm:h-11 sm:w-11 rounded-full border-2 border-white ring-2 ring-white/30 object-cover shadow-md"
+                      className="h-8 w-8 sm:h-11 sm:w-11 rounded-full border-2 border-white ring-2 ring-white/30 object-cover shadow-md"
                     />
                   ) : (
                     <div
-                      className={`flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full border-2 border-white ring-2 ring-white/30 shadow-md font-mono text-xs font-black uppercase ${avatarColor}`}
+                      className={`flex h-8 w-8 sm:h-11 sm:w-11 items-center justify-center rounded-full border-2 border-white ring-2 ring-white/30 shadow-md font-mono text-[10px] sm:text-xs font-black uppercase ${avatarColor}`}
                     >
                       {getInitials(memberName)}
                     </div>
@@ -468,13 +468,13 @@ function ProjectDetailPanel({
             })}
           </div>
 
-          <div className="flex min-w-0 items-center gap-2">
+          <div className="flex min-w-0 items-center gap-1.5 sm:gap-2">
             {project.link && (
               <a
                 href={project.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 rounded-full border border-white/30 bg-white/10 px-3 py-1.5 font-mono text-xs font-bold text-white transition hover:bg-white/20"
+                className="flex items-center gap-1 rounded-full border border-white/30 bg-white/10 px-2.5 py-1 sm:px-3 sm:py-1.5 font-mono text-xs font-bold text-white transition hover:bg-white/20"
               >
                 View
                 <ArrowUpRight className="h-3.5 w-3.5" />
@@ -484,7 +484,7 @@ function ProjectDetailPanel({
               <button
                 type="button"
                 onClick={onNext}
-                className="group/next flex min-w-0 max-w-[220px] items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 font-mono text-xs font-bold text-[#1d1d1f] shadow-sm transition hover:bg-white/90 cursor-pointer"
+                className="group/next flex min-w-0 max-w-[160px] xs:max-w-[190px] sm:max-w-[220px] items-center gap-1.5 rounded-full bg-white px-2.5 py-1 sm:px-3.5 sm:py-1.5 font-mono text-xs font-bold text-[#1d1d1f] shadow-sm transition hover:bg-white/90 cursor-pointer"
               >
                 <span className="truncate">Next: {nextTitle}</span>
                 <ArrowRight className="h-3.5 w-3.5 shrink-0 transition-transform group-hover/next:translate-x-0.5" />
@@ -988,7 +988,7 @@ export default function TreasureMapShowcase({
                     key={key}
                     type="button"
                     onClick={() => handleSelectDomain(key)}
-                    className={`group relative flex flex-1 flex-col items-start overflow-hidden rounded-3xl border p-5 sm:min-w-[17.5rem] sm:p-7 text-left text-white backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:bg-slate-900/45 focus:outline-none focus-visible:ring-2 focus-visible:ring-white ${
+                    className={`group relative flex flex-1 flex-col items-start overflow-hidden rounded-2xl border p-4 sm:rounded-3xl sm:min-w-[17.5rem] sm:p-7 text-left text-white backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:bg-slate-900/45 focus:outline-none focus-visible:ring-2 focus-visible:ring-white ${
                       active ? `bg-slate-900/45 ring-2 ${activeRing}` : 'border-white/30 bg-slate-900/30'
                     } shadow-[0_20px_50px_-15px_rgba(15,23,42,0.55)]`}
                   >
@@ -1001,17 +1001,17 @@ export default function TreasureMapShowcase({
                     <div className="relative flex w-full items-center justify-between">
                       <span className="flex items-center gap-3 text-white">
                         {key === 'inhouse' ? (
-                          <Brain weight="light" className="h-9 w-9 shrink-0" aria-hidden />
+                          <Brain weight="light" className="h-7 w-7 shrink-0 sm:h-9 sm:w-9" aria-hidden />
                         ) : (
-                          <Lightbulb weight="light" className="h-9 w-9 shrink-0" aria-hidden />
+                          <Lightbulb weight="light" className="h-7 w-7 shrink-0 sm:h-9 sm:w-9" aria-hidden />
                         )}
                       </span>
-                      <span className="flex h-8 w-8 items-center justify-center rounded-full border border-white/40 bg-white/10 text-white opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 translate-x-1">
-                        <ArrowRight className="h-4 w-4" />
+                      <span className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full border border-white/40 bg-white/10 text-white opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 translate-x-1">
+                        <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                       </span>
                     </div>
 
-                    <h3 className="relative mt-7 whitespace-nowrap font-display text-[1.35rem] sm:text-2xl font-bold tracking-tight text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.3)]">
+                    <h3 className="relative mt-4 sm:mt-7 whitespace-nowrap font-display text-[1.1rem] sm:text-[1.35rem] sm:text-2xl font-bold tracking-tight text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.3)]">
                       {title}
                     </h3>
                   </button>
@@ -1039,17 +1039,17 @@ export default function TreasureMapShowcase({
           transition={{ duration: 0.5, delay: isUnlocked ? 0.1 : 0 }}
           style={{ pointerEvents: isUnlocked ? 'auto' : 'none' }}
           inert={!isUnlocked}
-          className="absolute inset-x-0 top-0 z-20 h-[calc(100svh-6rem)] overflow-y-auto pt-4 pb-6 lg:overflow-hidden sm:pt-5"
+          className="absolute inset-x-0 top-0 z-20 h-[calc(100svh-4rem)] overflow-y-auto pt-3 pb-6 sm:h-[calc(100svh-5rem)] sm:pt-4 lg:h-[calc(100svh-6rem)] lg:overflow-hidden lg:pt-5"
         >
         {/* Back arrow + current domain title, domain switch and journey progress */}
-        <div className="relative mx-auto mb-3 flex w-full max-w-[1720px] flex-wrap items-center gap-x-4 gap-y-2 px-4 sm:px-6 lg:px-8">
+        <div className="relative mx-auto mb-2 flex w-full max-w-[1720px] flex-wrap items-center gap-x-3 gap-y-2 px-3 sm:mb-3 sm:gap-x-4 sm:px-6 lg:px-8">
           <button
             type="button"
             onClick={handleReturnToHero}
             aria-label="Back to Projects"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white shadow-sm backdrop-blur-md transition hover:-translate-x-0.5 hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white cursor-pointer"
+            className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white shadow-sm backdrop-blur-md transition hover:-translate-x-0.5 hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white cursor-pointer"
           >
-            <ChevronLeft className="h-5 w-5" />
+            <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>
 
           {/* Domain switch (segmented) */}
@@ -1066,7 +1066,7 @@ export default function TreasureMapShowcase({
                 role="tab"
                 aria-selected={activeCategory === key}
                 onClick={() => setActiveCategory(key)}
-                className={`rounded-full px-4 py-1.5 font-display text-sm font-bold transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-white ${
+                className={`rounded-full px-3 py-1 sm:px-4 sm:py-1.5 font-display text-xs sm:text-sm font-bold transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-white ${
                   activeCategory === key
                     ? 'bg-white text-[#1d1d1f] shadow-sm'
                     : 'text-white/80 hover:text-white'
@@ -1100,12 +1100,12 @@ export default function TreasureMapShowcase({
             ref={rowRef}
             className="flex flex-col items-start gap-6 lg:flex-row lg:gap-8"
           >
-            {/* ── LEFT COLUMN: The Vertical Expedition Map with HIDDEN SCROLLBAR (CUT MAP) ── */}
+            {/* ── MAP COLUMN: Put down on mobile (order-2), left on desktop (lg:order-1) ── */}
             <motion.div
               initial={false}
               animate={isUnlocked ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: isUnlocked ? 0.2 : 0 }}
-              className={`relative w-full min-w-0 lg:shrink-0 lg:transition-[flex-basis] lg:duration-[900ms] lg:ease-[cubic-bezier(0.22,1,0.36,1)] ${
+              className={`order-2 lg:order-1 relative w-full min-w-0 lg:shrink-0 lg:transition-[flex-basis] lg:duration-[900ms] lg:ease-[cubic-bezier(0.22,1,0.36,1)] ${
                 expanded ? 'lg:basis-[7rem]' : 'lg:basis-[calc(41.667%-0.8rem)]'
               }`}
             >
@@ -1161,19 +1161,19 @@ export default function TreasureMapShowcase({
               {/* Scroll hint: fades out once the journey begins */}
               <div
                 aria-hidden="true"
-                className={`pointer-events-none absolute inset-x-0 top-[5.6rem] z-[60] flex justify-end px-4 transition-all duration-500 ${
+                className={`pointer-events-none absolute inset-x-0 top-3 sm:top-4 lg:top-[5.6rem] z-[60] flex justify-end px-3 sm:px-4 transition-all duration-500 ${
                   selectedIndex === 0 && !expanded ? 'opacity-100 translate-y-0 lg:delay-[500ms]' : 'opacity-0 -translate-y-2'
                 }`}
               >
-                <span className="flex items-center gap-1.5 rounded-full border border-[#cfba9e]/80 bg-[#fffdfa]/95 px-3 py-1.5 font-mono text-[11px] font-bold text-[#3d2312] shadow-lg backdrop-blur-md">
+                <span className="flex items-center gap-1.5 rounded-full border border-[#cfba9e]/80 bg-[#fffdfa]/95 px-2.5 py-1 sm:px-3 sm:py-1.5 font-mono text-[10px] sm:text-[11px] font-bold text-[#3d2312] shadow-lg backdrop-blur-md">
                   Scroll to explore
-                  <ArrowDown className="h-3.5 w-3.5 animate-bounce" />
+                  <ArrowDown className="h-3 w-3 sm:h-3.5 sm:w-3.5 animate-bounce" />
                 </span>
               </div>
               <div
                 ref={mapContainerRef}
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-                className={`relative w-full h-[540px] sm:h-[580px] lg:h-[clamp(420px,calc(100dvh-13rem),760px)] overflow-y-hidden overscroll-contain rounded-3xl border border-white/25 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.75)] bg-[#efe3cb] [&::-webkit-scrollbar]:hidden`}
+                className={`relative w-full h-[225px] xs:h-[255px] sm:h-[300px] lg:h-[clamp(420px,calc(100dvh-13rem),760px)] overflow-y-hidden overscroll-contain rounded-2xl sm:rounded-3xl border border-white/25 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.75)] bg-[#efe3cb] [&::-webkit-scrollbar]:hidden`}
               >
                 {/* Traveler: red marker that walks the trail between waypoints */}
                 <div
@@ -1285,13 +1285,13 @@ export default function TreasureMapShowcase({
               )}
             </motion.div>
 
-            {/* ── RIGHT COLUMN: Right Detail Panel (Sticky, no scroll on right side, fits cleanly) ── */}
+            {/* ── DETAIL PANEL COLUMN: Put up on mobile (order-1), right on desktop (lg:order-2) ── */}
             <motion.div
               id="project-detail-panel"
               initial={false}
               animate={isUnlocked ? { opacity: 1, x: 0 } : { opacity: 0, x: 40 }}
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: isUnlocked ? 0.35 : 0 }}
-              className="min-w-0 w-full lg:flex-1 lg:sticky lg:top-8 h-[540px] sm:h-[580px] lg:h-[clamp(420px,calc(100dvh-13rem),760px)]"
+              className="order-1 lg:order-2 min-w-0 w-full lg:flex-1 lg:sticky lg:top-8 min-h-[380px] xs:min-h-[410px] sm:min-h-[440px] sm:h-[460px] lg:h-[clamp(420px,calc(100dvh-13rem),760px)]"
             >
               <ProjectDetailPanel
                 project={selectedProject}

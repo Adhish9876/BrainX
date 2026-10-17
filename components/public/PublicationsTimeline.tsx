@@ -91,26 +91,26 @@ export default function PublicationsTimeline({
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="mx-auto max-w-4xl text-center"
         >
-          <h1 className="font-display text-4xl font-extrabold tracking-tight text-[#1d1d1f] sm:text-5xl lg:text-6xl">
+          <h1 className="font-display text-3xl font-extrabold tracking-tight text-[#1d1d1f] sm:text-5xl lg:text-6xl">
             The Journey That Shaped Us
           </h1>
 
-          <p className="mt-5 text-lg leading-relaxed text-slate-700 sm:text-xl">
+          <p className="mt-4 text-base leading-relaxed text-slate-700 sm:text-xl">
             From foundational biosignal processing to cutting-edge neural decoding and assistive BCIs,
             our publications reflect continuous inquiry, clinical persistence, and academic growth.
           </p>
 
-          <p className="mt-3 text-sm font-mono font-medium uppercase tracking-wider text-slate-500">
+          <p className="mt-2.5 text-xs font-mono font-medium uppercase tracking-wider text-slate-500">
             {publications.length} {publications.length === 1 ? 'publication record' : 'publication records'} · grouped by year
           </p>
         </motion.div>
 
         {/* ── 2. Alternating Year-Grouped Timeline ── */}
-        <div className="relative mx-auto max-w-5xl py-6">
-          {/* Central Vertical Line (Desktop md:) */}
+        <div className="relative mx-auto max-w-5xl py-4 sm:py-6">
+          {/* Central Vertical Line (Both Mobile & Desktop) */}
           <div
             aria-hidden="true"
-            className="absolute left-1/2 top-4 bottom-4 hidden w-0.5 -translate-x-1/2 bg-slate-200/90 md:block"
+            className="absolute left-1/2 top-4 bottom-4 w-0.5 -translate-x-1/2 bg-slate-200/90"
           >
             {/* Animated Progress Beam drawing down as user scrolls */}
             <motion.div
@@ -119,19 +119,8 @@ export default function PublicationsTimeline({
             />
           </div>
 
-          {/* Left-Aligned Vertical Line (Mobile < md) */}
-          <div
-            aria-hidden="true"
-            className="absolute left-6 top-4 bottom-4 block w-0.5 bg-slate-200/90 md:hidden"
-          >
-            <motion.div
-              style={{ scaleY, originY: 0 }}
-              className="absolute left-0 top-0 w-full h-full bg-gradient-to-b from-[#0066cc] to-[#0099ff]"
-            />
-          </div>
-
           {/* Year Milestone Sections */}
-          <div className="space-y-16 sm:space-y-24">
+          <div className="space-y-10 xs:space-y-12 sm:space-y-20 md:space-y-24">
             {yearGroups.map((group, groupIndex) => {
               // Even groupIndex (0, 2, 4): Cards on RIGHT, Year Marker on LEFT (e.g. 2026 on right)
               // Odd groupIndex (1, 3, 5): Cards on LEFT, Year Marker on RIGHT (e.g. 2025 on left)
@@ -139,38 +128,43 @@ export default function PublicationsTimeline({
 
               return (
                 <div key={group.year} className="relative">
-                  {/* Central Node for this Year on the line (Desktop) */}
+                  {/* Central Node for this Year on the line */}
                   <motion.div
                     initial={{ scale: 0, opacity: 0 }}
                     whileInView={{ scale: 1, opacity: 1 }}
                     viewport={{ once: true, margin: '-50px' }}
                     transition={{ duration: 0.4, ease: 'easeOut' }}
                     aria-hidden="true"
-                    className="absolute z-20 hidden md:flex left-1/2 top-7 -translate-x-1/2 -translate-y-1/2 h-5 w-5 items-center justify-center rounded-full bg-white border-2 border-[#0066cc] ring-4 ring-[#0066cc]/15 shadow-sm"
+                    className="absolute z-20 flex left-1/2 top-5 sm:top-7 -translate-x-1/2 -translate-y-1/2 h-3.5 w-3.5 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-white border-2 border-[#0066cc] ring-2 sm:ring-4 ring-[#0066cc]/15 shadow-sm"
                   >
-                    <div className="h-2 w-2 rounded-full bg-[#0066cc]" />
+                    <div className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-[#0066cc]" />
                   </motion.div>
 
-                  {/* Desktop Grid Layout (md:) */}
-                  <div className="hidden md:grid md:grid-cols-2 md:gap-14 items-start">
+                  {/* Responsive 2-Column Grid Layout (Alternating on either side) */}
+                  <div className="grid grid-cols-2 gap-2 xs:gap-3.5 sm:gap-8 md:gap-14 items-start">
                     {isCardsRight ? (
-                      /* ── 2026: Year on Left, All Cards on Right ── */
+                      /* ── Year on Left, All Cards on Right ── */
                       <>
                         {/* Left Side: full-cover year image with milestone badge */}
-                        <YearVisual year={group.year} count={group.items.length} image={yearImage(group.year, groupIndex, group.items, yearImages)} side="left" />
+                        <YearVisual
+                          year={group.year}
+                          count={group.items.length}
+                          image={yearImage(group.year, groupIndex, group.items, yearImages)}
+                          side="left"
+                        />
 
                         {/* Right Side: All cards of this year stacked */}
-                        <div className="space-y-6 pl-6">
+                        <div className="space-y-2.5 xs:space-y-3.5 sm:space-y-6 pl-1 xs:pl-2 sm:pl-4 md:pl-6">
                           {group.items.map((publication, itemIndex) => (
                             <motion.div
                               key={publication.id}
-                              initial={{ opacity: 0, y: 30, filter: 'blur(4px)' }}
+                              initial={{ opacity: 0, y: 20, filter: 'blur(3px)' }}
                               whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                              viewport={{ once: true, margin: '-40px' }}
+                              viewport={{ once: true, margin: '-30px' }}
                               transition={{
-                                duration: 0.55,
+                                duration: 0.5,
                                 ease: [0.16, 1, 0.3, 1],
-                                delay: itemIndex * 0.08,
+                                delay: itemIndex * 0.06,
                               }}
                             >
                               <PublicationCard
@@ -182,20 +176,20 @@ export default function PublicationsTimeline({
                         </div>
                       </>
                     ) : (
-                      /* ── 2025: All Cards on Left, Year on Right ── */
+                      /* ── All Cards on Left, Year on Right ── */
                       <>
                         {/* Left Side: All cards of this year stacked */}
-                        <div className="space-y-6 pr-6">
+                        <div className="space-y-2.5 xs:space-y-3.5 sm:space-y-6 pr-1 xs:pr-2 sm:pr-4 md:pr-6">
                           {group.items.map((publication, itemIndex) => (
                             <motion.div
                               key={publication.id}
-                              initial={{ opacity: 0, y: 30, filter: 'blur(4px)' }}
+                              initial={{ opacity: 0, y: 20, filter: 'blur(3px)' }}
                               whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                              viewport={{ once: true, margin: '-40px' }}
+                              viewport={{ once: true, margin: '-30px' }}
                               transition={{
-                                duration: 0.55,
+                                duration: 0.5,
                                 ease: [0.16, 1, 0.3, 1],
-                                delay: itemIndex * 0.08,
+                                delay: itemIndex * 0.06,
                               }}
                             >
                               <PublicationCard
@@ -207,50 +201,14 @@ export default function PublicationsTimeline({
                         </div>
 
                         {/* Right Side: full-cover year image with milestone badge */}
-                        <YearVisual year={group.year} count={group.items.length} image={yearImage(group.year, groupIndex, group.items, yearImages)} side="right" />
+                        <YearVisual
+                          year={group.year}
+                          count={group.items.length}
+                          image={yearImage(group.year, groupIndex, group.items, yearImages)}
+                          side="right"
+                        />
                       </>
                     )}
-                  </div>
-
-                  {/* Mobile Layout (< md) */}
-                  <div className="flex flex-col pl-14 md:hidden">
-                    {/* Node on mobile line */}
-                    <div
-                      aria-hidden="true"
-                      className="absolute z-20 left-6 top-3 -translate-x-1/2 h-4 w-4 rounded-full bg-white border-2 border-[#0066cc] ring-3 ring-[#0066cc]/20"
-                    />
-
-                    {/* Mobile Year Badge */}
-                    <div className="mb-4 flex items-baseline gap-2">
-                      <span className="font-display text-3xl font-bold text-[#1d1d1f]">
-                        {group.year}
-                      </span>
-                      <span className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-500">
-                        ({group.items.length} {group.items.length === 1 ? 'entry' : 'entries'})
-                      </span>
-                    </div>
-
-                    {/* Cards */}
-                    <div className="space-y-5">
-                      {group.items.map((publication, itemIndex) => (
-                        <motion.div
-                          key={publication.id}
-                          initial={{ opacity: 0, y: 25 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true, margin: '-30px' }}
-                          transition={{
-                            duration: 0.5,
-                            ease: [0.16, 1, 0.3, 1],
-                            delay: itemIndex * 0.06,
-                          }}
-                        >
-                          <PublicationCard
-                            publication={publication}
-                            index={itemIndex + 1}
-                          />
-                        </motion.div>
-                      ))}
-                    </div>
                   </div>
                 </div>
               );
@@ -303,7 +261,7 @@ function YearVisual({
       whileInView={{ opacity: 1 }}
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.9, ease: 'easeOut' }}
-      className="relative min-h-[22rem] self-stretch"
+      className="relative min-h-[9rem] xs:min-h-[11rem] sm:min-h-[18rem] md:min-h-[22rem] self-stretch"
     >
       {/* Feathered image layer (separate from the badge so the badge can stay sticky) */}
       <div className="absolute inset-0 overflow-hidden" style={FEATHER_MASK}>
@@ -318,27 +276,27 @@ function YearVisual({
       </div>
 
       {/* Milestone badge stays in view while this year's cards scroll */}
-      <div className={`sticky top-28 z-10 flex pt-3 ${nearLine ? 'justify-end' : 'justify-start'}`}>
-        <div className={`relative flex flex-col px-2 py-2 ${nearLine ? '-mr-3 items-end text-right' : '-ml-3 items-start text-left'}`}>
+      <div className={`sticky top-20 sm:top-28 z-10 flex pt-1 sm:pt-3 ${nearLine ? 'justify-end' : 'justify-start'}`}>
+        <div className={`relative flex flex-col px-1 py-1 sm:px-2 sm:py-2 ${nearLine ? '-mr-1 sm:-mr-3 items-end text-right' : '-ml-1 sm:-ml-3 items-start text-left'}`}>
           {/* Soft white halo (no hard edges) so the dark text stays readable over any photo */}
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute -inset-x-10 -inset-y-8 -z-10"
+            className="pointer-events-none absolute -inset-x-6 sm:-inset-x-10 -inset-y-4 sm:-inset-y-8 -z-10"
             style={{
               background:
                 'radial-gradient(closest-side, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.7) 45%, rgba(255,255,255,0) 100%)',
             }}
           />
-          <span className="font-mono text-[0.65rem] font-bold uppercase tracking-[0.2em] text-[#0066cc]">
+          <span className="font-mono text-[0.52rem] xs:text-[0.58rem] sm:text-[0.65rem] font-bold uppercase tracking-[0.14em] sm:tracking-[0.2em] text-[#0066cc]">
             Milestone
           </span>
-          <h2 className="font-display text-3xl font-extrabold tracking-tight text-[#1d1d1f] sm:text-4xl">
+          <h2 className="font-display text-lg xs:text-xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-[#1d1d1f]">
             {year}
           </h2>
-          <div className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-slate-900 px-2.5 py-0.5 text-[0.68rem] font-semibold text-white">
-            <BookOpen className="h-2.5 w-2.5" />
+          <div className="mt-1 sm:mt-1.5 inline-flex items-center gap-1 rounded-full bg-slate-900 px-1.5 py-0.5 sm:px-2.5 sm:py-0.5 text-[0.55rem] sm:text-[0.68rem] font-semibold text-white">
+            <BookOpen className="h-2 w-2 sm:h-2.5 sm:w-2.5" />
             <span>
-              {count} {count === 1 ? 'publication' : 'publications'}
+              {count} {count === 1 ? 'pub' : 'pubs'}
             </span>
           </div>
         </div>
@@ -358,50 +316,53 @@ function PublicationCard({
   return (
     <article
       style={{ backgroundColor: '#ffffff' }}
-      className="group relative w-full rounded-2xl border border-slate-200/90 bg-white p-6 sm:p-7 shadow-[0_10px_28px_-8px_rgba(11,16,32,0.08),0_4px_12px_-3px_rgba(11,16,32,0.04)] transition-all duration-200 hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_18px_38px_-10px_rgba(11,16,32,0.13),0_6px_16px_-4px_rgba(11,16,32,0.06)]"
+      className="group relative w-full rounded-xl sm:rounded-2xl border border-slate-200/90 bg-white p-2 xs:p-2.5 sm:p-5 md:p-7 shadow-[0_4px_14px_-3px_rgba(11,16,32,0.06)] sm:shadow-[0_10px_28px_-8px_rgba(11,16,32,0.08),0_4px_12px_-3px_rgba(11,16,32,0.04)] transition-all duration-200 hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_18px_38px_-10px_rgba(11,16,32,0.13),0_6px_16px_-4px_rgba(11,16,32,0.06)]"
     >
-      <div className="flex items-center gap-2 mb-2.5">
-        <span className="font-mono text-[0.65rem] font-bold uppercase tracking-[0.2em] text-[#0066cc]">
+      <div className="flex items-center gap-1 sm:gap-2 mb-1 sm:mb-2.5">
+        <span className="font-mono text-[0.52rem] xs:text-[0.58rem] sm:text-[0.65rem] font-bold uppercase tracking-[0.12em] sm:tracking-[0.2em] text-[#0066cc]">
           Paper {String(index).padStart(2, '0')}
         </span>
         <span className="text-slate-300">·</span>
-        <span className="font-mono text-[0.65rem] font-semibold text-slate-500">
+        <span className="font-mono text-[0.52rem] xs:text-[0.58rem] sm:text-[0.65rem] font-semibold text-slate-500">
           {publication.year}
         </span>
       </div>
 
-      <h3 className="font-display text-lg font-bold leading-snug tracking-tight text-[#1d1d1f] sm:text-xl">
+      <h3 className="font-display text-[0.75rem] xs:text-[0.82rem] sm:text-base md:text-xl font-bold leading-snug tracking-tight text-[#1d1d1f]">
         {publication.link ? (
           <a
             href={publication.link}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-baseline gap-1.5 transition-colors hover:text-[#0066cc]"
+            className="inline-flex items-baseline gap-1 transition-colors hover:text-[#0066cc]"
           >
-            <span>{publication.title}</span>
+            <span className="break-words">{publication.title}</span>
             <ArrowUpRight
-              className="inline-block h-4 w-4 shrink-0 translate-y-0.5 text-[#0066cc] opacity-75 group-hover:opacity-100"
+              className="inline-block h-3 w-3 sm:h-4 sm:w-4 shrink-0 translate-y-0.5 text-[#0066cc] opacity-75 group-hover:opacity-100"
               aria-hidden
             />
           </a>
         ) : (
-          publication.title
+          <span className="break-words">{publication.title}</span>
         )}
       </h3>
 
-      <p className="mt-2.5 text-sm leading-relaxed text-slate-600">
+      <p className="mt-1 sm:mt-2.5 text-[0.65rem] xs:text-[0.7rem] sm:text-xs md:text-sm leading-snug sm:leading-relaxed text-slate-600 line-clamp-3 md:line-clamp-none">
         {publication.authors}
       </p>
 
       {publication.venue ? (
-        <p className="mt-2 text-xs sm:text-sm font-medium italic text-[#0066cc]">
+        <p className="mt-1 sm:mt-2 text-[0.62rem] xs:text-[0.66rem] sm:text-xs md:text-sm font-medium italic text-[#0066cc] line-clamp-2 md:line-clamp-none">
           {publication.venue}
         </p>
       ) : null}
 
       {publication.tags && publication.tags.length > 0 ? (
-        <div className="mt-4 pt-1">
-          <TagList tags={publication.tags} className="[&_li]:px-2.5 [&_li]:py-0.5 [&_li]:text-[0.72rem]" />
+        <div className="mt-1.5 sm:mt-4 pt-0.5 sm:pt-1">
+          <TagList
+            tags={publication.tags}
+            className="gap-1 [&_li]:px-1.5 [&_li]:py-0.5 [&_li]:text-[0.55rem] xs:[&_li]:text-[0.6rem] sm:[&_li]:px-2.5 sm:[&_li]:text-[0.72rem]"
+          />
         </div>
       ) : null}
     </article>
