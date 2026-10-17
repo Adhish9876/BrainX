@@ -402,27 +402,7 @@ function ContentManager({ initial, onLogout }: ContentManagerProps) {
           </div>
 
           {publishState.kind === 'success' ? (
-            <Alert variant="success" className="mb-4">
-              <CheckCircle2 />
-              <AlertTitle>Published! 🎉 Changes committed</AlertTitle>
-              <AlertDescription>
-                <p>
-                  Your content was committed{shortSha(publishState.result.sha)}. The
-                  public site will update once the deployment build finishes — it is
-                  not live yet.
-                </p>
-                {publishState.result.url ? (
-                  <a
-                    href={publishState.result.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-1 inline-block font-medium text-emerald-700 underline underline-offset-2"
-                  >
-                    View commit
-                  </a>
-                ) : null}
-              </AlertDescription>
-            </Alert>
+            <PublishSuccess key={publishState.result.sha || 'published'} />
           ) : null}
 
           {publishState.kind === 'error' ? (
@@ -621,10 +601,43 @@ function ContentManager({ initial, onLogout }: ContentManagerProps) {
   );
 }
 
-function shortSha(sha: string): string {
-  if (!sha) return '';
-  return ` (${sha.slice(0, 7)})`;
+/** How long the website usually takes to rebuild after a publish. */
+const SITE_UPDATE_SECONDS = 75;
+
+/** Plain-language result of a publish: success, a short countdown, then "the site is updated". */
+function PublishSuccess() {
+  const [left, setLeft] = React.useState(SITE_UPDATE_SECONDS);
+  React.useEffect(() => {
+    if (left <= 0) return;
+    const timer = window.setTimeout(() => setLeft((n) => n - 1), 1000);
+    return () => window.clearTimeout(timer);
+  }, [left]);
+  const done = left <= 0;
+
+  return (
+    <Alert variant="success" className="mb-4">
+      <CheckCircle2 />
+      <AlertTitle>{done ? 'The website is updated ✅' : 'Success! 🎉 Your changes are saved'}</AlertTitle>
+      <AlertDescription>
+        {done ? (
+          <p>Your changes are now live on the website. Refresh the site to see them.</p>
+        ) : (
+          <>
+            <p>The website is updating now and will show your changes in about a minute.</p>
+            <div className="mt-2 h-1.5 w-full max-w-xs overflow-hidden rounded-full bg-emerald-200/70" aria-hidden="true">
+              <div
+                className="h-full rounded-full bg-emerald-600 transition-[width] duration-1000 ease-linear"
+                style={{ width: `${((SITE_UPDATE_SECONDS - left) / SITE_UPDATE_SECONDS) * 100}%` }}
+              />
+            </div>
+            <p className="mt-1 text-xs text-emerald-800/80">About {left}s to go</p>
+          </>
+        )}
+      </AlertDescription>
+    </Alert>
+  );
 }
+
 
 export function AdminWorkspace({ onLogout }: { onLogout: () => void }) {
   return <AdminContentLoader onLogout={onLogout} render={(data) => <ContentManager initial={data} onLogout={onLogout} />} />;

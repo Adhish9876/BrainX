@@ -101,7 +101,7 @@ export function ChangesBar({
             ) : (
               <UploadCloud className="size-4" />
             )}
-            {publishing ? 'Publishing…' : 'Redeploy'}
+            {publishing ? 'Publishing…' : 'Publish changes'}
           </Button>
         </div>
       </div>

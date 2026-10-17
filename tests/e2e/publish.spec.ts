@@ -40,11 +40,11 @@ test('multiple staged photos and a placeholder logo publish in one atomic CMS co
   let commitRequests = 0;
   page.on('request', req => { if (req.method() === 'POST' && new URL(req.url()).pathname === '/api/admin/commit') commitRequests++; });
   const resultPromise = page.waitForResponse(res => new URL(res.url()).pathname === '/api/admin/commit' && res.request().method() === 'POST');
-  await page.getByRole('button', { name: 'Redeploy', exact: true }).click();
+  await page.getByRole('button', { name: 'Publish changes', exact: true }).click();
   const response = await resultPromise;
   expect(response.status()).toBe(200);
   const result = await response.json();
-  await expect(page.getByText('Changes committed', { exact: true })).toBeVisible();
+  await expect(page.getByText(/Your changes are saved/)).toBeVisible();
   expect(commitRequests).toBe(1);
   expect(result.sha).not.toBe(initial.sha);
   expect(result.content.site.logo).toMatch(/^\/media\/uploads\/[a-f0-9]{32}\.webp$/);

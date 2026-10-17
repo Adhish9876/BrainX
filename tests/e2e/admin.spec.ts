@@ -114,7 +114,7 @@ test('authenticated editing persists a multi-item draft and resets without commi
   await expect(page.getByText('QA research draft', { exact: true })).toHaveCount(0);
   await page.getByRole('button', { name: 'Reset', exact: true }).click();
   await page.getByRole('button', { name: 'Reset changes', exact: true }).click();
-  await expect(page.getByRole('button', { name: 'Redeploy', exact: true })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Publish changes', exact: true })).toHaveCount(0);
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
@@ -185,5 +185,5 @@ test('all seven collections support add, edit, reorder and confirmed deletion', 
       await page.getByRole('dialog').getByRole('button', { name: 'Delete', exact: true }).click();
     }
   }
-  await expect(page.getByRole('button', { name: 'Redeploy', exact: true })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Publish changes', exact: true })).toHaveCount(0);
 });

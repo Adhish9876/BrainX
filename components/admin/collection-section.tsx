@@ -577,7 +577,7 @@ export function CollectionSection({
         title={`Delete ${singular.toLowerCase()}?`}
         description={
           pendingRecord
-            ? `“${recordLabel(collection, pendingRecord)}” will be removed from your draft. Nothing is published until you redeploy.`
+            ? `“${recordLabel(collection, pendingRecord)}” will be removed from your draft. Nothing changes on the website until you publish.`
             : 'This record will be removed from your draft.'
         }
         confirmLabel="Delete"
