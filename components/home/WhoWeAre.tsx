@@ -10,7 +10,7 @@ import {
 } from '@phosphor-icons/react';
 import { motion, useInView, useScroll, useTransform, useMotionValueEvent } from 'motion/react';
 import Counter from '@/components/ui/Counter';
-import type { Member, Site, News, Event, Publication } from '@/lib/types';
+import type { Member, Site, News, Event, Publication, PictureGroup } from '@/lib/types';
 import Reveal from './Reveal';
 import EventsImageCarousel from './EventsImageCarousel';
 
@@ -21,6 +21,7 @@ type Props = {
   news: News[];
   events: Event[];
   publications?: Publication[];
+  pictures?: PictureGroup[];
   stats?: { label: string; value: number; prefix?: string; suffix?: string; places?: (number | string)[] }[];
 };
 
@@ -85,6 +86,7 @@ export default function WhoWeAre({
   news = [],
   events = [],
   publications = [],
+  pictures = [],
   stats = [],
 }: Props) {
   const [activeTab, setActiveTab] = useState<'news' | 'research'>('news');
@@ -201,7 +203,7 @@ export default function WhoWeAre({
             </div>
 
             <div className="mt-6">
-              <EventsImageCarousel events={events} />
+              <EventsImageCarousel events={events} pictures={pictures} />
             </div>
 
             {stats.length > 0 ? (

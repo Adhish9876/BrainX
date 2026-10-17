@@ -4,34 +4,67 @@ import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'motion/react';
 import { ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-react';
-import type { Event } from '@/lib/types';
+import type { Event, PictureGroup } from '@/lib/types';
 import { formatDate } from '@/components/public/format';
 
-type Slide = { id: string; image: string; title: string; meta: string };
+type Slide = { id: string; image: string; title: string; meta: string; badge: string; href: string };
 
-/** Shown until a real event with a photo exists; replaced automatically once one is added in the admin. */
+/** Shown until real photos exist; replaced automatically once pictures or events exist. */
 const PLACEHOLDER_SLIDES: Slide[] = [
-  { id: 'p1', image: '/media/pictures/demo_pic/photo-01.webp', title: 'Latest events appear here', meta: 'Added from the admin page' },
-  { id: 'p2', image: '/media/pictures/demo_pic/photo-05.webp', title: 'Workshops, talks and lab days', meta: 'One photo per event' },
-  { id: 'p3', image: '/media/pictures/demo_pic/photo-03.webp', title: 'Tap to read about each event', meta: 'Opens the Events page' },
+  { id: 'p1', image: '/media/pictures/demo_pic/photo-01.webp', title: 'Lab Moments & Activities', meta: 'BrainX Lab', badge: 'Pictures', href: '/pictures' },
+  { id: 'p2', image: '/media/pictures/demo_pic/photo-05.webp', title: 'Workshops & Research Life', meta: 'BrainX Lab', badge: 'Pictures', href: '/pictures' },
+  { id: 'p3', image: '/media/pictures/demo_pic/photo-03.webp', title: 'Team and Collaborations', meta: 'BrainX Lab', badge: 'Pictures', href: '/pictures' },
 ];
 
 /**
- * Plain image carousel of the latest events. Clicking a slide opens the Events page, where each event
- * has its description. Auto-advances, pauses on hover, and supports arrows, dots and swipe.
+ * Image carousel of the latest lab moments and events. Plays recent photos from both events and the pictures gallery.
+ * Clicking a slide navigates to the relevant page (/events or /pictures). Auto-advances, pauses on hover, and supports swipe.
  */
-export default function EventsImageCarousel({ events }: { events: Event[] }) {
-  const real: Slide[] = [...events]
-    .filter((event) => event.image)
-    .sort((a, b) => b.date.localeCompare(a.date))
-    .slice(0, 8)
+export default function EventsImageCarousel({
+  events = [],
+  pictures = [],
+}: {
+  events?: Event[];
+  pictures?: PictureGroup[];
+}) {
+  const eventSlides: { slide: Slide; date: string }[] = (events ?? [])
+    .filter((event) => Boolean(event.image))
     .map((event) => ({
-      id: event.id,
-      image: event.image,
-      title: event.title,
-      meta: [formatDate(event.date), event.venue].filter(Boolean).join(' · '),
+      slide: {
+        id: `event-${event.id}`,
+        image: event.image,
+        title: event.title,
+        meta: [formatDate(event.date), event.venue].filter(Boolean).join(' · '),
+        badge: event.tags?.[0] || 'Event',
+        href: event.link || '/events',
+      },
+      date: event.date || '',
     }));
-  const slides = real.length > 0 ? real : PLACEHOLDER_SLIDES;
+
+  const pictureSlides: { slide: Slide; date: string }[] = (pictures ?? [])
+    .flatMap((group) => {
+      const photos = group.images && group.images.length > 0 ? group.images : (group.thumbnail ? [group.thumbnail] : []);
+      // Feature up to 3 photos from recent albums
+      const selected = photos.slice(0, 3);
+      return selected.map((img, i) => ({
+        slide: {
+          id: `pic-${group.id}-${i}`,
+          image: img,
+          title: group.name,
+          meta: [formatDate(group.date), group.description ? group.description.slice(0, 52) + (group.description.length > 52 ? '…' : '') : ''].filter(Boolean).join(' · '),
+          badge: group.tags?.[0] || 'Pictures',
+          href: '/pictures',
+        },
+        date: group.date || '',
+      }));
+    });
+
+  const combinedSlides = [...eventSlides, ...pictureSlides]
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .map((item) => item.slide)
+    .slice(0, 8);
+
+  const slides = combinedSlides.length > 0 ? combinedSlides : PLACEHOLDER_SLIDES;
   const count = slides.length;
 
   const [index, setIndex] = useState(0);
@@ -73,8 +106,8 @@ export default function EventsImageCarousel({ events }: { events: Event[] }) {
           className="pointer-events-none absolute inset-0 origin-bottom-right rotate-[2deg] rounded-[1.7rem] border border-white/80 bg-white/90 shadow-[0_18px_30px_-14px_rgba(11,16,32,0.35)] transition-transform duration-500 group-hover/carousel:rotate-[3.5deg]"
         />
       <Link
-        href="/events"
-        aria-label={`${slide.title} — open Events`}
+        href={slide.href}
+        aria-label={`${slide.title} — open ${slide.badge}`}
         className="relative block aspect-[16/10] w-full overflow-hidden rounded-[1.7rem] border-[7px] border-white bg-slate-100 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,0_2px_3px_rgba(11,16,32,0.08),0_14px_24px_-8px_rgba(11,16,32,0.28),0_40px_60px_-30px_rgba(11,16,32,0.55)] transition-transform duration-500 group-hover/carousel:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-600 focus-visible:ring-offset-2"
       >
         <AnimatePresence initial={false}>
@@ -97,7 +130,7 @@ export default function EventsImageCarousel({ events }: { events: Event[] }) {
         <span className="pointer-events-none absolute inset-0 rounded-[1.1rem] shadow-[inset_0_2px_6px_rgba(0,0,0,0.25),inset_0_-1px_0_rgba(255,255,255,0.15)]" />
 
         <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 font-mono text-[0.62rem] font-bold uppercase tracking-[0.2em] text-crimson-600 backdrop-blur">
-          Latest events
+          {slide.badge}
         </span>
 
         <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 text-white">

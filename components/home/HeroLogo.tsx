@@ -36,10 +36,10 @@ export default function HeroLogo({ src, alt }: { src: string; alt: string }) {
           aria-label="BrainX Lab home"
           className="relative block shrink-0 focus-visible:outline-offset-8"
         >
-          {/* Subtle luminous ambient glow behind the logo */}
+          {/* Subtle luminous ambient glow behind the logo matching brain heatmap */}
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 -m-4 rounded-full bg-white/25 blur-2xl"
+            className="pointer-events-none absolute inset-0 -m-8 rounded-full bg-gradient-to-tr from-[#f97316]/25 via-[#00b4d8]/30 to-[#0077b6]/35 blur-3xl transition-opacity duration-700"
           />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -47,7 +47,7 @@ export default function HeroLogo({ src, alt }: { src: string; alt: string }) {
             alt={alt}
             width={426}
             height={430}
-            className="relative h-[min(44vw,15rem)] w-auto select-none drop-shadow-[0_10px_34px_rgba(0,0,0,0.45)] lg:h-[min(27vw,18rem)]"
+            className="relative h-[min(44vw,15rem)] w-auto select-none drop-shadow-[0_14px_42px_rgba(0,0,0,0.65)] lg:h-[min(27vw,18rem)] transition-transform duration-500 hover:scale-[1.02]"
             draggable={false}
           />
         </Link>
@@ -67,13 +67,13 @@ export default function HeroLogo({ src, alt }: { src: string; alt: string }) {
             showCursor={true}
             cursorCharacter="|"
             cursorClassName="text-white font-normal"
-            className="font-display text-[clamp(1.15rem,2.2vw,2.5rem)] font-bold leading-[1.15] tracking-[-0.02em] text-white [text-shadow:0_2px_18px_rgba(0,0,0,0.75),0_1px_3px_rgba(0,0,0,0.5)]"
+            className="font-display text-[clamp(1.15rem,2.2vw,2.5rem)] font-bold leading-[1.15] tracking-[-0.02em] text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.8),0_0_50px_rgba(0,180,216,0.2)]"
           />
         </div>
       </div>
 
       {/* Bottom-center subtle scroll cue */}
-      <div className="pointer-events-none absolute bottom-6 sm:bottom-8 md:bottom-10 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2.5 rounded-full border border-white/15 bg-black/35 px-4 py-2 text-xs font-medium tracking-wider uppercase text-white/75 backdrop-blur-md">
+      <div className="pointer-events-none absolute bottom-6 sm:bottom-8 md:bottom-10 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2.5 rounded-full border border-white/15 bg-white/[0.05] px-4 py-2 text-xs font-medium tracking-wider uppercase text-white/80 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
         <span>Scroll to explore</span>
         <span className="inline-block animate-bounce text-sm text-[#38bdf8]">↓</span>
       </div>
