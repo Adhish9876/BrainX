@@ -1,1 +1,13 @@
-[]
+[
+  {
+    "id": "event-placeholder-2026",
+    "title": "Placeholder Event: BrainX Lab Open House",
+    "date": "2026-11-15",
+    "time": "10:00 AM – 1:00 PM",
+    "venue": "BrainX Lab, IIITDM Kancheepuram",
+    "description": "This is a placeholder event. Replace it from the admin page with a real event: its title, date, time, venue, a short description, an image and an optional link.",
+    "image": "/media/pictures/demo_pic/photo-01.webp",
+    "tags": ["Open House"],
+    "link": ""
+  }
+]

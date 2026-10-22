@@ -221,8 +221,9 @@ const projectSchema = researchSchema.extend({
   image: imageField,
   images: z.array(imageField).max(LIMITS.groupImages).optional().default([]),
   members: z.array(z.string()).optional().default([]),
-  link: url,
+  link: bounded(LIMITS.urlLength).refine((v) => v === '' || (v.startsWith('/') && !v.startsWith('//')) || isSafeUrl(v), { message: 'unsafe url' }),
   category: projectCategory,
+  period: bounded(120).optional(),
 });
 
 const newsSchema = z
@@ -240,6 +241,7 @@ const eventSchema = newsSchema.extend({
   image: imageField,
   time: bounded(120),
   venue: bounded(LIMITS.shortText),
+  showOnHome: z.boolean().optional(),
 });
 
 const pictureGroupSchema = z
@@ -251,6 +253,7 @@ const pictureGroupSchema = z
     thumbnail: imageField,
     images: z.array(imageField).max(LIMITS.groupImages),
     tags: tags.optional(),
+    showOnHome: z.boolean().optional(),
   })
   .strict()
   .superRefine((group, ctx) => {

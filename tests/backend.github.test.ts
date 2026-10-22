@@ -340,3 +340,18 @@ describe('admin-managed home content', () => {
     expect(site.publicationYearImages['2025']).toBe(`/media/uploads/${T6}.webp`);
   });
 });
+
+describe('show on home flag', () => {
+  it('is kept on picture groups and events through validation and the commit plan', async () => {
+    const { validateContent } = await import('../lib/validation');
+    const content = makeContent();
+    content.pictures = [{ id: 'g1', name: 'Saraswathi Pooja 2026', date: '2026-10-01', description: 'd', thumbnail: '', images: [], showOnHome: true }];
+    content.events = [{ id: 'e1', title: 't', date: '2026-10-02', description: '', tags: [], link: '', image: '', time: '', venue: '', showOnHome: true }];
+    expect(validateContent(content).ok).toBe(true);
+    const plan = planCommit(content, [], new Map());
+    const meta = plan.json.find((f) => f.path === 'data/pictures/g1/meta.json');
+    expect(JSON.parse(meta!.buf.toString('utf8')).showOnHome).toBe(true);
+    const events = JSON.parse(plan.json.find((f) => f.path === 'data/events.json')!.buf.toString('utf8'));
+    expect(events[0].showOnHome).toBe(true);
+  });
+});

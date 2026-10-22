@@ -15,7 +15,8 @@ export type FieldKind =
   | 'tags'
   | 'image'
   | 'url'
-  | 'select';
+  | 'select'
+  | 'checkbox';
 
 /** Fixed set of people roles; each becomes a section on the public People page. */
 export const TEAM_ROLES = [
@@ -91,7 +92,21 @@ export const RECORD_FIELDS: Record<Collection, FieldDef[]> = {
       ],
       help: 'Categorize whether this is an in-house lab project or student work.',
     },
-    { key: 'description', label: 'Description', kind: 'textarea', rows: 4, placeholder: 'Brief description and explanation of the project' },
+    {
+      key: 'period',
+      label: 'Period (optional)',
+      kind: 'text',
+      placeholder: 'e.g. 2025 – Present',
+      help: 'Shown under the project name on the Projects timeline.',
+    },
+    {
+      key: 'description',
+      label: 'Description',
+      kind: 'textarea',
+      rows: 5,
+      placeholder: 'One point per line',
+      help: 'Each line becomes a bullet point on the Projects page. A single paragraph is split into one bullet per sentence.',
+    },
     {
       key: 'members',
       label: 'People Working on Project',
@@ -118,6 +133,12 @@ export const RECORD_FIELDS: Record<Collection, FieldDef[]> = {
     { key: 'image', label: 'Image', kind: 'image' },
     { key: 'link', label: 'Link', kind: 'url', placeholder: 'https://…' },
     { key: 'tags', label: 'Tags', kind: 'tags' },
+    {
+      key: 'showOnHome',
+      label: 'Show on home page',
+      kind: 'checkbox',
+      help: 'Tick to show this event’s image first in the home-page carousel.',
+    },
   ],
   pictures: [
     { key: 'name', label: 'Name', kind: 'text', placeholder: 'Event name (e.g. AI Day @ IIITDM 2026)' },
@@ -130,6 +151,12 @@ export const RECORD_FIELDS: Record<Collection, FieldDef[]> = {
       help: 'Category badge displayed at the bottom of the event card.',
     },
     { key: 'date', label: 'Date', kind: 'date' },
+    {
+      key: 'showOnHome',
+      label: 'Show on home page',
+      kind: 'checkbox',
+      help: 'Tick to show this group’s thumbnail first in the home-page carousel.',
+    },
   ],
 };
 

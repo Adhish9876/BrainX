@@ -53,6 +53,8 @@ type PictureMeta = {
   imageOrder?: string[];
   /** Optional category/tag pills for the event album card. */
   tags?: string[];
+  /** Feature this album's thumbnail first in the home-page carousel. */
+  showOnHome?: boolean;
 };
 
 function readJson<T>(relativePath: string, fallback: T): T {
@@ -125,6 +127,7 @@ function scanPictureGroup(id: string, meta: PictureMeta): PictureGroup {
     thumbnail: thumbnailStem ? mediaUrl(id, thumbnailStem) : '',
     images: ordered.map((stem) => mediaUrl(id, stem)),
     ...(Array.isArray(meta.tags) && meta.tags.length > 0 ? { tags: meta.tags } : {}),
+    ...(meta.showOnHome ? { showOnHome: true } : {}),
   };
 }
 

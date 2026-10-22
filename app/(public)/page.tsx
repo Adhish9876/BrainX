@@ -8,18 +8,8 @@ import { getContent } from '@/lib/content';
 
 export const dynamic = 'force-static';
 
-/** Digit/comma layout for the rolling counter, using Indian grouping (1,50,00,000). */
-function grantStat(amount: number) {
-  const text = amount.toLocaleString('en-IN');
-  const digits = text.replace(/,/g, '').length;
-  let remaining = digits;
-  const places = [...text].map((ch) => (ch === ',' ? ',' : 10 ** --remaining));
-  return { label: 'Grant funding', prefix: '₹', value: amount, suffix: '+', places };
-}
-
 export default function HomePage() {
-  const { site, news, events, publications, team, pictures, projects } = getContent();
-  const peopleCount = new Set(team.map((member) => member.name.trim().toLowerCase())).size;
+  const { site, news, events, publications, team, pictures } = getContent();
 
   const areas = site.focus
     .split(',')
@@ -77,12 +67,6 @@ export default function HomePage() {
             events={events}
             publications={publications}
             pictures={pictures}
-            stats={[
-              { label: 'Publications', value: publications.length },
-              { label: 'People', value: peopleCount },
-              ...(site.grantAmount && site.grantAmount > 0 ? [grantStat(site.grantAmount)] : []),
-              { label: 'Projects', value: projects.length },
-            ].filter((stat) => stat.value > 0)}
           />
           <WhatWeDo />
           <Partners partners={site.partners ?? []} />

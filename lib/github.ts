@@ -200,6 +200,7 @@ type PictureMetaOut = {
   thumbnail: string;
   imageOrder: string[];
   tags?: string[];
+  showOnHome?: boolean;
 };
 
 /**
@@ -322,6 +323,7 @@ export function planCommit(
       thumbnail: isLocalThumb ? toStem(basename(thumbUrl)) : '',
       imageOrder: finalStems,
       ...(Array.isArray(group.tags) && group.tags.length > 0 ? { tags: group.tags } : {}),
+      ...(group.showOnHome ? { showOnHome: true } : {}),
     };
     json.push({ path: metaPath, buf: serializeJson(meta) });
     desired.add(metaPath);
@@ -618,6 +620,7 @@ type PictureMetaIn = {
   thumbnail?: string;
   imageOrder?: string[];
   tags?: string[];
+  showOnHome?: boolean;
 };
 
 function scanGroups(entries: TreeEntry[], id: string, meta: PictureMetaIn): PictureGroup {
@@ -641,6 +644,7 @@ function scanGroups(entries: TreeEntry[], id: string, meta: PictureMetaIn): Pict
     thumbnail: thumbnailStem ? url(thumbnailStem) : '',
     images: ordered.map(url),
     ...(Array.isArray(meta.tags) && meta.tags.length > 0 ? { tags: meta.tags } : {}),
+    ...(meta.showOnHome ? { showOnHome: true } : {}),
   };
 }
 

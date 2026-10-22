@@ -6,7 +6,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { CalendarDays, Newspaper } from 'lucide-react';
 import type { Event, News } from '@/lib/types';
 import EmptyState from './EmptyState';
-import EventCarousel from './EventCarousel';
+import EventsShowcase from './EventsShowcase';
 import NewsList from './NewsList';
 
 const TAB_EVENTS = 'events';
@@ -67,7 +67,7 @@ export default function EventsNewsTabs({ events, news }: { events: Event[]; news
 
       <Tabs.Content value={TAB_EVENTS} className="mt-10 focus-visible:outline-none">
         {events.length > 0 ? (
-          <EventCarousel events={events} />
+          <EventsShowcase events={events} />
         ) : (
           <EmptyState
             icon={<CalendarDays className="h-5 w-5" aria-hidden />}

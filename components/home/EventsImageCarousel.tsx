@@ -27,8 +27,39 @@ export default function EventsImageCarousel({
   events?: Event[];
   pictures?: PictureGroup[];
 }) {
+  // Items ticked "Show on home page" in the admin come first, newest first, using their main image / thumbnail
+  const pinnedEvents: { slide: Slide; date: string }[] = (events ?? [])
+    .filter((event) => event.showOnHome && event.image)
+    .map((event) => ({
+      slide: {
+        id: `pin-event-${event.id}`,
+        image: event.image,
+        title: event.title,
+        meta: [formatDate(event.date), event.venue].filter(Boolean).join(' · '),
+        badge: event.tags?.[0] || 'Event',
+        href: event.link || '/events',
+      },
+      date: event.date || '',
+    }));
+  const pinnedPictures: { slide: Slide; date: string }[] = (pictures ?? [])
+    .filter((group) => group.showOnHome && (group.thumbnail || group.images?.[0]))
+    .map((group) => ({
+      slide: {
+        id: `pin-pic-${group.id}`,
+        image: group.thumbnail || group.images[0],
+        title: group.name,
+        meta: [formatDate(group.date), group.description ? group.description.slice(0, 52) + (group.description.length > 52 ? '…' : '') : ''].filter(Boolean).join(' · '),
+        badge: group.tags?.[0] || 'Pictures',
+        href: '/pictures',
+      },
+      date: group.date || '',
+    }));
+  const pinnedSlides = [...pinnedEvents, ...pinnedPictures]
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .map((item) => item.slide);
+
   const eventSlides: { slide: Slide; date: string }[] = (events ?? [])
-    .filter((event) => Boolean(event.image))
+    .filter((event) => Boolean(event.image) && !event.showOnHome)
     .map((event) => ({
       slide: {
         id: `event-${event.id}`,
@@ -42,6 +73,7 @@ export default function EventsImageCarousel({
     }));
 
   const pictureSlides: { slide: Slide; date: string }[] = (pictures ?? [])
+    .filter((group) => !group.showOnHome)
     .flatMap((group) => {
       const photos = group.images && group.images.length > 0 ? group.images : (group.thumbnail ? [group.thumbnail] : []);
       // Feature up to 3 photos from recent albums
@@ -59,10 +91,10 @@ export default function EventsImageCarousel({
       }));
     });
 
-  const combinedSlides = [...eventSlides, ...pictureSlides]
+  const recentSlides = [...eventSlides, ...pictureSlides]
     .sort((a, b) => b.date.localeCompare(a.date))
-    .map((item) => item.slide)
-    .slice(0, 8);
+    .map((item) => item.slide);
+  const combinedSlides = [...pinnedSlides, ...recentSlides].slice(0, 8);
 
   const slides = combinedSlides.length > 0 ? combinedSlides : PLACEHOLDER_SLIDES;
   const count = slides.length;

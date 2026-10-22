@@ -9,7 +9,6 @@ import {
   Megaphone,
 } from '@phosphor-icons/react';
 import { motion, useInView, useScroll, useTransform, useMotionValueEvent } from 'motion/react';
-import Counter from '@/components/ui/Counter';
 import type { Member, Site, News, Event, Publication, PictureGroup } from '@/lib/types';
 import Reveal from './Reveal';
 import EventsImageCarousel from './EventsImageCarousel';
@@ -22,7 +21,6 @@ type Props = {
   events: Event[];
   publications?: Publication[];
   pictures?: PictureGroup[];
-  stats?: { label: string; value: number; prefix?: string; suffix?: string; places?: (number | string)[] }[];
 };
 
 function formatShortDate(dateStr: string): string {
@@ -87,7 +85,6 @@ export default function WhoWeAre({
   events = [],
   publications = [],
   pictures = [],
-  stats = [],
 }: Props) {
   const [activeTab, setActiveTab] = useState<'news' | 'research'>('news');
   const [hasScrolled, setHasScrolled] = useState(false);
@@ -205,33 +202,6 @@ export default function WhoWeAre({
             <div className="mt-6">
               <EventsImageCarousel events={events} pictures={pictures} />
             </div>
-
-            {stats.length > 0 ? (
-              <dl className="mt-4 hidden md:flex max-w-xl flex-wrap gap-x-8 sm:gap-x-12 gap-y-4 border-t border-slate-300/70 pt-4">
-                {stats.map((stat) => (
-                  <div key={stat.label}>
-                    <dt className="font-mono text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-slate-500">
-                      {stat.label}
-                    </dt>
-                    <dd className="mt-1 flex items-center font-display text-4xl font-extrabold tracking-tight text-[#1d1d1f]">
-                      {stat.prefix ? <span>{stat.prefix}</span> : null}
-                      <Counter
-                        value={stat.value}
-                        places={stat.places}
-                        fontSize={36}
-                        gap={0}
-                        horizontalPadding={0}
-                        borderRadius={0}
-                        gradientHeight={0}
-                        fontWeight={800}
-                        textColor="#1d1d1f"
-                      />
-                      {stat.suffix ? <span>{stat.suffix}</span> : null}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            ) : null}
           </div>
 
           {/* RIGHT COLUMN: Apple Store Utility Card News & Publications Feed */}

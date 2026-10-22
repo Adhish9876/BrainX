@@ -81,6 +81,21 @@ export function FieldControl({
         </select>
       ) : null}
 
+      {field.kind === 'checkbox' ? (
+        <label className="flex cursor-pointer items-center gap-3 rounded-md border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800">
+          <input
+            id={id}
+            type="checkbox"
+            checked={value === true}
+            disabled={disabled}
+            aria-describedby={helpId}
+            onChange={(event) => onChange(event.target.checked)}
+            className="size-4 rounded border-slate-300 accent-[#1f3b73]"
+          />
+          Yes, show it on the home page
+        </label>
+      ) : null}
+
       {field.kind === 'url' ? (
         <Input
           id={id}

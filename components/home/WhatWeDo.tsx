@@ -280,7 +280,7 @@ export default function WhatWeDo() {
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.8, y: 8 }}
                       transition={{ type: 'spring', stiffness: 450, damping: 28 }}
-                      className="pointer-events-none absolute top-12 left-[75%] -translate-x-1/2 -translate-y-full z-50 w-[250px] h-[250px] xl:w-[272px] xl:h-[272px] filter drop-shadow-[0_16px_36px_rgba(0,0,0,0.18)]"
+                      className="pointer-events-none absolute top-12 left-[75%] -translate-x-1/2 -translate-y-full z-50 w-[190px] h-[190px] xl:w-[208px] xl:h-[208px] filter drop-shadow-[0_16px_36px_rgba(0,0,0,0.18)]"
                     >
                       <div className="relative w-full h-full">
                         <Image
@@ -292,18 +292,18 @@ export default function WhatWeDo() {
                           priority
                         />
 
-                        <div className="absolute inset-x-12 top-8 bottom-[5.6rem] flex flex-col items-center justify-center text-center">
-                          <h4 className="font-sans text-[0.8rem] font-bold leading-tight text-black max-w-[150px]">
+                        <div className="absolute inset-x-9 top-6 bottom-[4.3rem] flex flex-col items-center justify-center text-center">
+                          <h4 className="font-sans text-[0.66rem] font-bold leading-tight text-black max-w-[118px]">
                             {hoveredPillar.title}
                           </h4>
 
-                          <p className="mt-1 font-sans text-[0.62rem] font-medium leading-snug text-black/90 max-w-[140px]">
+                          <p className="mt-0.5 font-sans text-[0.52rem] font-medium leading-snug text-black/90 max-w-[108px]">
                             {hoveredPillar.shortSummary}
                           </p>
 
-                          <span className="mt-1.5 inline-flex items-center gap-1 font-mono text-[0.58rem] font-bold text-black/80">
+                          <span className="mt-1 inline-flex items-center gap-1 font-mono text-[0.48rem] font-bold text-black/80">
                             <span>Click node to view</span>
-                            <ArrowUpRight weight="bold" className="h-2 w-2" />
+                            <ArrowUpRight weight="bold" className="h-1.5 w-1.5" />
                           </span>
                         </div>
                       </div>
